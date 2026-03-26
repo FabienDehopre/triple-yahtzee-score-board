@@ -1,1 +1,0 @@
-- always use the latest stable version of Angular
