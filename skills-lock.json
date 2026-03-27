@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "9007c9c8e16362cfcccc7c78e0f35750d6ce09e3296cab171ca0af005d2e3de3"
     },
+    "angular-new-app": {
+      "source": "angular/angular",
+      "sourceType": "github",
+      "computedHash": "96ff824b3963781ba473ad70d64cc00b7be9fe7e10c0db96b903cad33ac32558"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",
