@@ -1,5 +1,5 @@
-import { GameColumn } from './game-column.model';
-import { ScoreCategory } from './score-category.model';
+import type { GameColumn } from './game-column.model';
+import type { ScoreCategory } from './score-category.model';
 
 /**
  * Represents the scoring suggestion produced by the suggestion engine

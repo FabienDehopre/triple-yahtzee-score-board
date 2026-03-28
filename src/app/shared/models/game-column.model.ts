@@ -1,5 +1,6 @@
+import type { ScoreCell } from './score-cell.model';
+
 import { ScoreCategory } from './score-category.model';
-import { ScoreCell } from './score-cell.model';
 
 /**
  * The three columns played in Triple Yahtzee, each scored with a different multiplier.
@@ -10,7 +11,7 @@ export enum GameColumn {
   /** Second column — scores are multiplied by ×2. */
   TWO = 'TWO',
   /** Third column — scores are multiplied by ×3. */
-  THREE = 'THREE',
+  THREE = 'THREE'
 }
 
 /** Multiplier applied to each column's final score. */

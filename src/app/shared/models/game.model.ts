@@ -1,4 +1,4 @@
-import { ColumnScores, GameColumn } from './game-column.model';
+import type { ColumnScores, GameColumn } from './game-column.model';
 
 /**
  * Represents a complete Triple Yahtzee game session.

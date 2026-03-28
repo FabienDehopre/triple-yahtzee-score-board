@@ -16,5 +16,5 @@ export enum ScoreCategory {
   SmallStraight = 'SmallStraight',
   LargeStraight = 'LargeStraight',
   Yahtzee = 'Yahtzee',
-  Chance = 'Chance',
+  Chance = 'Chance'
 }
