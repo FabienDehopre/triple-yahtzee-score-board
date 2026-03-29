@@ -1,0 +1,2 @@
+- ALWAYS run `eslint . --fix` after making changes to ensure code style consistency.
+- NEVER run `prettier` because `eslint --fix` will handle all formatting issues.
