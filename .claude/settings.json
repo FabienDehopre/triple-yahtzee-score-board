@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".agents/hooks/enforce-pnpm.sh"
+            "command": ".claude/hooks/enforce-pnpm.sh"
           }
         ]
       }

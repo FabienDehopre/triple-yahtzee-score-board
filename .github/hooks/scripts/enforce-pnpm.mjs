@@ -85,16 +85,21 @@ function pushArgCandidates(candidates, value) {
   }
 }
 
+// Matches npm/npx only when used as a command: at the start of a string, after shell
+// separators (&&, ||, ;) or subshell openers ((, `, $(), preceded by optional whitespace.
+// This avoids false positives for commands like `grep npm package.json`.
+const COMMAND_PATTERN = /(?:^|&&|\|\||;|\(|`|\$\()\s*(npm|npx)\s/;
+
 function findViolations(candidates) {
   const violations = [];
 
   for (const candidate of candidates) {
-    if (/\bnpm\b/i.test(candidate)) {
-      violations.push('npm');
-    }
+    // Normalize newlines/tabs so multi-line commands are handled uniformly
+    const normalized = candidate.replace(/[\n\t]/g, ' ');
+    const match = normalized.match(COMMAND_PATTERN);
 
-    if (/\bnpx\b/i.test(candidate)) {
-      violations.push('npx');
+    if (match) {
+      violations.push(match[1].toLowerCase());
     }
   }
 
