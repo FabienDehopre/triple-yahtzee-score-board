@@ -18,5 +18,6 @@ export default defineConfig({
   },
   typescript: {
     enableErasableSyntaxOnly: true,
+    useRelaxedNamingConventionForCamelAndPascalCases: true,
   },
 });

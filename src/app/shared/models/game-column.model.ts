@@ -1,45 +1,48 @@
+import type { ScoreCategory } from './score-category.model';
 import type { ScoreCell } from './score-cell.model';
 
-import { ScoreCategory } from './score-category.model';
+import { SCORE_CATEGORY } from './score-category.model';
 
 /**
  * The three columns played in Triple Yahtzee, each scored with a different multiplier.
  */
-export enum GameColumn {
+export const GAME_COLUMN = {
   /** First column — scores are multiplied by ×1. */
-  ONE = 'ONE',
+  one: 'ONE',
   /** Second column — scores are multiplied by ×2. */
-  TWO = 'TWO',
+  two: 'TWO',
   /** Third column — scores are multiplied by ×3. */
-  THREE = 'THREE'
-}
+  three: 'THREE',
+} as const;
+
+export type GameColumn = typeof GAME_COLUMN[keyof typeof GAME_COLUMN];
 
 /** Multiplier applied to each column's final score. */
 export const COLUMN_MULTIPLIER: Record<GameColumn, number> = {
-  [GameColumn.ONE]: 1,
-  [GameColumn.TWO]: 2,
-  [GameColumn.THREE]: 3,
+  [GAME_COLUMN.one]: 1,
+  [GAME_COLUMN.two]: 2,
+  [GAME_COLUMN.three]: 3,
 };
 
 /** Upper section categories (Aces – Sixes). */
 export const UPPER_CATEGORIES: ScoreCategory[] = [
-  ScoreCategory.Aces,
-  ScoreCategory.Twos,
-  ScoreCategory.Threes,
-  ScoreCategory.Fours,
-  ScoreCategory.Fives,
-  ScoreCategory.Sixes,
+  SCORE_CATEGORY.aces,
+  SCORE_CATEGORY.twos,
+  SCORE_CATEGORY.threes,
+  SCORE_CATEGORY.fours,
+  SCORE_CATEGORY.fives,
+  SCORE_CATEGORY.sixes,
 ];
 
 /** Lower section categories (combination-based). */
 export const LOWER_CATEGORIES: ScoreCategory[] = [
-  ScoreCategory.ThreeOfAKind,
-  ScoreCategory.FourOfAKind,
-  ScoreCategory.FullHouse,
-  ScoreCategory.SmallStraight,
-  ScoreCategory.LargeStraight,
-  ScoreCategory.Yahtzee,
-  ScoreCategory.Chance,
+  SCORE_CATEGORY.threeOfAKind,
+  SCORE_CATEGORY.fourOfAKind,
+  SCORE_CATEGORY.fullHouse,
+  SCORE_CATEGORY.smallStraight,
+  SCORE_CATEGORY.largeStraight,
+  SCORE_CATEGORY.yahtzee,
+  SCORE_CATEGORY.chance,
 ];
 
 /** Score cells for one complete section (upper or lower) of a single column, keyed by category. */
