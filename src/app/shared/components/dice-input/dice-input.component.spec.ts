@@ -1,18 +1,18 @@
+import type { DiceSet } from '../../models';
+
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
-import { DiceSet } from '../../models';
-
 import { DiceInputComponent } from './dice-input.component';
 
-describe('DiceInputComponent', () => {
+describe('diceInputComponent', () => {
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   test('should render 6 dice face increment buttons', async () => {
     await render(DiceInputComponent);
 
     for (let face = 1; face <= 6; face++) {
-      expect(screen.getByRole('button', { name: `Increment face ${face}` })).toBeTruthy();
+      expect(screen.getByRole('button', { name: `Increment face ${face}` })).toBeInTheDocument();
     }
   });
 
@@ -24,7 +24,7 @@ describe('DiceInputComponent', () => {
 
     await user.click(screen.getByRole('button', { name: 'Increment face 3' }));
 
-    expect(screen.getByTestId('count-face-3').textContent).toBe('1');
+    expect(screen.getByTestId('count-face-3')).toHaveTextContent('1');
   });
 
   test('should not increment beyond a total of 5 dice', async () => {
@@ -40,7 +40,7 @@ describe('DiceInputComponent', () => {
     // 6th click – total already 5, should be no-op
     await user.click(face1Btn);
 
-    expect(screen.getByTestId('count-face-1').textContent).toBe('5');
+    expect(screen.getByTestId('count-face-1')).toHaveTextContent('5');
   });
 
   // ─── Decrement ───────────────────────────────────────────────────────────────
@@ -53,7 +53,7 @@ describe('DiceInputComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Increment face 2' }));
     await user.click(screen.getByRole('button', { name: 'Decrement face 2' }));
 
-    expect(screen.getByTestId('count-face-2').textContent).toBe('1');
+    expect(screen.getByTestId('count-face-2')).toHaveTextContent('1');
   });
 
   test('should not decrement a face count below 0', async () => {
@@ -62,7 +62,7 @@ describe('DiceInputComponent', () => {
 
     await user.click(screen.getByRole('button', { name: 'Decrement face 4' }));
 
-    expect(screen.getByTestId('count-face-4').textContent).toBe('0');
+    expect(screen.getByTestId('count-face-4')).toHaveTextContent('0');
   });
 
   // ─── Confirm button ──────────────────────────────────────────────────────────
@@ -84,7 +84,7 @@ describe('DiceInputComponent', () => {
     await user.click(face1Btn);
     await user.click(face1Btn);
 
-    expect(screen.getByRole('button', { name: 'Confirm' })).not.toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Confirm' })).toBeEnabled();
   });
 
   // ─── DiceSet output ──────────────────────────────────────────────────────────
@@ -121,7 +121,7 @@ describe('DiceInputComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Reset' }));
 
     for (let face = 1; face <= 6; face++) {
-      expect(screen.getByTestId(`count-face-${face}`).textContent).toBe('0');
+      expect(screen.getByTestId(`count-face-${face}`)).toHaveTextContent('0');
     }
   });
 
@@ -130,7 +130,7 @@ describe('DiceInputComponent', () => {
   test('should show remaining dice count starting at 5', async () => {
     await render(DiceInputComponent);
 
-    expect(screen.getByTestId('remaining').textContent).toContain('5');
+    expect(screen.getByTestId('remaining')).toHaveTextContent(/5/);
   });
 
   test('should decrease remaining count as dice are added', async () => {
@@ -140,8 +140,6 @@ describe('DiceInputComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Increment face 6' }));
     await user.click(screen.getByRole('button', { name: 'Increment face 6' }));
 
-    expect(screen.getByTestId('remaining').textContent).toContain('3');
+    expect(screen.getByTestId('remaining')).toHaveTextContent(/3/);
   });
 });
-
-

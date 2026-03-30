@@ -1,26 +1,97 @@
-<div>
-  @for (face of faces; track face) {
-    <div>
+<div class="flex flex-col gap-4 p-4">
+  <!-- Remaining dice indicator -->
+  <div class="flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-2">
+    <span class="text-sm font-medium text-indigo-700">Dice remaining</span>
+    <span class="text-2xl font-bold text-indigo-600" data-testid="remaining" [class.text-green-600]="isValid()"
+      >{{ remaining() }}</span
+    >
+  </div>
+
+  <!-- Die face grid -->
+  <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+    @for (face of faces; track face) {
+    <div
+      class="flex flex-col items-center gap-2 rounded-2xl border-2 p-3 transition-colors"
+      [class.bg-indigo-50]="counts()[face - 1] > 0"
+      [class.bg-white]="counts()[face - 1] === 0"
+      [class.border-gray-200]="counts()[face - 1] === 0"
+      [class.border-indigo-400]="counts()[face - 1] > 0"
+    >
+      <!-- Die face SVG (tap to increment) -->
       <button
+        class="flex size-14 items-center justify-center rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-indigo-500 sm:size-12"
         type="button"
         [attr.aria-label]="'Increment face ' + face"
+        [class.bg-gray-100]="counts()[face - 1] === 0"
+        [class.bg-indigo-500]="counts()[face - 1] > 0"
+        [class.cursor-not-allowed]="remaining() === 0 && counts()[face - 1] === 0"
+        [class.hover:bg-gray-200]="counts()[face - 1] === 0 && remaining() > 0"
+        [class.hover:bg-indigo-600]="counts()[face - 1] > 0"
         (click)="increment(face - 1)"
       >
-        {{ face }}
+        <svg aria-hidden="true" class="size-9 sm:size-8" viewBox="0 0 60 60">
+          @for (dot of dotPositions[face]; track $index) {
+          <circle
+            r="7"
+            [attr.cx]="dot.cx"
+            [attr.cy]="dot.cy"
+            [class.fill-gray-700]="counts()[face - 1] === 0"
+            [class.fill-white]="counts()[face - 1] > 0"
+          />
+          }
+        </svg>
       </button>
-      <span [attr.data-testid]="'count-face-' + face">{{ counts()[face - 1] }}</span>
+
+      <!-- Count display -->
+      <span
+        class="min-w-6 text-center text-lg leading-none font-bold"
+        [attr.data-testid]="'count-face-' + face"
+        [class.text-gray-300]="counts()[face - 1] === 0"
+        [class.text-indigo-700]="counts()[face - 1] > 0"
+        >{{ counts()[face - 1] }}</span
+      >
+
+      <!-- Decrement button -->
       <button
+        class="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-indigo-500"
         type="button"
         [attr.aria-label]="'Decrement face ' + face"
+        [class.bg-gray-100]="counts()[face - 1] === 0"
+        [class.bg-indigo-100]="counts()[face - 1] > 0"
+        [class.cursor-not-allowed]="counts()[face - 1] === 0"
+        [class.hover:bg-indigo-200]="counts()[face - 1] > 0"
+        [class.text-gray-300]="counts()[face - 1] === 0"
+        [class.text-indigo-600]="counts()[face - 1] > 0"
         (click)="decrement(face - 1)"
       >
-        -
+        −
       </button>
     </div>
-  }
+    }
+  </div>
 
-  <div data-testid="remaining">Remaining: {{ remaining() }}</div>
-
-  <button type="button" [disabled]="!isValid()" (click)="confirm()">Confirm</button>
-  <button type="button" (click)="reset()">Reset</button>
+  <!-- Action buttons -->
+  <div class="flex gap-3">
+    <button
+      class="flex-1 rounded-xl border-2 border-gray-200 py-3 text-sm font-semibold text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-gray-400"
+      type="button"
+      (click)="reset()"
+    >
+      Reset
+    </button>
+    <button
+      class="flex-2 rounded-xl py-3 text-sm font-semibold text-white transition-colors focus-visible:outline-2"
+      type="button"
+      [class.bg-gray-200]="!isValid()"
+      [class.bg-green-500]="isValid()"
+      [class.cursor-not-allowed]="!isValid()"
+      [class.focus-visible:outline-green-500]="isValid()"
+      [class.hover:bg-green-600]="isValid()"
+      [class.text-gray-400]="!isValid()"
+      [disabled]="!isValid()"
+      (click)="confirm()"
+    >
+      Confirm
+    </button>
+  </div>
 </div>

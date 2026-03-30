@@ -15,6 +15,8 @@ export default defineConfig({
   formatters: true,
   tailwindcss: {
     entryPoint: 'src/styles.css',
+    preferSingleLine: true,
+    printWidth: 100,
   },
   typescript: {
     enableErasableSyntaxOnly: true,
