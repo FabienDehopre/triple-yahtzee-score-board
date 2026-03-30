@@ -1,2 +1,4 @@
 - ALWAYS run `eslint . --fix` after making changes to ensure code style consistency.
 - NEVER run `prettier` because `eslint --fix` will handle all formatting issues.
+- ALWAYS use TDD (Test Driven Development) practices to ensure code quality and maintainability.
+- commit often with clear and descriptive messages to maintain a clean commit history.
