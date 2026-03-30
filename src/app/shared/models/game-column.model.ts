@@ -24,6 +24,9 @@ export const COLUMN_MULTIPLIER: Record<GameColumn, number> = {
   [GAME_COLUMN.three]: 3,
 };
 
+/** The three game columns in their left-to-right play order. */
+export const COLUMN_ORDER: GameColumn[] = [GAME_COLUMN.one, GAME_COLUMN.two, GAME_COLUMN.three];
+
 /** Upper section categories (Aces – Sixes). */
 export const UPPER_CATEGORIES: ScoreCategory[] = [
   SCORE_CATEGORY.aces,

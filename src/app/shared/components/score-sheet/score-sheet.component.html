@@ -1,0 +1,204 @@
+@if (game(); as g) { @if (stats(); as s) {
+<div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+  <table class="w-full border-collapse text-sm">
+    <!-- ── Column headers ────────────────────────────────────────── -->
+    <thead>
+      <tr class="bg-indigo-700 text-white">
+        <th class="w-52 px-4 py-3 text-left text-xs font-semibold tracking-wider uppercase" scope="col">Category</th>
+        @for (col of columnOrder; track col) {
+        <th
+          class="w-28 p-3 text-center text-xs font-semibold tracking-wider uppercase"
+          scope="col"
+          [attr.data-testid]="'column-header-' + col"
+        >
+          {{ columnLabels[col] }}
+        </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- ══ UPPER SECTION ══════════════════════════════════════════ -->
+      <tr class="bg-indigo-50">
+        <td class="px-4 py-2 text-xs font-bold tracking-widest text-indigo-700 uppercase" colspan="4">Upper Section</td>
+      </tr>
+
+      @for (cat of upperCategories; track cat) { @let available = isCategoryAvailable(cat);
+      <tr class="border-b border-gray-100 transition-colors" [class.bg-amber-50]="available">
+        <td class="px-4 py-2.5">
+          <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
+          <span class="ml-1 text-xs text-gray-400">{{ categoryHints[cat] }}</span>
+        </td>
+        @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(col, cat); @let isAvail =
+        isAvailableCell(col, cat);
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          @if (displayValue !== undefined) {
+          <span
+            class="font-semibold"
+            [attr.data-testid]="'cell-' + cat + '-' + col"
+            [class.text-gray-400]="displayValue === 0"
+            [class.text-indigo-700]="displayValue > 0"
+          >
+            {{ displayValue }}
+          </span>
+          } @else if (isAvail) {
+          <button
+            class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
+            type="button"
+            [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
+            [attr.data-testid]="'available-cell-' + cat + '-' + col"
+            [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
+            [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
+            (click)="onCellClick(cat)"
+          >
+            {{ getPotentialDisplayScore(col, cat) }}
+          </button>
+          }
+        </td>
+        }
+      </tr>
+      }
+
+      <!-- Upper raw total (for 63-point bonus reference) -->
+      <tr class="border-b border-gray-200 bg-gray-50">
+        <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+          Total Score
+          <span class="font-normal text-gray-400">(need 63 for bonus)</span>
+        </td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2 text-center">
+          <span
+            class="font-semibold"
+            [attr.data-testid]="'upper-raw-' + col"
+            [class.text-gray-600]="s[col].upperRaw < 63"
+            [class.text-green-600]="s[col].upperRaw >= 63"
+          >
+            {{ s[col].upperRaw }}
+          </span>
+        </td>
+        }
+      </tr>
+
+      <!-- Upper bonus row -->
+      <tr class="border-b border-gray-200 bg-gray-50">
+        <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+          Bonus
+          <span class="font-normal text-gray-400">(+35 if ≥ 63)</span>
+        </td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2 text-center">
+          @if (s[col].upperBonus > 0) {
+          <span class="font-semibold text-green-600" [attr.data-testid]="'upper-bonus-' + col">
+            {{ s[col].upperBonus * columnMultiplier[col] }}
+          </span>
+          }
+        </td>
+        }
+      </tr>
+
+      <!-- Upper section total -->
+      <tr class="border-b-2 border-indigo-200 bg-indigo-50">
+        <td class="px-4 py-2.5 font-bold text-indigo-700">Upper Section Total</td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          <span class="font-bold text-indigo-700" [attr.data-testid]="'upper-total-' + col">
+            {{ s[col].upperTotal }}
+          </span>
+        </td>
+        }
+      </tr>
+
+      <!-- ══ LOWER SECTION ══════════════════════════════════════════ -->
+      <tr class="bg-purple-50">
+        <td class="px-4 py-2 text-xs font-bold tracking-widest text-purple-700 uppercase" colspan="4">Lower Section</td>
+      </tr>
+
+      @for (cat of lowerCategories; track cat) { @let available = isCategoryAvailable(cat);
+      <tr class="border-b border-gray-100 transition-colors" [class.bg-amber-50]="available">
+        <td class="px-4 py-2.5">
+          <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
+          <span class="ml-1 text-xs text-gray-400">{{ categoryHints[cat] }}</span>
+        </td>
+        @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(col, cat); @let isAvail =
+        isAvailableCell(col, cat);
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          @if (displayValue !== undefined) {
+          <span
+            class="font-semibold"
+            [attr.data-testid]="'cell-' + cat + '-' + col"
+            [class.text-gray-400]="displayValue === 0"
+            [class.text-purple-700]="displayValue > 0"
+          >
+            {{ displayValue }}
+          </span>
+          } @else if (isAvail) {
+          <button
+            class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
+            type="button"
+            [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
+            [attr.data-testid]="'available-cell-' + cat + '-' + col"
+            [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
+            [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
+            (click)="onCellClick(cat)"
+          >
+            {{ getPotentialDisplayScore(col, cat) }}
+          </button>
+          }
+        </td>
+        }
+      </tr>
+      }
+
+      <!-- Lower section total -->
+      <tr class="border-b border-gray-200 bg-gray-50">
+        <td class="px-4 py-2.5 font-bold text-gray-700">Lower Section Total</td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          <span class="font-bold text-gray-700" [attr.data-testid]="'lower-total-' + col">
+            {{ s[col].lowerTotal }}
+          </span>
+        </td>
+        }
+      </tr>
+
+      <!-- Upper section total (repeated for summary) -->
+      <tr class="border-b border-gray-200 bg-gray-50">
+        <td class="px-4 py-2.5 font-bold text-gray-700">Upper Section Total</td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          <span class="font-bold text-gray-700">{{ s[col].upperTotal }}</span>
+        </td>
+        }
+      </tr>
+
+      <!-- Combined total per column -->
+      <tr class="border-b-2 border-purple-200 bg-purple-50">
+        <td class="px-4 py-2.5 font-bold text-purple-700">
+          Combined Total
+          <span class="text-xs font-normal text-purple-500">(Upper + Lower)</span>
+        </td>
+        @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+          <span class="font-bold text-purple-700" [attr.data-testid]="'combined-total-' + col">
+            {{ s[col].combinedTotal }}
+          </span>
+        </td>
+        }
+      </tr>
+
+      <!-- Grand total -->
+      <tr class="bg-indigo-700 text-white">
+        <td class="px-4 py-3 font-bold tracking-wide uppercase">
+          Grand Total
+          <span class="block text-xs font-normal tracking-normal text-indigo-200 normal-case">
+            (Combined + Double + Triple)
+          </span>
+        </td>
+        <td class="px-4 py-3 text-center text-xl font-bold" colspan="3" data-testid="grand-total">
+          {{ grandTotal() }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+} }
