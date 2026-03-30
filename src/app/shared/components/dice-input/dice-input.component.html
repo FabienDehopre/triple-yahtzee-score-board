@@ -1,0 +1,26 @@
+<div>
+  @for (face of faces; track face) {
+    <div>
+      <button
+        type="button"
+        [attr.aria-label]="'Increment face ' + face"
+        (click)="increment(face - 1)"
+      >
+        {{ face }}
+      </button>
+      <span [attr.data-testid]="'count-face-' + face">{{ counts()[face - 1] }}</span>
+      <button
+        type="button"
+        [attr.aria-label]="'Decrement face ' + face"
+        (click)="decrement(face - 1)"
+      >
+        -
+      </button>
+    </div>
+  }
+
+  <div data-testid="remaining">Remaining: {{ remaining() }}</div>
+
+  <button type="button" [disabled]="!isValid()" (click)="confirm()">Confirm</button>
+  <button type="button" (click)="reset()">Reset</button>
+</div>
