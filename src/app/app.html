@@ -1,14 +1,15 @@
-<div class="flex min-h-screen items-center justify-center bg-gray-100">
-  <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg">
-    <h1 class="mb-1 text-center text-3xl font-bold text-indigo-600">Triple Yahtzee</h1>
-    <p class="mb-6 text-center text-sm text-gray-500">Score Board</p>
-
-    <app-dice-input (confirmed)="onDiceConfirmed($event)" />
-
-    @if (lastRoll()) {
-    <div class="mt-4 rounded-xl bg-green-50 p-3 text-center text-sm text-green-700">
-      Last roll: [{{ lastRoll()!.join(', ') }}]
+<div class="min-h-screen bg-gray-100 px-4 py-8">
+  <div class="mx-auto max-w-3xl">
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-indigo-600">Triple Yahtzee</h1>
+      <p class="mt-1 text-sm text-gray-500">Score Board</p>
     </div>
-    }
+
+    <div class="mb-6 rounded-2xl bg-white p-6 shadow-lg">
+      <h2 class="mb-4 text-sm font-semibold tracking-wide text-gray-500 uppercase">Enter Dice Roll</h2>
+      <app-dice-input (confirmed)="onDiceConfirmed($event)" />
+    </div>
+
+    <app-score-sheet />
   </div>
 </div>
