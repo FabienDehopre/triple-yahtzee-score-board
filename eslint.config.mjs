@@ -15,6 +15,11 @@ export default defineConfig({
   formatters: true,
   tailwindcss: {
     entryPoint: 'src/styles.css',
+    overrides: {
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+    },
+    preferSingleLine: true,
+    printWidth: 100,
   },
   typescript: {
     enableErasableSyntaxOnly: true,
