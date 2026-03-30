@@ -19,7 +19,11 @@
     >
       <!-- Die face SVG (tap to increment) -->
       <button
-        class="flex size-14 items-center justify-center rounded-xl transition-colors focus-visible:outline-2 focus-visible:outline-indigo-500 sm:size-12"
+        class="
+          flex size-14 items-center justify-center rounded-xl transition-colors
+          focus-visible:outline-2 focus-visible:outline-indigo-500
+          sm:size-12
+        "
         type="button"
         [attr.aria-label]="'Increment face ' + face"
         [class.bg-gray-100]="counts()[face - 1] === 0"
@@ -53,7 +57,10 @@
 
       <!-- Decrement button -->
       <button
-        class="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-indigo-500"
+        class="
+          flex size-8 items-center justify-center rounded-full text-sm font-bold transition-colors
+          focus-visible:outline-2 focus-visible:outline-indigo-500
+        "
         type="button"
         [attr.aria-label]="'Decrement face ' + face"
         [class.bg-gray-100]="counts()[face - 1] === 0"
@@ -73,14 +80,22 @@
   <!-- Action buttons -->
   <div class="flex gap-3">
     <button
-      class="flex-1 rounded-xl border-2 border-gray-200 py-3 text-sm font-semibold text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-gray-400"
+      class="
+        flex-1 rounded-xl border-2 border-gray-200 py-3 text-sm font-semibold text-gray-500
+        transition-colors
+        hover:border-gray-300 hover:bg-gray-50
+        focus-visible:outline-2 focus-visible:outline-gray-400
+      "
       type="button"
       (click)="reset()"
     >
       Reset
     </button>
     <button
-      class="flex-2 rounded-xl py-3 text-sm font-semibold text-white transition-colors focus-visible:outline-2"
+      class="
+        flex-2 rounded-xl py-3 text-sm font-semibold text-white transition-colors
+        focus-visible:outline-2
+      "
       type="button"
       [class.bg-gray-200]="!isValid()"
       [class.bg-green-500]="isValid()"
