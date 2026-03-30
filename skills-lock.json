@@ -11,6 +11,11 @@
       "sourceType": "github",
       "computedHash": "96ff824b3963781ba473ad70d64cc00b7be9fe7e10c0db96b903cad33ac32558"
     },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",
