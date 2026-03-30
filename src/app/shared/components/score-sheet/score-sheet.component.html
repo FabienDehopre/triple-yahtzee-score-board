@@ -1,0 +1,141 @@
+<div class="overflow-x-auto">
+  <table class="w-full border-collapse text-sm">
+    <colgroup>
+      <col class="w-36" />
+      <col class="w-28" />
+      <col class="w-16" />
+      <col class="w-16" />
+      <col class="w-16" />
+    </colgroup>
+    <thead>
+      <tr class="bg-gray-800 text-white">
+        <th class="border border-gray-600 px-2 py-1 text-left" colspan="2">UPPER SECTION</th>
+        @for (col of columns; track col) {
+        <th class="border border-gray-600 px-2 py-1 text-center">
+          {{ columnLabels[col] }}<br />
+          <span class="text-xs font-normal text-gray-300">x{{ columnMultiplier[col] }}</span>
+        </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (meta of upperMeta; track meta.category) {
+      <tr
+        [class.bg-amber-50]="isAvailable(meta.category) && !!dice()"
+        [class.cursor-pointer]="isAvailable(meta.category) && !!dice()"
+        [class.hover:bg-amber-100]="isAvailable(meta.category) && !!dice()"
+        (click)="onRowClick(meta.category)"
+      >
+        <td class="border border-gray-300 px-2 py-1 font-semibold">{{ meta.label }}</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">{{ meta.hint }}</td>
+        @for (col of columns; track col) { @let displayed = getDisplayScore(col, meta.category); @let potential =
+        getPotentialScore(col, meta.category);
+        <td
+          class="border border-gray-300 px-2 py-1 text-center"
+          [class.bg-green-50]="potential !== undefined && displayed === undefined"
+          [class.font-semibold]="displayed !== undefined"
+          [class.text-blue-800]="displayed !== undefined"
+        >
+          @if (displayed !== undefined) { {{ displayed }} } @else if (potential !== undefined) {
+          <span class="text-xs text-green-600 italic">{{ potential }}</span>
+          }
+        </td>
+        }
+      </tr>
+      }
+
+      <tr class="bg-gray-100 font-semibold">
+        <td class="border border-gray-300 px-2 py-1">TOTAL SCORE</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">&#8594;</td>
+        @for (col of columns; track col) {
+        <td class="border border-gray-300 px-2 py-1 text-center">
+          {{ stats()[col].upperRawTotal * columnMultiplier[col] }}
+        </td>
+        }
+      </tr>
+
+      <tr class="bg-gray-100">
+        <td class="border border-gray-300 px-2 py-1 font-semibold">
+          BONUS
+          <span class="text-xs font-normal text-gray-500"> If Total Score is 63 or over</span>
+        </td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">SCORE 35 &#8594;</td>
+        @for (col of columns; track col) {
+        <td
+          class="border border-gray-300 px-2 py-1 text-center"
+          [class.font-semibold]="stats()[col].upperBonus > 0"
+          [class.text-blue-800]="stats()[col].upperBonus > 0"
+        >
+          @if (stats()[col].upperBonus > 0) { {{ stats()[col].upperBonus * columnMultiplier[col] }} }
+        </td>
+        }
+      </tr>
+
+      <tr class="bg-gray-200 font-bold">
+        <td class="border border-gray-300 px-2 py-1">TOTAL</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs font-normal text-gray-500">
+          Of Upper Section &#8594;
+        </td>
+        @for (col of columns; track col) {
+        <td class="border border-gray-300 px-2 py-1 text-center">{{ stats()[col].upperTotal }}</td>
+        }
+      </tr>
+
+      <tr class="bg-gray-800 text-white">
+        <th class="border border-gray-600 px-2 py-1 text-left" colspan="5">LOWER SECTION</th>
+      </tr>
+
+      @for (meta of lowerMeta; track meta.category) {
+      <tr
+        [class.bg-amber-50]="isAvailable(meta.category) && !!dice()"
+        [class.cursor-pointer]="isAvailable(meta.category) && !!dice()"
+        [class.hover:bg-amber-100]="isAvailable(meta.category) && !!dice()"
+        (click)="onRowClick(meta.category)"
+      >
+        <td class="border border-gray-300 px-2 py-1 font-semibold">{{ meta.label }}</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">{{ meta.hint }}</td>
+        @for (col of columns; track col) { @let displayed = getDisplayScore(col, meta.category); @let potential =
+        getPotentialScore(col, meta.category);
+        <td
+          class="border border-gray-300 px-2 py-1 text-center"
+          [class.bg-green-50]="potential !== undefined && displayed === undefined"
+          [class.font-semibold]="displayed !== undefined"
+          [class.text-blue-800]="displayed !== undefined"
+        >
+          @if (displayed !== undefined) { {{ displayed }} } @else if (potential !== undefined) {
+          <span class="text-xs text-green-600 italic">{{ potential }}</span>
+          }
+        </td>
+        }
+      </tr>
+      }
+
+      <tr class="bg-gray-100 font-semibold">
+        <td class="border border-gray-300 px-2 py-1">Lower Section Total</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">&#8594;</td>
+        @for (col of columns; track col) {
+        <td class="border border-gray-300 px-2 py-1 text-center">{{ stats()[col].lowerTotal }}</td>
+        }
+      </tr>
+
+      <tr class="bg-gray-100 font-semibold">
+        <td class="border border-gray-300 px-2 py-1">Upper Section Total</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs text-gray-500">&#8594;</td>
+        @for (col of columns; track col) {
+        <td class="border border-gray-300 px-2 py-1 text-center">{{ stats()[col].upperTotal }}</td>
+        }
+      </tr>
+
+      <tr class="bg-gray-200 font-bold">
+        <td class="border border-gray-300 px-2 py-1">Combined Total</td>
+        <td class="border border-gray-300 px-2 py-1 text-center text-xs font-normal text-gray-500">
+          (Upper + Lower) &#8594;
+        </td>
+        @for (col of columns; track col) {
+        <td class="border border-gray-300 px-2 py-1 text-center">{{ stats()[col].combinedTotal }}</td>
+        }
+      </tr>
+    </tbody>
+  </table>
+</div>
