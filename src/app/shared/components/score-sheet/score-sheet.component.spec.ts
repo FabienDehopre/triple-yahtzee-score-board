@@ -33,24 +33,26 @@ describe('scoreSheetComponent', () => {
   test('should render upper section category labels', async () => {
     await render(ScoreSheetComponent);
 
-    expect(screen.getByText('Aces')).toBeInTheDocument();
-    expect(screen.getByText('Twos')).toBeInTheDocument();
-    expect(screen.getByText('Threes')).toBeInTheDocument();
-    expect(screen.getByText('Fours')).toBeInTheDocument();
-    expect(screen.getByText('Fives')).toBeInTheDocument();
-    expect(screen.getByText('Sixes')).toBeInTheDocument();
+    // Each label appears once in the mobile layout and once in the desktop layout
+    expect(screen.getAllByText('Aces')).toHaveLength(2);
+    expect(screen.getAllByText('Twos')).toHaveLength(2);
+    expect(screen.getAllByText('Threes')).toHaveLength(2);
+    expect(screen.getAllByText('Fours')).toHaveLength(2);
+    expect(screen.getAllByText('Fives')).toHaveLength(2);
+    expect(screen.getAllByText('Sixes')).toHaveLength(2);
   });
 
   test('should render lower section category labels', async () => {
     await render(ScoreSheetComponent);
 
-    expect(screen.getByText('3 of a Kind')).toBeInTheDocument();
-    expect(screen.getByText('4 of a Kind')).toBeInTheDocument();
-    expect(screen.getByText('Full House')).toBeInTheDocument();
-    expect(screen.getByText('Sm. Straight')).toBeInTheDocument();
-    expect(screen.getByText('Lg. Straight')).toBeInTheDocument();
-    expect(screen.getByText('YAHTZEE')).toBeInTheDocument();
-    expect(screen.getByText('Chance')).toBeInTheDocument();
+    // Each label appears once in the mobile layout and once in the desktop layout
+    expect(screen.getAllByText('3 of a Kind')).toHaveLength(2);
+    expect(screen.getAllByText('4 of a Kind')).toHaveLength(2);
+    expect(screen.getAllByText('Full House')).toHaveLength(2);
+    expect(screen.getAllByText('Sm. Straight')).toHaveLength(2);
+    expect(screen.getAllByText('Lg. Straight')).toHaveLength(2);
+    expect(screen.getAllByText('YAHTZEE')).toHaveLength(2);
+    expect(screen.getAllByText('Chance')).toHaveLength(2);
   });
 
   test('should render the grand total row', async () => {
@@ -75,8 +77,10 @@ describe('scoreSheetComponent', () => {
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
 
-    // 13 categories × 2 games = 26 buttons (one per category per game)
-    expect(await screen.findAllByRole('button')).toHaveLength(26);
+    // Desktop: 13 categories × 2 games = 26 buttons (one per category per game)
+    // Mobile: 13 categories × 1 active game (game 0 by default) = 13 buttons
+    // Total: 39 buttons
+    expect(await screen.findAllByRole('button')).toHaveLength(39);
   });
 
   test('should show the potential score for Aces in game 0 ONE column', async () => {
@@ -169,6 +173,32 @@ describe('scoreSheetComponent', () => {
     await user.click(await screen.findByTestId('available-cell-0-Aces-ONE'));
 
     expect(await screen.findByTestId('cell-0-Aces-ONE')).toHaveTextContent('0');
+  });
+
+  // ─── Mobile tab navigation ─────────────────────────────────────────────────
+
+  test('should render a mobile game tab for each game', async () => {
+    await render(ScoreSheetComponent);
+
+    expect(screen.getByTestId('mobile-tab-0')).toHaveTextContent('Game 1');
+    expect(screen.getByTestId('mobile-tab-1')).toHaveTextContent('Game 2');
+  });
+
+  test('should mark the first game tab as selected by default', async () => {
+    await render(ScoreSheetComponent);
+
+    expect(screen.getByTestId('mobile-tab-0')).toHaveAttribute('aria-selected', 'true');
+    expect(screen.getByTestId('mobile-tab-1')).toHaveAttribute('aria-selected', 'false');
+  });
+
+  test('should switch the active game tab when another tab is clicked', async () => {
+    const user = userEvent.setup();
+    await render(ScoreSheetComponent);
+
+    await user.click(screen.getByTestId('mobile-tab-1'));
+
+    expect(screen.getByTestId('mobile-tab-0')).toHaveAttribute('aria-selected', 'false');
+    expect(screen.getByTestId('mobile-tab-1')).toHaveAttribute('aria-selected', 'true');
   });
 
   // ─── Totals ─────────────────────────────────────────────────────────────────
