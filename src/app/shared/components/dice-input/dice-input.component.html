@@ -1,6 +1,8 @@
 <div class="flex flex-col gap-4 p-4">
   <!-- Remaining dice indicator -->
-  <div class="flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-2">
+  <div class="
+    flex items-center justify-between rounded-xl bg-indigo-50 px-4 py-2
+  ">
     <span class="text-sm font-medium text-indigo-700">Dice remaining</span>
     <span class="text-2xl font-bold text-indigo-600" data-testid="remaining" [class.text-green-600]="isValid()"
       >{{ remaining() }}</span
@@ -8,10 +10,16 @@
   </div>
 
   <!-- Die face grid -->
-  <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+  <div class="
+    grid grid-cols-3 gap-3
+    sm:grid-cols-6
+  ">
     @for (face of faces; track face) {
     <div
-      class="flex flex-col items-center gap-2 rounded-2xl border-2 p-3 transition-colors"
+      class="
+        flex flex-col items-center gap-2 rounded-2xl border-2 p-3
+        transition-colors
+      "
       [class.bg-indigo-50]="counts()[face - 1] > 0"
       [class.bg-white]="counts()[face - 1] === 0"
       [class.border-gray-200]="counts()[face - 1] === 0"
@@ -33,7 +41,10 @@
         [class.hover:bg-indigo-600]="counts()[face - 1] > 0"
         (click)="increment(face - 1)"
       >
-        <svg aria-hidden="true" class="size-9 sm:size-8" viewBox="0 0 60 60">
+        <svg aria-hidden="true" class="
+          size-9
+          sm:size-8
+        " viewBox="0 0 60 60">
           @for (dot of dotPositions[face]; track $index) {
           <circle
             r="7"
@@ -58,7 +69,8 @@
       <!-- Decrement button -->
       <button
         class="
-          flex size-8 items-center justify-center rounded-full text-sm font-bold transition-colors
+          flex size-8 items-center justify-center rounded-full text-sm font-bold
+          transition-colors
           focus-visible:outline-2 focus-visible:outline-indigo-500
         "
         type="button"
@@ -81,8 +93,8 @@
   <div class="flex gap-3">
     <button
       class="
-        flex-1 rounded-xl border-2 border-gray-200 py-3 text-sm font-semibold text-gray-500
-        transition-colors
+        flex-1 rounded-xl border-2 border-gray-200 py-3 text-sm font-semibold
+        text-gray-500 transition-colors
         hover:border-gray-300 hover:bg-gray-50
         focus-visible:outline-2 focus-visible:outline-gray-400
       "
@@ -93,7 +105,8 @@
     </button>
     <button
       class="
-        flex-2 rounded-xl py-3 text-sm font-semibold text-white transition-colors
+        flex-2 rounded-xl py-3 text-sm font-semibold text-white
+        transition-colors
         focus-visible:outline-2
       "
       type="button"

@@ -2,8 +2,8 @@
   <label class="text-sm font-semibold text-gray-600" for="game-count-select">Number of Games:</label>
   <select
     class="
-      rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-700
-      shadow-sm
+      rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium
+      text-gray-700 shadow-sm
       focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300
       focus-visible:outline-none
     "
@@ -18,12 +18,14 @@
 
   @if (pendingCount() !== undefined) {
   <div class="
-    flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-sm
+    flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3
+    py-1.5 text-sm
   ">
     <span class="text-amber-700">Changing game count will reset the current game.</span>
     <button
       class="
-        rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white transition-colors
+        rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white
+        transition-colors
         hover:bg-indigo-500
         focus-visible:outline-2 focus-visible:outline-indigo-500
       "
@@ -35,7 +37,8 @@
     </button>
     <button
       class="
-        rounded-md bg-gray-200 px-2.5 py-1 text-xs font-bold text-gray-700 transition-colors
+        rounded-md bg-gray-200 px-2.5 py-1 text-xs font-bold text-gray-700
+        transition-colors
         hover:bg-gray-300
         focus-visible:outline-2 focus-visible:outline-gray-400
       "

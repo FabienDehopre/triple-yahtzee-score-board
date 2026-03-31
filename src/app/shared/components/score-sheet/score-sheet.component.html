@@ -1,10 +1,15 @@
-<div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
+<div class="
+  overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm
+">
   <table class="w-full border-collapse text-sm">
     <!-- ── Column headers ────────────────────────────────────────── -->
     <thead>
       <!-- Game group headers (one spanning header per game) -->
       <tr class="bg-indigo-800 text-white">
-        <th class="w-52 px-4 py-2 text-left text-xs font-semibold tracking-wider uppercase" scope="col"></th>
+        <th class="
+          w-52 px-4 py-2 text-left text-xs font-semibold tracking-wider
+          uppercase
+        " scope="col"></th>
         @for (game of games(); track game.id; let gi = $index) {
         <th
           class="p-2 text-center text-xs font-bold tracking-wider uppercase"
@@ -18,10 +23,15 @@
       </tr>
       <!-- Per-column headers -->
       <tr class="bg-indigo-700 text-white">
-        <th class="w-52 px-4 py-3 text-left text-xs font-semibold tracking-wider uppercase" scope="col">Category</th>
+        <th class="
+          w-52 px-4 py-3 text-left text-xs font-semibold tracking-wider
+          uppercase
+        " scope="col">Category</th>
         @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <th
-          class="w-28 p-3 text-center text-xs font-semibold tracking-wider uppercase"
+          class="
+            w-28 p-3 text-center text-xs font-semibold tracking-wider uppercase
+          "
           scope="col"
           [attr.data-testid]="'column-header-' + gi + '-' + col"
         >
@@ -35,7 +45,10 @@
       <!-- ══ UPPER SECTION ══════════════════════════════════════════ -->
       <tr class="bg-indigo-50">
         <td
-          class="px-4 py-2 text-xs font-bold tracking-widest text-indigo-700 uppercase"
+          class="
+            px-4 py-2 text-xs font-bold tracking-widest text-indigo-700
+            uppercase
+          "
           [attr.colspan]="1 + totalColumns()"
         >
           Upper Section
@@ -62,7 +75,12 @@
           </span>
           } @else if (isAvail) {
           <button
-            class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
+            class="
+              w-full rounded-lg px-2 py-1 text-sm font-semibold
+              transition-colors
+              hover:bg-amber-200
+              focus-visible:outline-2 focus-visible:outline-amber-500
+            "
             type="button"
             [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
             [attr.data-testid]="'available-cell-' + gi + '-' + cat + '-' + col"
@@ -130,7 +148,10 @@
       <!-- ══ LOWER SECTION ══════════════════════════════════════════ -->
       <tr class="bg-purple-50">
         <td
-          class="px-4 py-2 text-xs font-bold tracking-widest text-purple-700 uppercase"
+          class="
+            px-4 py-2 text-xs font-bold tracking-widest text-purple-700
+            uppercase
+          "
           [attr.colspan]="1 + totalColumns()"
         >
           Lower Section
@@ -157,7 +178,12 @@
           </span>
           } @else if (isAvail) {
           <button
-            class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
+            class="
+              w-full rounded-lg px-2 py-1 text-sm font-semibold
+              transition-colors
+              hover:bg-amber-200
+              focus-visible:outline-2 focus-visible:outline-amber-500
+            "
             type="button"
             [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
             [attr.data-testid]="'available-cell-' + gi + '-' + cat + '-' + col"
@@ -196,7 +222,10 @@
       </tr>
 
       <!-- Bottom summary section header row (relabels columns for grand total area) -->
-      <tr class="border-t-2 border-gray-300 bg-gray-100 text-xs font-semibold text-gray-600">
+      <tr class="
+        border-t-2 border-gray-300 bg-gray-100 text-xs font-semibold
+        text-gray-600
+      ">
         <td class="px-4 py-1.5 text-gray-500">→</td>
         @for (game of games(); track game.id; let gi = $index) {
         <td class="border-l border-gray-200 px-3 py-1.5 text-center" [attr.data-testid]="'subheader-combined-' + gi">
@@ -213,7 +242,10 @@
 
       <!-- Triple Yahtzee Total Score row (per-game, per-column combined totals) -->
       <tr class="border-b border-gray-200 bg-purple-50">
-        <td class="px-4 py-2.5 text-xs font-bold tracking-widest text-purple-700 uppercase">
+        <td class="
+          px-4 py-2.5 text-xs font-bold tracking-widest text-purple-700
+          uppercase
+        ">
           Triple Yahtzee Total Score →
         </td>
         @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
@@ -229,7 +261,10 @@
       <tr class="bg-indigo-700 text-white">
         <td class="px-4 py-3 font-bold tracking-wide uppercase">
           Grand Total
-          <span class="block text-xs font-normal tracking-normal text-indigo-200 normal-case">
+          <span class="
+            block text-xs font-normal tracking-normal text-indigo-200
+            normal-case
+          ">
             (Add Total of All Columns)
           </span>
         </td>
