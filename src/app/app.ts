@@ -2,12 +2,12 @@ import type { DiceSet } from './shared/models';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DiceInputComponent, ScoreSheetComponent } from './shared/components';
+import { DiceInputComponent, ScoreSheetComponent, UndoBannerComponent } from './shared/components';
 import { GameStateService } from './shared/services/game-state.service';
 
 @Component({
   selector: 'app-root',
-  imports: [DiceInputComponent, ScoreSheetComponent],
+  imports: [DiceInputComponent, ScoreSheetComponent, UndoBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
