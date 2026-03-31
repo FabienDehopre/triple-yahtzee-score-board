@@ -47,6 +47,9 @@ function createEmptyGame(): Game {
   };
 }
 
+/** Default number of games played per Triple Yahtzee session. */
+export const DEFAULT_GAME_COUNT = 2;
+
 /**
  * Central reactive state for a Triple Yahtzee session.
  * Holds the list of games and the current dice roll.
@@ -57,14 +60,36 @@ export class GameStateService {
   readonly #scoringEngine = inject(ScoringEngineService);
   readonly #undo = inject(UndoService);
 
-  readonly #games = signal([createEmptyGame()]);
+  readonly #gameCount = signal(DEFAULT_GAME_COUNT);
+  readonly #games = signal(Array.from({ length: DEFAULT_GAME_COUNT }, () => createEmptyGame()));
   readonly #currentDice = signal<DiceSet | undefined>(undefined);
+
+  /** How many games are configured for this session (read-only). */
+  readonly gameCount = this.#gameCount.asReadonly();
 
   /** All current games (read-only). */
   readonly games = this.#games.asReadonly();
 
   /** The most recently confirmed dice roll, or undefined when no dice have been set. */
   readonly currentDice = this.#currentDice.asReadonly();
+
+  /**
+   * True when at least one score has been placed in any game.
+   * Used to ask for confirmation before changing the game count.
+   */
+  readonly isAnyGameInProgress = computed(() => {
+    for (const game of this.#games()) {
+      for (const col of COLUMN_ORDER) {
+        for (const cat of UPPER_CATEGORIES) {
+          if (game.columns[col].upper[cat] !== undefined) return true;
+        }
+        for (const cat of LOWER_CATEGORIES) {
+          if (game.columns[col].lower[cat] !== undefined) return true;
+        }
+      }
+    }
+    return false;
+  });
 
   /**
    * Computed per-game, per-column statistics.
@@ -123,12 +148,30 @@ export class GameStateService {
   }
 
   /**
-   * Resets the game state to a fresh single empty game and clears the current dice.
+   * Resets the game state to fresh empty games (one per configured game count) and clears the current dice.
    * Called from the game-over screen to start a new session.
    */
   newGame(): void {
-    this.#games.set([createEmptyGame()]);
+    this.#games.set(Array.from({ length: this.#gameCount() }, () => createEmptyGame()));
     this.#currentDice.set(undefined);
+  }
+
+  /**
+   * Changes the number of games and resets to a fresh session.
+   * The caller is responsible for confirming with the user if a game is in progress.
+   */
+  setGameCount(count: number): void {
+    this.#gameCount.set(count);
+    this.#games.set(Array.from({ length: count }, () => createEmptyGame()));
+    this.#currentDice.set(undefined);
+  }
+
+  /**
+   * Restores the game count from a previously saved snapshot.
+   * Does NOT reset the games array — call restoreGames separately.
+   */
+  restoreGameCount(count: number): void {
+    this.#gameCount.set(count);
   }
 
   /**

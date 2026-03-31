@@ -10,6 +10,8 @@ export const PERSISTENCE_KEY = 'triple-yahtzee-state';
 /** Shape of the persisted JSON object. */
 interface PersistedState {
   games: Game[];
+  /** Number of configured games. Optional for backwards compatibility with older saves. */
+  gameCount?: number;
 }
 
 /**
@@ -28,7 +30,10 @@ export class PersistenceManagerService {
     this.#restore();
 
     effect(() => {
-      const state: PersistedState = { games: this.#gameState.games() };
+      const state: PersistedState = {
+        games: this.#gameState.games(),
+        gameCount: this.#gameState.gameCount(),
+      };
 
       try {
         localStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state));
@@ -47,6 +52,13 @@ export class PersistenceManagerService {
 
       if (!this.#isValidState(parsed)) return;
 
+      // Restore game count (fall back to number of saved games for backwards compat).
+      const gameCount =
+        typeof parsed.gameCount === 'number' && parsed.gameCount > 0
+          ? parsed.gameCount
+          : parsed.games.length;
+
+      this.#gameState.restoreGameCount(gameCount);
       this.#gameState.restoreGames(parsed.games);
     } catch {
       // Corrupt or unparseable data — start a new game gracefully.

@@ -9,19 +9,19 @@ import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { GameOverComponent } from './game-over.component';
 
-/** Fill all 39 cells to trigger game-over state. */
-function fillAllCells(service: GameStateService): void {
+/** Fill all 39 cells for a single game index to trigger game-over for that game. */
+function fillAllCellsForGame(service: GameStateService, gameIndex: number): void {
   const dice: DiceSet = [1, 1, 1, 1, 1, 0];
   for (const cat of UPPER_CATEGORIES) {
     for (let col = 0; col < 3; col++) {
       service.setCurrentDice(dice);
-      service.placeScore(cat, 0);
+      service.placeScore(cat, gameIndex);
     }
   }
   for (const cat of LOWER_CATEGORIES) {
     for (let col = 0; col < 3; col++) {
       service.setCurrentDice(dice);
-      service.placeScore(cat, 0);
+      service.placeScore(cat, gameIndex);
     }
   }
 }
@@ -47,26 +47,26 @@ describe('gameOverComponent', () => {
     expect(await screen.findByTestId('game-over-grand-total')).toHaveTextContent('180');
   });
 
-  test('should display the combined total (ONE column)', async () => {
+  test('should display the combined total (ONE column) for game 0', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1
 
-    expect(await screen.findByTestId(`game-over-combined-${GAME_COLUMN.one}`)).toHaveTextContent('30');
+    expect(await screen.findByTestId(`game-over-combined-0-${GAME_COLUMN.one}`)).toHaveTextContent('30');
   });
 
-  test('should display the double combined (TWO column)', async () => {
+  test('should display the double combined (TWO column) for game 0', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 30×2 = 60
 
-    expect(await screen.findByTestId(`game-over-combined-${GAME_COLUMN.two}`)).toHaveTextContent('60');
+    expect(await screen.findByTestId(`game-over-combined-0-${GAME_COLUMN.two}`)).toHaveTextContent('60');
   });
 
-  test('should display the triple combined (THREE column)', async () => {
+  test('should display the triple combined (THREE column) for game 0', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
@@ -74,7 +74,16 @@ describe('gameOverComponent', () => {
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 30×2
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // THREE: 30×3 = 90
 
-    expect(await screen.findByTestId(`game-over-combined-${GAME_COLUMN.three}`)).toHaveTextContent('90');
+    expect(await screen.findByTestId(`game-over-combined-0-${GAME_COLUMN.three}`)).toHaveTextContent('90');
+  });
+
+  test('should display the combined total for game 1', async () => {
+    await render(GameOverComponent);
+    const gameState = TestBed.inject(GameStateService);
+    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+    gameState.placeScore(SCORE_CATEGORY.chance, 1); // game 1, ONE: 30×1
+
+    expect(await screen.findByTestId(`game-over-combined-1-${GAME_COLUMN.one}`)).toHaveTextContent('30');
   });
 
   test('should display upper bonus when earned', async () => {
@@ -93,7 +102,7 @@ describe('gameOverComponent', () => {
     gameState.setCurrentDice([0, 0, 0, 0, 4, 1] as DiceSet);
     gameState.placeScore(SCORE_CATEGORY.fives, 0); // 20 → total=70 → bonus=35
 
-    expect(await screen.findByTestId(`game-over-upper-bonus-${GAME_COLUMN.one}`)).toHaveTextContent('35');
+    expect(await screen.findByTestId(`game-over-upper-bonus-0-${GAME_COLUMN.one}`)).toHaveTextContent('35');
   });
 
   // ─── New Game Button ────────────────────────────────────────────────────────
@@ -126,7 +135,10 @@ describe('gameOverComponent', () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
 
-    fillAllCells(gameState);
+    const gameCount = gameState.games().length;
+    for (let gi = 0; gi < gameCount; gi++) {
+      fillAllCellsForGame(gameState, gi);
+    }
     expect(gameState.isGameOver()).toBeTruthy();
 
     await user.click(screen.getByTestId('new-game-button'));

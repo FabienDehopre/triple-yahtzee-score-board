@@ -2,13 +2,13 @@ import type { DiceSet } from './shared/models';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DiceInputComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent } from './shared/components';
+import { DiceInputComponent, GameCountPickerComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent } from './shared/components';
 import { GameStateService } from './shared/services/game-state.service';
 import { PersistenceManagerService } from './shared/services/persistence-manager.service';
 
 @Component({
   selector: 'app-root',
-  imports: [DiceInputComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent],
+  imports: [DiceInputComponent, GameCountPickerComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,11 +16,11 @@ import { PersistenceManagerService } from './shared/services/persistence-manager
 export class App {
   readonly #gameState = inject(GameStateService);
 
+  protected readonly isGameOver = this.#gameState.isGameOver;
+
   constructor() {
     inject(PersistenceManagerService);
   }
-
-  protected readonly isGameOver = this.#gameState.isGameOver;
 
   protected onDiceConfirmed(roll: DiceSet): void {
     this.#gameState.setCurrentDice(roll);

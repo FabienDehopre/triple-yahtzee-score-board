@@ -25,10 +25,13 @@ export class ScoreSheetComponent {
   readonly #gameState = inject(GameStateService);
   readonly #scoringEngine = inject(ScoringEngineService);
 
-  protected readonly game = computed(() => this.#gameState.games()[0]);
-  protected readonly stats = computed(() => this.#gameState.columnStats()[0]);
+  protected readonly games = this.#gameState.games;
+  protected readonly allStats = this.#gameState.columnStats;
   protected readonly currentDice = this.#gameState.currentDice;
   protected readonly grandTotal = this.#gameState.grandTotal;
+
+  /** Total number of data columns: games × 3 columns per game. */
+  protected readonly totalColumns = computed(() => this.games().length * COLUMN_ORDER.length);
 
   protected readonly upperCategories = UPPER_CATEGORIES;
   protected readonly lowerCategories = LOWER_CATEGORIES;
@@ -77,8 +80,8 @@ export class ScoreSheetComponent {
    * Returns the displayed score for a filled cell: raw value x column multiplier.
    * Returns undefined when the cell has not been scored yet.
    */
-  protected getCellDisplayValue(column: GameColumn, category: ScoreCategory): number | undefined {
-    const game = this.game();
+  protected getCellDisplayValue(gameIndex: number, column: GameColumn, category: ScoreCategory): number | undefined {
+    const game = this.games()[gameIndex];
     const isUpper = UPPER_SET.has(category);
     const section = isUpper ? game.columns[column].upper : game.columns[column].lower;
     const cell = section[category];
@@ -88,11 +91,11 @@ export class ScoreSheetComponent {
 
   /**
    * Returns true when dice are set AND column is the next unfilled column
-   * for this category (left-to-right order).
+   * for this category in the given game (left-to-right order).
    */
-  protected isAvailableCell(column: GameColumn, category: ScoreCategory): boolean {
+  protected isAvailableCell(gameIndex: number, column: GameColumn, category: ScoreCategory): boolean {
     if (!this.currentDice()) return false;
-    const game = this.game();
+    const game = this.games()[gameIndex];
     const isUpper = UPPER_SET.has(category);
     for (const col of COLUMN_ORDER) {
       const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
@@ -101,14 +104,16 @@ export class ScoreSheetComponent {
     return false;
   }
 
-  /** Returns true when dice are set AND the category has at least one unfilled column. */
+  /** Returns true when dice are set AND the category has at least one unfilled column in any game. */
   protected isCategoryAvailable(category: ScoreCategory): boolean {
     if (!this.currentDice()) return false;
-    const game = this.game();
+    const games = this.games();
     const isUpper = UPPER_SET.has(category);
-    for (const col of COLUMN_ORDER) {
-      const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-      if (!section[category]) return true;
+    for (const game of games) {
+      for (const col of COLUMN_ORDER) {
+        const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
+        if (!section[category]) return true;
+      }
     }
     return false;
   }
@@ -123,8 +128,8 @@ export class ScoreSheetComponent {
     return this.#scoringEngine.computeScore(dice, category) * COLUMN_MULTIPLIER[column];
   }
 
-  /** Places the score for category in the next available column of game 0. */
-  protected onCellClick(category: ScoreCategory): void {
-    this.#gameState.placeScore(category, 0);
+  /** Places the score for category in the next available column of the given game. */
+  protected onCellClick(category: ScoreCategory, gameIndex: number): void {
+    this.#gameState.placeScore(category, gameIndex);
   }
 }

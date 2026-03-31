@@ -4,7 +4,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { GAME_COLUMN } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
-import { GameStateService } from './game-state.service';
+import { DEFAULT_GAME_COUNT, GameStateService } from './game-state.service';
 import { PERSISTENCE_KEY, PersistenceManagerService } from './persistence-manager.service';
 
 describe('persistenceManagerService', () => {
@@ -30,17 +30,17 @@ describe('persistenceManagerService', () => {
   // ─── Restore ──────────────────────────────────────────────────────────────
 
   describe('restore on init', () => {
-    test('should start a new game when localStorage is empty', () => {
+    test('should start with the default number of games when localStorage is empty', () => {
       TestBed.inject(PersistenceManagerService);
       const gameState = TestBed.inject(GameStateService);
 
-      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should restore saved games from localStorage on init', () => {
       localStorage.setItem(
         PERSISTENCE_KEY,
-        JSON.stringify({ games: [mockGame] })
+        JSON.stringify({ games: [mockGame], gameCount: 1 })
       );
 
       TestBed.inject(PersistenceManagerService);
@@ -50,13 +50,39 @@ describe('persistenceManagerService', () => {
       expect(gameState.games()[0].id).toBe('test-id');
     });
 
+    test('should restore gameCount from localStorage', () => {
+      const secondGame: Game = { ...mockGame, id: 'second-id' };
+      localStorage.setItem(
+        PERSISTENCE_KEY,
+        JSON.stringify({ games: [mockGame, secondGame], gameCount: 3 })
+      );
+
+      TestBed.inject(PersistenceManagerService);
+      const gameState = TestBed.inject(GameStateService);
+
+      expect(gameState.gameCount()).toBe(3);
+    });
+
+    test('should fall back to games.length when gameCount is missing (backwards compat)', () => {
+      localStorage.setItem(
+        PERSISTENCE_KEY,
+        JSON.stringify({ games: [mockGame] })
+      );
+
+      TestBed.inject(PersistenceManagerService);
+      const gameState = TestBed.inject(GameStateService);
+
+      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.gameCount()).toBe(1);
+    });
+
     test('should discard corrupt localStorage data and start fresh', () => {
       localStorage.setItem(PERSISTENCE_KEY, 'not-valid-json{{{');
 
       TestBed.inject(PersistenceManagerService);
       const gameState = TestBed.inject(GameStateService);
 
-      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should discard invalid state shape and start fresh', () => {
@@ -65,7 +91,7 @@ describe('persistenceManagerService', () => {
       TestBed.inject(PersistenceManagerService);
       const gameState = TestBed.inject(GameStateService);
 
-      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should discard state where games is not an array', () => {
@@ -74,7 +100,7 @@ describe('persistenceManagerService', () => {
       TestBed.inject(PersistenceManagerService);
       const gameState = TestBed.inject(GameStateService);
 
-      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should discard state with empty games array and start fresh', () => {
@@ -83,7 +109,7 @@ describe('persistenceManagerService', () => {
       TestBed.inject(PersistenceManagerService);
       const gameState = TestBed.inject(GameStateService);
 
-      expect(gameState.games()).toHaveLength(1);
+      expect(gameState.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should restore multiple saved games', () => {
@@ -91,7 +117,7 @@ describe('persistenceManagerService', () => {
 
       localStorage.setItem(
         PERSISTENCE_KEY,
-        JSON.stringify({ games: [mockGame, secondGame] })
+        JSON.stringify({ games: [mockGame, secondGame], gameCount: 2 })
       );
 
       TestBed.inject(PersistenceManagerService);
@@ -146,6 +172,17 @@ describe('persistenceManagerService', () => {
       const saved = JSON.parse(raw ?? '') as { games: Game[] };
       expect(saved.games[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeDefined();
       expect(saved.games[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.twos]).toBeDefined();
+    });
+
+    test('should persist gameCount in saved state', () => {
+      TestBed.inject(PersistenceManagerService);
+      const gameState = TestBed.inject(GameStateService);
+      TestBed.tick();
+
+      const raw = localStorage.getItem(PERSISTENCE_KEY);
+      expect(raw).not.toBeNull();
+      const saved = JSON.parse(raw ?? '') as { games: Game[]; gameCount: number };
+      expect(saved.gameCount).toBe(gameState.gameCount());
     });
   });
 });
