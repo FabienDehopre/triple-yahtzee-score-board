@@ -13,6 +13,7 @@ import {
   UPPER_CATEGORIES
 } from '../models/game-column.model';
 import { ScoringEngineService } from './scoring-engine.service';
+import { UndoService } from './undo.service';
 
 /** Fast lookup set for upper-section categories. */
 const UPPER_SET = new Set<ScoreCategory>(UPPER_CATEGORIES);
@@ -54,6 +55,7 @@ function createEmptyGame(): Game {
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
   readonly #scoringEngine = inject(ScoringEngineService);
+  readonly #undo = inject(UndoService);
 
   readonly #games = signal([createEmptyGame()]);
   readonly #currentDice = signal<DiceSet | undefined>(undefined);
@@ -82,6 +84,7 @@ export class GameStateService {
    * and subsequent placeScore calls.
    */
   setCurrentDice(dice: DiceSet): void {
+    this.#undo.clearSnapshot();
     this.#currentDice.set(dice);
   }
 
@@ -112,6 +115,8 @@ export class GameStateService {
 
     if (!column) return;
 
+    this.#undo.saveSnapshot(this.#games(), category);
+
     const rawScore = this.#scoringEngine.computeScore(dice, category);
     const sectionKey = isUpper ? 'upper' : 'lower';
 
@@ -136,8 +141,8 @@ export class GameStateService {
   }
 
   /**
-   * Replaces the entire games list with a previously-persisted snapshot.
-   * Used by PersistenceManagerService to hydrate state on app load.
+   * Restores the games array to a previously saved snapshot.
+   * Called by the undo flow after retrieving the snapshot from UndoService.
    */
   restoreGames(games: Game[]): void {
     this.#games.set(games);

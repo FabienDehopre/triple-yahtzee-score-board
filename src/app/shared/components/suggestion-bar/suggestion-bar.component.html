@@ -1,0 +1,39 @@
+@if (isVisible()) { @let suggestion = topSuggestion()!;
+<div
+  aria-live="polite"
+  class="flex items-center justify-between gap-4 rounded-2xl bg-indigo-50 px-5 py-4 shadow-md ring-1 ring-indigo-200"
+  data-testid="suggestion-bar"
+  role="status"
+>
+  <div class="flex flex-col">
+    <span class="text-xs font-semibold tracking-wide text-indigo-500 uppercase">Suggested</span>
+    <span class="mt-0.5 text-base font-bold text-indigo-900" data-testid="suggestion-category">
+      {{ categoryLabels[suggestion.category] }}
+    </span>
+    <span class="text-sm text-indigo-700" data-testid="suggestion-score">
+      Score: <strong>{{ suggestion.score }}</strong>
+    </span>
+  </div>
+
+  <div class="flex shrink-0 gap-2">
+    <button
+      aria-label="Accept suggestion"
+      class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-indigo-500"
+      data-testid="accept-suggestion"
+      type="button"
+      (click)="onAccept()"
+    >
+      Accept
+    </button>
+    <button
+      aria-label="Dismiss suggestion"
+      class="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-600 ring-1 ring-indigo-300 transition-colors hover:bg-indigo-50 focus-visible:outline-2 focus-visible:outline-indigo-500"
+      data-testid="dismiss-suggestion"
+      type="button"
+      (click)="onDismiss()"
+    >
+      Dismiss
+    </button>
+  </div>
+</div>
+}
