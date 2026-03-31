@@ -1,5 +1,247 @@
+<!-- ═══ MOBILE LAYOUT (hidden on md+) ═══════════════════════════════════════ -->
+<div class="md:hidden">
+  <!-- Game tab bar -->
+  <div
+    class="
+      mb-4 flex gap-1 rounded-xl border border-indigo-200 bg-indigo-100 p-1
+    "
+    role="tablist"
+  >
+    @for (game of games(); track game.id; let gi = $index) {
+    <button
+      class="flex-1 rounded-lg py-2 text-sm font-semibold transition-colors"
+      role="tab"
+      type="button"
+      [attr.aria-selected]="effectiveActiveGameIndex() === gi ? 'true' : 'false'"
+      [attr.data-testid]="'mobile-tab-' + gi"
+      [class.bg-indigo-700]="effectiveActiveGameIndex() === gi"
+      [class.text-indigo-700]="effectiveActiveGameIndex() !== gi"
+      [class.text-white]="effectiveActiveGameIndex() === gi"
+      (click)="setActiveGame(gi)"
+    >
+      Game {{ gi + 1 }}
+    </button>
+    }
+  </div>
+
+  @let mgi = effectiveActiveGameIndex();
+
+  <!-- Upper Section Card -->
+  <div class="
+    mb-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm
+  ">
+    <div
+      class="
+        bg-indigo-50 px-4 py-2 text-xs font-bold tracking-widest text-indigo-700
+        uppercase
+      "
+    >
+      Upper Section — Game {{ mgi + 1 }}
+    </div>
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="bg-indigo-700 text-white">
+          <th class="px-4 py-2 text-left text-xs font-semibold uppercase" scope="col">
+            Category
+          </th>
+          @for (col of columnOrder; track col) {
+          <th class="px-3 py-2 text-center text-xs font-semibold uppercase" scope="col">
+            {{ columnLabels[col] }}
+          </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of upperCategories; track cat) { @let available = isCategoryAvailable(cat);
+        <tr class="border-b border-gray-100 transition-colors" [class.bg-amber-50]="available">
+          <td class="px-4 py-2.5">
+            <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
+          </td>
+          @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(mgi, col, cat); @let isAvail =
+          isAvailableCell(mgi, col, cat);
+          <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+            @if (displayValue !== undefined) {
+            <span
+              class="font-semibold"
+              [class.text-gray-400]="displayValue === 0"
+              [class.text-indigo-700]="displayValue > 0"
+            >
+              {{ displayValue }}
+            </span>
+            } @else if (isAvail) {
+            <button
+              class="
+                w-full rounded-lg px-2 py-1 text-sm font-semibold
+                transition-colors
+                hover:bg-amber-200
+                focus-visible:outline-2 focus-visible:outline-amber-500
+              "
+              type="button"
+              [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
+              [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
+              [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
+              (click)="onCellClick(cat, mgi)"
+            >
+              {{ getPotentialDisplayScore(col, cat) }}
+            </button>
+            }
+          </td>
+          }
+        </tr>
+        }
+
+        <!-- Upper raw total -->
+        <tr class="border-b border-gray-200 bg-gray-50">
+          <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+            Total
+            <span class="font-normal text-gray-400">(need 63)</span>
+          </td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2 text-center">
+            <span
+              class="font-semibold"
+              [class.text-gray-600]="allStats()[mgi][col].upperRaw < 63"
+              [class.text-green-600]="allStats()[mgi][col].upperRaw >= 63"
+            >
+              {{ allStats()[mgi][col].upperRaw }}
+            </span>
+          </td>
+          }
+        </tr>
+
+        <!-- Upper bonus row -->
+        <tr class="border-b border-gray-200 bg-gray-50">
+          <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+            Bonus
+            <span class="font-normal text-gray-400">(+35 if ≥ 63)</span>
+          </td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2 text-center">
+            @if (allStats()[mgi][col].upperBonus > 0) {
+            <span class="font-semibold text-green-600">
+              {{ allStats()[mgi][col].upperBonus * columnMultiplier[col] }}
+            </span>
+            }
+          </td>
+          }
+        </tr>
+
+        <!-- Upper section total -->
+        <tr class="border-b-2 border-indigo-200 bg-indigo-50">
+          <td class="px-4 py-2.5 font-bold text-indigo-700">Upper Total</td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+            <span class="font-bold text-indigo-700">
+              {{ allStats()[mgi][col].upperTotal }}
+            </span>
+          </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Lower Section Card -->
+  <div class="
+    mb-4 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm
+  ">
+    <div
+      class="
+        bg-purple-50 px-4 py-2 text-xs font-bold tracking-widest text-purple-700
+        uppercase
+      "
+    >
+      Lower Section — Game {{ mgi + 1 }}
+    </div>
+    <table class="w-full border-collapse text-sm">
+      <thead>
+        <tr class="bg-purple-700 text-white">
+          <th class="px-4 py-2 text-left text-xs font-semibold uppercase" scope="col">
+            Category
+          </th>
+          @for (col of columnOrder; track col) {
+          <th class="px-3 py-2 text-center text-xs font-semibold uppercase" scope="col">
+            {{ columnLabels[col] }}
+          </th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of lowerCategories; track cat) { @let available = isCategoryAvailable(cat);
+        <tr class="border-b border-gray-100 transition-colors" [class.bg-amber-50]="available">
+          <td class="px-4 py-2.5">
+            <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
+          </td>
+          @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(mgi, col, cat); @let isAvail =
+          isAvailableCell(mgi, col, cat);
+          <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+            @if (displayValue !== undefined) {
+            <span
+              class="font-semibold"
+              [class.text-gray-400]="displayValue === 0"
+              [class.text-purple-700]="displayValue > 0"
+            >
+              {{ displayValue }}
+            </span>
+            } @else if (isAvail) {
+            <button
+              class="
+                w-full rounded-lg px-2 py-1 text-sm font-semibold
+                transition-colors
+                hover:bg-amber-200
+                focus-visible:outline-2 focus-visible:outline-amber-500
+              "
+              type="button"
+              [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
+              [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
+              [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
+              (click)="onCellClick(cat, mgi)"
+            >
+              {{ getPotentialDisplayScore(col, cat) }}
+            </button>
+            }
+          </td>
+          }
+        </tr>
+        }
+
+        <!-- Lower section total -->
+        <tr class="border-b border-gray-200 bg-gray-50">
+          <td class="px-4 py-2.5 font-bold text-gray-700">Lower Total</td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+            <span class="font-bold text-gray-700">
+              {{ allStats()[mgi][col].lowerTotal }}
+            </span>
+          </td>
+          }
+        </tr>
+
+        <!-- Upper section total (repeated for summary) -->
+        <tr class="border-b border-gray-200 bg-gray-50">
+          <td class="px-4 py-2.5 font-bold text-gray-700">Upper Section Total</td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2.5 text-center">
+            <span class="font-bold text-gray-700">{{ allStats()[mgi][col].upperTotal }}</span>
+          </td>
+          }
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Grand Total (mobile) -->
+  <div class="rounded-xl bg-indigo-700 px-4 py-3 text-center text-white">
+    <span class="text-sm font-semibold tracking-wide uppercase">Grand Total</span>
+    <div class="text-2xl font-bold" data-testid="mobile-grand-total">{{ grandTotal() }}</div>
+    <span class="text-xs font-normal text-indigo-200">(Add Total of All Columns)</span>
+  </div>
+</div>
+
+<!-- ═══ DESKTOP LAYOUT (hidden below md) ════════════════════════════════════ -->
 <div class="
-  overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm
+  hidden overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm
+  md:block
 ">
   <table class="w-full border-collapse text-sm">
     <!-- ── Column headers ────────────────────────────────────────── -->
