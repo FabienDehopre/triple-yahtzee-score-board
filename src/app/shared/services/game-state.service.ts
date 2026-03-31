@@ -80,12 +80,55 @@ export class GameStateService {
   );
 
   /**
+   * Grand total: sum of all column combined totals across all games.
+   * For each game, Combined (×1) + Double Combined (×2) + Triple Combined (×3).
+   */
+  readonly grandTotal = computed(() => {
+    let total = 0;
+    for (const gameStats of this.columnStats()) {
+      for (const col of COLUMN_ORDER) {
+        total += gameStats[col].combinedTotal;
+      }
+    }
+    return total;
+  });
+
+  /**
+   * True when every category in every column of every game has been scored.
+   * Triggers the game-over flow.
+   */
+  readonly isGameOver = computed(() => {
+    const games = this.#games();
+    if (games.length === 0) return false;
+    for (const game of games) {
+      for (const col of COLUMN_ORDER) {
+        for (const cat of UPPER_CATEGORIES) {
+          if (game.columns[col].upper[cat] === undefined) return false;
+        }
+        for (const cat of LOWER_CATEGORIES) {
+          if (game.columns[col].lower[cat] === undefined) return false;
+        }
+      }
+    }
+    return true;
+  });
+
+  /**
    * Updates the current dice roll used for potential-score preview
    * and subsequent placeScore calls.
    */
   setCurrentDice(dice: DiceSet): void {
     this.#undo.clearSnapshot();
     this.#currentDice.set(dice);
+  }
+
+  /**
+   * Resets the game state to a fresh single empty game and clears the current dice.
+   * Called from the game-over screen to start a new session.
+   */
+  newGame(): void {
+    this.#games.set([createEmptyGame()]);
+    this.#currentDice.set(undefined);
   }
 
   /**

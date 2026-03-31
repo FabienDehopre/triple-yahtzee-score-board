@@ -171,11 +171,24 @@
         }
       </tr>
 
-      <!-- Combined total per column -->
-      <tr class="border-b-2 border-purple-200 bg-purple-50">
-        <td class="px-4 py-2.5 font-bold text-purple-700">
-          Combined Total
-          <span class="text-xs font-normal text-purple-500">(Upper + Lower)</span>
+      <!-- Bottom summary section header row (relabels columns for grand total area) -->
+      <tr class="border-t-2 border-gray-300 bg-gray-100 text-xs font-semibold text-gray-600">
+        <td class="px-4 py-1.5 text-gray-500">→</td>
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-combined">
+          Combined<br />Total
+        </td>
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-double">
+          Double<br />Combined
+        </td>
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-triple">
+          Triple<br />Combined
+        </td>
+      </tr>
+
+      <!-- Triple Yahtzee Total Score row (per-column combined totals) -->
+      <tr class="border-b border-gray-200 bg-purple-50">
+        <td class="px-4 py-2.5 text-xs font-bold tracking-widest text-purple-700 uppercase">
+          Triple Yahtzee Total Score →
         </td>
         @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
@@ -191,7 +204,7 @@
         <td class="px-4 py-3 font-bold tracking-wide uppercase">
           Grand Total
           <span class="block text-xs font-normal tracking-normal text-indigo-200 normal-case">
-            (Combined + Double + Triple)
+            (Add Total of Three Columns)
           </span>
         </td>
         <td class="px-4 py-3 text-center text-xl font-bold" colspan="3" data-testid="grand-total">

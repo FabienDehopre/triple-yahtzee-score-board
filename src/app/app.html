@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-100 px-4 py-8">
+<div class="relative min-h-screen bg-gray-100 px-4 py-8">
   <div class="mx-auto max-w-3xl">
     <div class="mb-6 text-center">
       <h1 class="text-3xl font-bold text-indigo-600">Triple Yahtzee</h1>
@@ -15,4 +15,10 @@
     <app-score-sheet />
     <app-undo-banner />
   </div>
+
+  @if (isGameOver()) {
+  <div class="fixed inset-0 z-50" data-testid="game-over-overlay">
+    <app-game-over />
+  </div>
+  }
 </div>
