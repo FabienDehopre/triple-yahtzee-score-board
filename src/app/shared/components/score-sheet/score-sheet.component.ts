@@ -28,14 +28,7 @@ export class ScoreSheetComponent {
   protected readonly game = computed(() => this.#gameState.games()[0]);
   protected readonly stats = computed(() => this.#gameState.columnStats()[0]);
   protected readonly currentDice = this.#gameState.currentDice;
-  protected readonly grandTotal = computed(() => {
-    const s = this.stats();
-    let total = 0;
-    for (const col of COLUMN_ORDER) {
-      total += s[col].combinedTotal;
-    }
-    return total;
-  });
+  protected readonly grandTotal = this.#gameState.grandTotal;
 
   protected readonly upperCategories = UPPER_CATEGORIES;
   protected readonly lowerCategories = LOWER_CATEGORIES;

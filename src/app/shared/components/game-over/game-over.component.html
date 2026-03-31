@@ -1,0 +1,69 @@
+<div class="flex min-h-screen items-center justify-center bg-indigo-900/80 p-4">
+  <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+    <!-- Header -->
+    <div class="rounded-t-2xl bg-indigo-700 px-6 py-8 text-center text-white">
+      <h2 class="text-3xl font-bold tracking-wide uppercase" data-testid="game-over-heading">Game Over!</h2>
+      <p class="mt-1 text-sm text-indigo-200">Triple Yahtzee Complete</p>
+    </div>
+
+    <!-- Grand Total -->
+    <div class="border-b border-gray-100 bg-indigo-50 px-6 py-5 text-center">
+      <p class="text-xs font-semibold tracking-widest text-indigo-500 uppercase">Grand Total</p>
+      <p class="mt-1 text-5xl font-bold text-indigo-700" data-testid="game-over-grand-total">{{ grandTotal() }}</p>
+      <p class="mt-0.5 text-xs text-indigo-400">(Combined + Double Combined + Triple Combined)</p>
+    </div>
+
+    <!-- Per-column breakdown -->
+    <div class="px-6 py-4">
+      <p class="mb-3 text-xs font-semibold tracking-widest text-gray-500 uppercase">Score Breakdown</p>
+      <div class="divide-y divide-gray-100">
+        @for (col of columnOrder; track col) { @let stats = columnStats()[0][col];
+        <div class="flex items-center justify-between py-2.5">
+          <div>
+            <span class="text-sm font-semibold text-gray-800">{{ columnLabels[col] }}</span>
+            @if (stats.upperBonus > 0) {
+            <span
+              class="ml-2 rounded-sm bg-green-100 px-1.5 py-0.5 text-xs font-semibold text-green-700"
+              [attr.data-testid]="'game-over-upper-bonus-' + col"
+            >
+              +{{ stats.upperBonus * columnMultiplier[col] }} bonus
+            </span>
+            }
+          </div>
+          <span class="text-lg font-bold text-indigo-700" [attr.data-testid]="'game-over-combined-' + col">
+            {{ stats.combinedTotal }}
+          </span>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Bonuses summary -->
+    @let game0Stats = columnStats()[0]; @let hasAnyBonus = game0Stats['ONE'].upperBonus > 0 ||
+    game0Stats['TWO'].upperBonus > 0 || game0Stats['THREE'].upperBonus > 0;
+    <div class="bg-gray-50 px-6 py-3">
+      <p class="mb-2 text-xs font-semibold tracking-widest text-gray-500 uppercase">Bonuses Earned</p>
+      @if (hasAnyBonus) { @for (col of columnOrder; track col) { @let stats = columnStats()[0][col]; @if
+      (stats.upperBonus > 0) {
+      <div class="flex items-center justify-between py-1 text-sm">
+        <span class="text-gray-600">Upper Bonus ({{ columnLabels[col] }})</span>
+        <span class="font-semibold text-green-600">+{{ stats.upperBonus * columnMultiplier[col] }}</span>
+      </div>
+      } } } @else {
+      <p class="text-sm text-gray-400 italic">No bonuses earned</p>
+      }
+    </div>
+
+    <!-- New Game button -->
+    <div class="px-6 py-5">
+      <button
+        class="w-full rounded-xl bg-indigo-600 px-6 py-3.5 text-base font-bold text-white transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-indigo-500 active:bg-indigo-700"
+        data-testid="new-game-button"
+        type="button"
+        (click)="onNewGame()"
+      >
+        New Game
+      </button>
+    </div>
+  </div>
+</div>
