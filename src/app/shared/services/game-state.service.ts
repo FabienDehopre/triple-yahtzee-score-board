@@ -135,6 +135,14 @@ export class GameStateService {
     );
   }
 
+  /**
+   * Replaces the entire games list with a previously-persisted snapshot.
+   * Used by PersistenceManagerService to hydrate state on app load.
+   */
+  restoreGames(games: Game[]): void {
+    this.#games.set(games);
+  }
+
   #computeColumnStats(game: Game, column: GameColumn): ColumnStats {
     const multiplier = COLUMN_MULTIPLIER[column];
     const colScores = game.columns[column];
