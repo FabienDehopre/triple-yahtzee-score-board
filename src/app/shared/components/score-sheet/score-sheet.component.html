@@ -1,26 +1,45 @@
-@if (game(); as g) { @if (stats(); as s) {
 <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
   <table class="w-full border-collapse text-sm">
     <!-- ── Column headers ────────────────────────────────────────── -->
     <thead>
+      <!-- Game group headers (one spanning header per game) -->
+      <tr class="bg-indigo-800 text-white">
+        <th class="w-52 px-4 py-2 text-left text-xs font-semibold tracking-wider uppercase" scope="col"></th>
+        @for (game of games(); track game.id; let gi = $index) {
+        <th
+          class="p-2 text-center text-xs font-bold tracking-wider uppercase"
+          scope="colgroup"
+          [attr.colspan]="columnOrder.length"
+          [attr.data-testid]="'game-group-header-' + gi"
+        >
+          Game {{ gi + 1 }}
+        </th>
+        }
+      </tr>
+      <!-- Per-column headers -->
       <tr class="bg-indigo-700 text-white">
         <th class="w-52 px-4 py-3 text-left text-xs font-semibold tracking-wider uppercase" scope="col">Category</th>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <th
           class="w-28 p-3 text-center text-xs font-semibold tracking-wider uppercase"
           scope="col"
-          [attr.data-testid]="'column-header-' + col"
+          [attr.data-testid]="'column-header-' + gi + '-' + col"
         >
           {{ columnLabels[col] }}
         </th>
-        }
+        } }
       </tr>
     </thead>
 
     <tbody>
       <!-- ══ UPPER SECTION ══════════════════════════════════════════ -->
       <tr class="bg-indigo-50">
-        <td class="px-4 py-2 text-xs font-bold tracking-widest text-indigo-700 uppercase" colspan="4">Upper Section</td>
+        <td
+          class="px-4 py-2 text-xs font-bold tracking-widest text-indigo-700 uppercase"
+          [attr.colspan]="1 + totalColumns()"
+        >
+          Upper Section
+        </td>
       </tr>
 
       @for (cat of upperCategories; track cat) { @let available = isCategoryAvailable(cat);
@@ -29,13 +48,13 @@
           <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
           <span class="ml-1 text-xs text-gray-400">{{ categoryHints[cat] }}</span>
         </td>
-        @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(col, cat); @let isAvail =
-        isAvailableCell(col, cat);
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) { @let
+        displayValue = getCellDisplayValue(gi, col, cat); @let isAvail = isAvailableCell(gi, col, cat);
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
           @if (displayValue !== undefined) {
           <span
             class="font-semibold"
-            [attr.data-testid]="'cell-' + cat + '-' + col"
+            [attr.data-testid]="'cell-' + gi + '-' + cat + '-' + col"
             [class.text-gray-400]="displayValue === 0"
             [class.text-indigo-700]="displayValue > 0"
           >
@@ -46,16 +65,16 @@
             class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
             type="button"
             [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
-            [attr.data-testid]="'available-cell-' + cat + '-' + col"
+            [attr.data-testid]="'available-cell-' + gi + '-' + cat + '-' + col"
             [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
             [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
-            (click)="onCellClick(cat)"
+            (click)="onCellClick(cat, gi)"
           >
             {{ getPotentialDisplayScore(col, cat) }}
           </button>
           }
         </td>
-        }
+        } }
       </tr>
       }
 
@@ -65,18 +84,18 @@
           Total Score
           <span class="font-normal text-gray-400">(need 63 for bonus)</span>
         </td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2 text-center">
           <span
             class="font-semibold"
-            [attr.data-testid]="'upper-raw-' + col"
-            [class.text-gray-600]="s[col].upperRaw < 63"
-            [class.text-green-600]="s[col].upperRaw >= 63"
+            [attr.data-testid]="'upper-raw-' + gi + '-' + col"
+            [class.text-gray-600]="allStats()[gi][col].upperRaw < 63"
+            [class.text-green-600]="allStats()[gi][col].upperRaw >= 63"
           >
-            {{ s[col].upperRaw }}
+            {{ allStats()[gi][col].upperRaw }}
           </span>
         </td>
-        }
+        } }
       </tr>
 
       <!-- Upper bonus row -->
@@ -85,32 +104,37 @@
           Bonus
           <span class="font-normal text-gray-400">(+35 if ≥ 63)</span>
         </td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2 text-center">
-          @if (s[col].upperBonus > 0) {
-          <span class="font-semibold text-green-600" [attr.data-testid]="'upper-bonus-' + col">
-            {{ s[col].upperBonus * columnMultiplier[col] }}
+          @if (allStats()[gi][col].upperBonus > 0) {
+          <span class="font-semibold text-green-600" [attr.data-testid]="'upper-bonus-' + gi + '-' + col">
+            {{ allStats()[gi][col].upperBonus * columnMultiplier[col] }}
           </span>
           }
         </td>
-        }
+        } }
       </tr>
 
       <!-- Upper section total -->
       <tr class="border-b-2 border-indigo-200 bg-indigo-50">
         <td class="px-4 py-2.5 font-bold text-indigo-700">Upper Section Total</td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
-          <span class="font-bold text-indigo-700" [attr.data-testid]="'upper-total-' + col">
-            {{ s[col].upperTotal }}
+          <span class="font-bold text-indigo-700" [attr.data-testid]="'upper-total-' + gi + '-' + col">
+            {{ allStats()[gi][col].upperTotal }}
           </span>
         </td>
-        }
+        } }
       </tr>
 
       <!-- ══ LOWER SECTION ══════════════════════════════════════════ -->
       <tr class="bg-purple-50">
-        <td class="px-4 py-2 text-xs font-bold tracking-widest text-purple-700 uppercase" colspan="4">Lower Section</td>
+        <td
+          class="px-4 py-2 text-xs font-bold tracking-widest text-purple-700 uppercase"
+          [attr.colspan]="1 + totalColumns()"
+        >
+          Lower Section
+        </td>
       </tr>
 
       @for (cat of lowerCategories; track cat) { @let available = isCategoryAvailable(cat);
@@ -119,13 +143,13 @@
           <span class="font-medium text-gray-700">{{ categoryLabels[cat] }}</span>
           <span class="ml-1 text-xs text-gray-400">{{ categoryHints[cat] }}</span>
         </td>
-        @for (col of columnOrder; track col) { @let displayValue = getCellDisplayValue(col, cat); @let isAvail =
-        isAvailableCell(col, cat);
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) { @let
+        displayValue = getCellDisplayValue(gi, col, cat); @let isAvail = isAvailableCell(gi, col, cat);
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
           @if (displayValue !== undefined) {
           <span
             class="font-semibold"
-            [attr.data-testid]="'cell-' + cat + '-' + col"
+            [attr.data-testid]="'cell-' + gi + '-' + cat + '-' + col"
             [class.text-gray-400]="displayValue === 0"
             [class.text-purple-700]="displayValue > 0"
           >
@@ -136,67 +160,69 @@
             class="w-full rounded-lg px-2 py-1 text-sm font-semibold transition-colors hover:bg-amber-200 focus-visible:outline-2 focus-visible:outline-amber-500"
             type="button"
             [attr.aria-label]="'Place ' + categoryLabels[cat] + ' score: ' + getPotentialDisplayScore(col, cat)"
-            [attr.data-testid]="'available-cell-' + cat + '-' + col"
+            [attr.data-testid]="'available-cell-' + gi + '-' + cat + '-' + col"
             [class.text-amber-700]="getPotentialDisplayScore(col, cat) > 0"
             [class.text-gray-400]="getPotentialDisplayScore(col, cat) === 0"
-            (click)="onCellClick(cat)"
+            (click)="onCellClick(cat, gi)"
           >
             {{ getPotentialDisplayScore(col, cat) }}
           </button>
           }
         </td>
-        }
+        } }
       </tr>
       }
 
       <!-- Lower section total -->
       <tr class="border-b border-gray-200 bg-gray-50">
         <td class="px-4 py-2.5 font-bold text-gray-700">Lower Section Total</td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
-          <span class="font-bold text-gray-700" [attr.data-testid]="'lower-total-' + col">
-            {{ s[col].lowerTotal }}
+          <span class="font-bold text-gray-700" [attr.data-testid]="'lower-total-' + gi + '-' + col">
+            {{ allStats()[gi][col].lowerTotal }}
           </span>
         </td>
-        }
+        } }
       </tr>
 
       <!-- Upper section total (repeated for summary) -->
       <tr class="border-b border-gray-200 bg-gray-50">
         <td class="px-4 py-2.5 font-bold text-gray-700">Upper Section Total</td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
-          <span class="font-bold text-gray-700">{{ s[col].upperTotal }}</span>
+          <span class="font-bold text-gray-700">{{ allStats()[gi][col].upperTotal }}</span>
         </td>
-        }
+        } }
       </tr>
 
       <!-- Bottom summary section header row (relabels columns for grand total area) -->
       <tr class="border-t-2 border-gray-300 bg-gray-100 text-xs font-semibold text-gray-600">
         <td class="px-4 py-1.5 text-gray-500">→</td>
-        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-combined">
+        @for (game of games(); track game.id; let gi = $index) {
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" [attr.data-testid]="'subheader-combined-' + gi">
           Combined<br />Total
         </td>
-        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-double">
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" [attr.data-testid]="'subheader-double-' + gi">
           Double<br />Combined
         </td>
-        <td class="border-l border-gray-200 px-3 py-1.5 text-center" data-testid="subheader-triple">
+        <td class="border-l border-gray-200 px-3 py-1.5 text-center" [attr.data-testid]="'subheader-triple-' + gi">
           Triple<br />Combined
         </td>
+        }
       </tr>
 
-      <!-- Triple Yahtzee Total Score row (per-column combined totals) -->
+      <!-- Triple Yahtzee Total Score row (per-game, per-column combined totals) -->
       <tr class="border-b border-gray-200 bg-purple-50">
         <td class="px-4 py-2.5 text-xs font-bold tracking-widest text-purple-700 uppercase">
           Triple Yahtzee Total Score →
         </td>
-        @for (col of columnOrder; track col) {
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2.5 text-center">
-          <span class="font-bold text-purple-700" [attr.data-testid]="'combined-total-' + col">
-            {{ s[col].combinedTotal }}
+          <span class="font-bold text-purple-700" [attr.data-testid]="'combined-total-' + gi + '-' + col">
+            {{ allStats()[gi][col].combinedTotal }}
           </span>
         </td>
-        }
+        } }
       </tr>
 
       <!-- Grand total -->
@@ -204,14 +230,13 @@
         <td class="px-4 py-3 font-bold tracking-wide uppercase">
           Grand Total
           <span class="block text-xs font-normal tracking-normal text-indigo-200 normal-case">
-            (Add Total of Three Columns)
+            (Add Total of All Columns)
           </span>
         </td>
-        <td class="px-4 py-3 text-center text-xl font-bold" colspan="3" data-testid="grand-total">
+        <td class="px-4 py-3 text-center text-xl font-bold" data-testid="grand-total" [attr.colspan]="totalColumns()">
           {{ grandTotal() }}
         </td>
       </tr>
     </tbody>
   </table>
 </div>
-} }

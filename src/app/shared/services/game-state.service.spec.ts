@@ -8,7 +8,24 @@ import {
   UPPER_CATEGORIES
 } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
-import { GameStateService } from './game-state.service';
+import { DEFAULT_GAME_COUNT, GameStateService } from './game-state.service';
+
+/** Helper: fills all categories (3 columns each) for a single game index. */
+function fillAllCellsForGame(service: GameStateService, gameIndex: number): void {
+  const dice: DiceSet = [1, 1, 1, 1, 1, 0];
+  for (const cat of UPPER_CATEGORIES) {
+    for (let col = 0; col < 3; col++) {
+      service.setCurrentDice(dice);
+      service.placeScore(cat, gameIndex);
+    }
+  }
+  for (const cat of LOWER_CATEGORIES) {
+    for (let col = 0; col < 3; col++) {
+      service.setCurrentDice(dice);
+      service.placeScore(cat, gameIndex);
+    }
+  }
+}
 
 describe('gameStateService', () => {
   let service: GameStateService;
@@ -21,8 +38,8 @@ describe('gameStateService', () => {
   // ─── Initial State ─────────────────────────────────────────────────────────
 
   describe('initial state', () => {
-    test('should start with one empty game', () => {
-      expect(service.games()).toHaveLength(1);
+    test('should start with the default number of empty games', () => {
+      expect(service.games()).toHaveLength(DEFAULT_GAME_COUNT);
     });
 
     test('should start with undefined currentDice', () => {
@@ -34,6 +51,14 @@ describe('gameStateService', () => {
       expect(stats[GAME_COLUMN.one].combinedTotal).toBe(0);
       expect(stats[GAME_COLUMN.two].combinedTotal).toBe(0);
       expect(stats[GAME_COLUMN.three].combinedTotal).toBe(0);
+    });
+
+    test('should start with the default game count', () => {
+      expect(service.gameCount()).toBe(DEFAULT_GAME_COUNT);
+    });
+
+    test('should not be in progress initially', () => {
+      expect(service.isAnyGameInProgress()).toBeFalsy();
     });
   });
 
@@ -116,6 +141,93 @@ describe('gameStateService', () => {
       service.placeScore(SCORE_CATEGORY.chance, 0);
 
       expect(service.games()[0].columns[GAME_COLUMN.one].lower[SCORE_CATEGORY.chance]?.value).toBe(30);
+    });
+
+    test('should place score in a specific game by gameIndex', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 1); // game index 1 (second game)
+
+      expect(service.games()[1].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]?.value).toBe(3);
+      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    });
+  });
+
+  // ─── isAnyGameInProgress ───────────────────────────────────────────────────
+
+  describe('isAnyGameInProgress', () => {
+    test('should be false initially', () => {
+      expect(service.isAnyGameInProgress()).toBeFalsy();
+    });
+
+    test('should be true after placing a score in any game', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0);
+
+      expect(service.isAnyGameInProgress()).toBeTruthy();
+    });
+
+    test('should be true after placing a score in a second game', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 1);
+
+      expect(service.isAnyGameInProgress()).toBeTruthy();
+    });
+
+    test('should be false after setGameCount resets the state', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setGameCount(3);
+
+      expect(service.isAnyGameInProgress()).toBeFalsy();
+    });
+  });
+
+  // ─── setGameCount ──────────────────────────────────────────────────────────
+
+  describe('setGameCount', () => {
+    test('should update the gameCount signal', () => {
+      service.setGameCount(3);
+      expect(service.gameCount()).toBe(3);
+    });
+
+    test('should reset games to the new count of empty games', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // place a score first
+      service.setGameCount(3);
+
+      expect(service.games()).toHaveLength(3);
+      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    });
+
+    test('should clear currentDice', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.setGameCount(1);
+
+      expect(service.currentDice()).toBeUndefined();
+    });
+
+    test('should work for 1 game', () => {
+      service.setGameCount(1);
+      expect(service.games()).toHaveLength(1);
+    });
+
+    test('should work for 5 games', () => {
+      service.setGameCount(5);
+      expect(service.games()).toHaveLength(5);
+    });
+  });
+
+  // ─── restoreGameCount ──────────────────────────────────────────────────────
+
+  describe('restoreGameCount', () => {
+    test('should update the gameCount without resetting games', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.restoreGameCount(3);
+
+      expect(service.gameCount()).toBe(3);
+      // games should remain unchanged
+      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeDefined();
     });
   });
 
@@ -223,6 +335,16 @@ describe('gameStateService', () => {
 
       expect(service.grandTotal()).toBe(105); // 105 + 0 (lower) = 105 for ONE column only
     });
+
+    test('should sum totals across multiple games', () => {
+      // game[0]: chance ONE = 30×1 = 30
+      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.chance, 0);
+      // game[1]: chance ONE = 30×1 = 30
+      service.placeScore(SCORE_CATEGORY.chance, 1);
+
+      expect(service.grandTotal()).toBe(60); // 30 + 30
+    });
   });
 
   // ─── isGameOver ────────────────────────────────────────────────────────────
@@ -240,40 +362,32 @@ describe('gameStateService', () => {
     });
 
     test('should be true when all cells in all games are filled', () => {
-      // Fill all 13 categories × 3 columns = 39 cells
-      const dice: DiceSet = [1, 1, 1, 1, 1, 0]; // 5 dice, flexible
-
-      // Upper section (6 categories × 3 columns)
-      for (const cat of UPPER_CATEGORIES) {
-        for (let col = 0; col < 3; col++) {
-          service.setCurrentDice(dice);
-          service.placeScore(cat, 0);
-        }
-      }
-
-      // Lower section (7 categories × 3 columns)
-      for (const cat of LOWER_CATEGORIES) {
-        for (let col = 0; col < 3; col++) {
-          service.setCurrentDice(dice);
-          service.placeScore(cat, 0);
-        }
+      const gameCount = service.games().length;
+      for (let gi = 0; gi < gameCount; gi++) {
+        fillAllCellsForGame(service, gi);
       }
 
       expect(service.isGameOver()).toBeTruthy();
+    });
+
+    test('should be false when only one game is fully filled (in a 2-game session)', () => {
+      fillAllCellsForGame(service, 0);
+
+      expect(service.isGameOver()).toBeFalsy();
     });
   });
 
   // ─── newGame ───────────────────────────────────────────────────────────────
 
   describe('newGame', () => {
-    test('should reset games to one empty game', () => {
+    test('should reset games to the configured number of empty games', () => {
       // Place a score first
       service.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
       service.placeScore(SCORE_CATEGORY.aces, 0);
 
       service.newGame();
 
-      expect(service.games()).toHaveLength(1);
+      expect(service.games()).toHaveLength(service.gameCount());
       expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
     });
 
@@ -286,18 +400,9 @@ describe('gameStateService', () => {
 
     test('should reset isGameOver to false', () => {
       // Fill all cells to trigger game over
-      const dice: DiceSet = [1, 1, 1, 1, 1, 0];
-      for (const cat of UPPER_CATEGORIES) {
-        for (let col = 0; col < 3; col++) {
-          service.setCurrentDice(dice);
-          service.placeScore(cat, 0);
-        }
-      }
-      for (const cat of LOWER_CATEGORIES) {
-        for (let col = 0; col < 3; col++) {
-          service.setCurrentDice(dice);
-          service.placeScore(cat, 0);
-        }
+      const gameCount = service.games().length;
+      for (let gi = 0; gi < gameCount; gi++) {
+        fillAllCellsForGame(service, gi);
       }
       expect(service.isGameOver()).toBeTruthy();
 
@@ -316,6 +421,14 @@ describe('gameStateService', () => {
       service.newGame();
 
       expect(service.grandTotal()).toBe(0);
+    });
+
+    test('should preserve the configured game count after reset', () => {
+      service.setGameCount(3);
+      service.newGame();
+
+      expect(service.games()).toHaveLength(3);
+      expect(service.gameCount()).toBe(3);
     });
   });
 });

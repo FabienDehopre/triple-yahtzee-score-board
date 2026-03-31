@@ -15,6 +15,7 @@ export class GameOverComponent {
 
   protected readonly grandTotal = this.#gameState.grandTotal;
   protected readonly columnStats = this.#gameState.columnStats;
+  protected readonly games = this.#gameState.games;
   protected readonly columnOrder = COLUMN_ORDER;
   protected readonly columnMultiplier = COLUMN_MULTIPLIER;
 
@@ -24,12 +25,20 @@ export class GameOverComponent {
     [GAME_COLUMN.three]: 'Triple Combined',
   };
 
-  /** Upper bonus for each column multiplied by the column's multiplier (for display). */
-  protected readonly upperBonusDisplay = computed(
-    () =>
+  /** Upper bonus for each game/column multiplied by the column's multiplier (for display). */
+  protected readonly upperBonusDisplay = computed(() =>
+    this.columnStats().map((gameStats) =>
       Object.fromEntries(
-        COLUMN_ORDER.map((col) => [col, this.columnStats()[0][col].upperBonus * COLUMN_MULTIPLIER[col]])
+        COLUMN_ORDER.map((col) => [col, gameStats[col].upperBonus * COLUMN_MULTIPLIER[col]])
       ) as Record<GameColumn, number>
+    )
+  );
+
+  /** True when any game/column has earned an upper bonus. */
+  protected readonly hasAnyBonus = computed(() =>
+    this.columnStats().some((gameStats) =>
+      COLUMN_ORDER.some((col) => gameStats[col].upperBonus > 0)
+    )
   );
 
   protected onNewGame(): void {
