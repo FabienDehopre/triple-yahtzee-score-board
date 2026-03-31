@@ -1,6 +1,6 @@
 import type { GameColumn } from '../../models';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN } from '../../models/game-column.model';
 import { GameStateService } from '../../services/game-state.service';
@@ -23,6 +23,14 @@ export class GameOverComponent {
     [GAME_COLUMN.two]: 'Double Combined',
     [GAME_COLUMN.three]: 'Triple Combined',
   };
+
+  /** Upper bonus for each column multiplied by the column's multiplier (for display). */
+  protected readonly upperBonusDisplay = computed(
+    () =>
+      Object.fromEntries(
+        COLUMN_ORDER.map((col) => [col, this.columnStats()[0][col].upperBonus * COLUMN_MULTIPLIER[col]])
+      ) as Record<GameColumn, number>
+  );
 
   protected onNewGame(): void {
     this.#gameState.newGame();
