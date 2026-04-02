@@ -1,10 +1,10 @@
-import type { DiceSet } from '../../models';
+import type { DiceSet } from '../../models/dice-set.model';
 
 import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
-import { SCORE_CATEGORY } from '../../models';
+import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { ScoreSheetComponent } from './score-sheet.component';
 

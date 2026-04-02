@@ -1,9 +1,9 @@
-import type { DiceSet } from '../../models';
+import type { DiceSet } from '../../models/dice-set.model';
 
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
-import { SCORE_CATEGORY } from '../../models';
+import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { SuggestionBarComponent } from './suggestion-bar.component';
 

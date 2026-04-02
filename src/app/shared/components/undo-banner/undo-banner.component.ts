@@ -1,8 +1,8 @@
-import type { ScoreCategory } from '../../models';
+import type { ScoreCategory } from '../../models/score-category.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { SCORE_CATEGORY } from '../../models';
+import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { UndoService } from '../../services/undo.service';
 

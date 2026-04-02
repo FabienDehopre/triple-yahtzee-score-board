@@ -1,4 +1,4 @@
-import type { GameColumn } from '../../models';
+import type { GameColumn } from '../../models/game-column.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
