@@ -1,4 +1,4 @@
-import type { DiceSet } from '../../models';
+import type { DiceSet } from '../../models/dice-set.model';
 
 import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
 

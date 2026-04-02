@@ -1,8 +1,13 @@
-import type { DiceSet } from './shared/models';
+import type { DiceSet } from './shared/models/dice-set.model';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DiceInputComponent, GameCountPickerComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent } from './shared/components';
+import { DiceInputComponent } from './shared/components/dice-input/dice-input.component';
+import { GameCountPickerComponent } from './shared/components/game-count-picker/game-count-picker.component';
+import { GameOverComponent } from './shared/components/game-over/game-over.component';
+import { ScoreSheetComponent } from './shared/components/score-sheet/score-sheet.component';
+import { SuggestionBarComponent } from './shared/components/suggestion-bar/suggestion-bar.component';
+import { UndoBannerComponent } from './shared/components/undo-banner/undo-banner.component';
 import { GameStateService } from './shared/services/game-state.service';
 import { PersistenceManagerService } from './shared/services/persistence-manager.service';
 

@@ -1,4 +1,4 @@
-import type { DiceSet } from '../../models';
+import type { DiceSet } from '../../models/dice-set.model';
 
 import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';

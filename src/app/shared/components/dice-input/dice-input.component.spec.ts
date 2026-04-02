@@ -1,4 +1,4 @@
-import type { DiceSet } from '../../models';
+import type { DiceSet } from '../../models/dice-set.model';
 
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';

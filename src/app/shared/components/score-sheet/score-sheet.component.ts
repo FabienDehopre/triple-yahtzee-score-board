@@ -1,14 +1,10 @@
-import type { GameColumn, ScoreCategory } from '../../models';
+import type { GameColumn } from '../../models/game-column.model';
+import type { ScoreCategory } from '../../models/score-category.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
-import {
-  COLUMN_MULTIPLIER,
-  COLUMN_ORDER,
-  GAME_COLUMN,
-  LOWER_CATEGORIES,
-  SCORE_CATEGORY, UPPER_CATEGORIES
-} from '../../models';
+import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
+import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { ScoringEngineService } from '../../services/scoring-engine.service';
 
