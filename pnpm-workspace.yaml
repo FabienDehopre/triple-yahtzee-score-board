@@ -1,3 +1,9 @@
+
+shellEmulator: true
+
+trustPolicy: no-downgrade
+
+
 allowBuilds:
   '@fabdeh/eslint-config': true
   '@parcel/watcher': true
