@@ -13,6 +13,9 @@ export default defineConfig({
     banDeveloperPreviewApi: false,
     banExperimentalApi: false,
   },
+  playwright: {
+    e2eFolderPath: 'e2e/',
+  },
   tailwindcss: {
     entryPoint: 'src/styles.css',
   },
