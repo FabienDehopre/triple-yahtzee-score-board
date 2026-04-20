@@ -4,3 +4,5 @@
 - ALWAYS use TDD (Test Driven Development) practices to ensure code quality and maintainability.
 - commit often with clear and descriptive messages to maintain a clean commit history.
 - ALWAYS use `pnpm`, NEVER `npm`.
+- ALWAYS prefer using `playwright-cli` (if available) over using Playwright MCP server.
+- When using the "playwright-cli" skill (or when using the `playwright-cli` directly), look at @.agents/security/playwright-cli.md file for additional instruction about the skill.

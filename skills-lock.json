@@ -26,6 +26,21 @@
       "sourceType": "github",
       "computedHash": "76d07c4c0bebc162cc76ca7494bfe7a90e279f35832f7ce6dfc4ce16518fd560"
     },
+    "playwright-best-practices": {
+      "source": "currents-dev/playwright-best-practices-skill",
+      "sourceType": "github",
+      "computedHash": "320eaf861e3a0a923bfaad0726cb311a3fe30093378f8d26c89b9c5ae5c42b35"
+    },
+    "playwright-cli": {
+      "source": "microsoft/playwright-cli",
+      "sourceType": "github",
+      "computedHash": "a1243fa79a233960647c4cc4b7f3b743cb4893b63fb2d5b04f118c368d9e432b"
+    },
+    "playwright-generate-test": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "computedHash": "8f963da3e25f705ff39755b8b990f20da0c0320cb86ac83fcc4d2d4eca91f6e4"
+    },
     "prd-to-issues": {
       "source": "mattpocock/skills",
       "sourceType": "github",
