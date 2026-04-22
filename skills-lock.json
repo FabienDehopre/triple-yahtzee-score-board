@@ -4,12 +4,12 @@
     "angular-developer": {
       "source": "angular/skills",
       "sourceType": "github",
-      "computedHash": "19665190ec60c37f59a08715b0896dfa91ee9b9f477d90cb82ce3fb52b06e328"
+      "computedHash": "b7764c591c965d85f95f1d4f6d3620b6ab92a1b1fedbcdead7d59e946fc3fd2e"
     },
     "angular-new-app": {
       "source": "angular/skills",
       "sourceType": "github",
-      "computedHash": "96ff824b3963781ba473ad70d64cc00b7be9fe7e10c0db96b903cad33ac32558"
+      "computedHash": "49bd84ab08bd3498c52f476bed48fbb942dc6dbc0925607e84549adbed34bccf"
     },
     "frontend-design": {
       "source": "anthropics/skills",
@@ -19,7 +19,7 @@
     "grill-me": {
       "source": "mattpocock/skills",
       "sourceType": "github",
-      "computedHash": "e02446c0912decc73472ab3392af040fac223fb93b46fd101bce27686d717136"
+      "computedHash": "784f0dbb7403b0f00324bce9a112f715342777a0daee7bbb7385f9c6f0a170ea"
     },
     "improve-codebase-architecture": {
       "source": "mattpocock/skills",
@@ -41,20 +41,20 @@
       "sourceType": "github",
       "computedHash": "8f963da3e25f705ff39755b8b990f20da0c0320cb86ac83fcc4d2d4eca91f6e4"
     },
-    "prd-to-issues": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "computedHash": "32192340c1a14317b25741f5a0a38d162b387b6d4bfd09e0ed3859367321e98f"
-    },
     "tdd": {
       "source": "mattpocock/skills",
       "sourceType": "github",
       "computedHash": "ad055544599481182d0079c4198e85da26677cb408a677be2da04915375f0427"
     },
-    "write-a-prd": {
+    "to-issues": {
       "source": "mattpocock/skills",
       "sourceType": "github",
-      "computedHash": "d03d51db8cfd3dd5c27f9b8e1ffe61686391fdbd62bf4cb2f47db7e62ee68cd2"
+      "computedHash": "2db47f0db7e6975486cd28bc6744f1358b47a434fb98df5b6ad507b6c3685b6a"
+    },
+    "to-prd": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "computedHash": "8351452ad372ea4f839d3f7b951927b417851ffa49e7e6af28ea0f0ae111dca8"
     }
   }
 }
