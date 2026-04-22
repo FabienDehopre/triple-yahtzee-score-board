@@ -9,6 +9,71 @@
             "command": ".claude/hooks/enforce-pnpm.sh"
           }
         ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -q 'pnpm-lock'; then echo 'BLOCKED: edit pnpm-lock.yaml via pnpm commands only'; exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '(auth\\.json|\\.env)'; then echo 'BLOCKED: credential file'; exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '(it\\.only|describe\\.only|it\\.skip|describe\\.skip|xit\\(|xdescribe\\()'; then echo 'BLOCKED: test-skip syntax forbidden. Delete the test or fix it.'; exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -q 'git commit' && grep -rq 'console\\.log' src/ 2>/dev/null; then echo 'BLOCKED: console.log found in src/. Remove before committing.'; exit 1; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $CLAUDE_PROJECT_DIR && pnpm lint 2>&1 | tail -20"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\.spec\\.ts'; then cd $CLAUDE_PROJECT_DIR && pnpm test --run 2>&1 | tail -30; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\.ts$' && ! echo \"$CLAUDE_TOOL_INPUT\" | grep -qE '\\.spec\\.ts$'; then cd $CLAUDE_PROJECT_DIR && pnpm exec tsc --noEmit --incremental 2>&1 | tail -20; fi"
+          }
+        ]
       }
     ]
   }
