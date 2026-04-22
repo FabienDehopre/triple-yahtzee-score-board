@@ -1,3 +1,13 @@
+It is an Angular/TailwindCSS application that displays a scoreboard for the Triple Yahtzee game and calculates the best assignment of a dice roll to get the best score. 
+
+## Commands
+- Dev: `pnpm start` (serves on http://localhost:4200)
+- Unit tests: `pnpm test` (Vitest via Angular builder, watch mode)
+- E2e tests: `pnpm e2e` (Playwright, auto-starts dev server)
+- Lint: `pnpm lint` (runs `eslint . --fix`)
+- Build: `pnpm build`
+
+## Rules and Guidelines
 - ALWAYS run `eslint . --fix` after making changes to ensure code style consistency.
 - NEVER run `prettier` because it might conflict with `eslint --fix` command.
 - NEVER update the eslint config file. Fix the issues instead or ignore them if you cannot fix them (give a good reason for ignoring).
