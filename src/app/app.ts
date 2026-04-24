@@ -1,15 +1,15 @@
-import type { DiceSet } from './shared/models/dice-set.model';
+import type { DiceSet } from './models/dice-set.model';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DiceInputComponent } from './shared/components/dice-input/dice-input.component';
-import { GameCountPickerComponent } from './shared/components/game-count-picker/game-count-picker.component';
-import { GameOverComponent } from './shared/components/game-over/game-over.component';
-import { ScoreSheetComponent } from './shared/components/score-sheet/score-sheet.component';
-import { SuggestionBarComponent } from './shared/components/suggestion-bar/suggestion-bar.component';
-import { UndoBannerComponent } from './shared/components/undo-banner/undo-banner.component';
-import { GameStateService } from './shared/services/game-state.service';
-import { PersistenceManagerService } from './shared/services/persistence-manager.service';
+import { DiceInputComponent } from './components/dice-input/dice-input.component';
+import { GameCountPickerComponent } from './components/game-count-picker/game-count-picker.component';
+import { GameOverComponent } from './components/game-over/game-over.component';
+import { ScoreSheetComponent } from './components/score-sheet/score-sheet.component';
+import { SuggestionBarComponent } from './components/suggestion-bar/suggestion-bar.component';
+import { UndoBannerComponent } from './components/undo-banner/undo-banner.component';
+import { GameStateService } from './services/game-state.service';
+import { PersistenceManagerService } from './services/persistence-manager.service';
 
 @Component({
   selector: 'app-root',
