@@ -7,10 +7,6 @@
           {
             "type": "command",
             "command": "node .claude/hooks/enforce-pnpm.mjs"
-          },
-          {
-            "type": "command",
-            "command": "node .claude/hooks/no-commit-console-log.mjs"
           }
         ]
       },
@@ -39,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/post-lint.mjs"
+            "command": "pnpm exec eslint --fix --pass-on-no-patterns \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
           },
           {
             "type": "command",
