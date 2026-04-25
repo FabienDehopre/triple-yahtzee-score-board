@@ -6,5 +6,5 @@ const filePath = input.tool_input?.file_path ?? "";
 
 if (/auth\.json|\.env/.test(filePath)) {
   console.log("BLOCKED: credential file");
-  process.exit(1);
+  process.exit(2);
 }

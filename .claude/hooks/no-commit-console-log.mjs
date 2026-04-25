@@ -25,7 +25,7 @@ function hasConsoleLog(dir) {
 try {
   if (hasConsoleLog(srcDir)) {
     console.log("BLOCKED: console.log found in src/. Remove before committing.");
-    process.exit(1);
+    process.exit(2);
   }
 } catch {
   // src/ missing or unreadable — allow
