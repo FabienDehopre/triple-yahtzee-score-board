@@ -35,7 +35,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "pnpm exec eslint --fix --pass-on-no-patterns \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
+            "command": "node .claude/hooks/post-eslint.mjs"
           },
           {
             "type": "command",
