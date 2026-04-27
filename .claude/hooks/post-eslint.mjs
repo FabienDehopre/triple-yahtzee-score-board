@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { spawnSync } from "child_process";
+import { ESLint } from "eslint";
 import { readFileSync } from "fs";
 
 const input = JSON.parse(readFileSync(0, "utf-8"));
@@ -9,17 +9,16 @@ if (!filePath) process.exit(0);
 
 const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 
-const result = spawnSync(
-  "pnpm",
-  ["exec", "eslint", "--fix", "--pass-on-no-patterns", filePath],
-  {
-    cwd: projectDir,
-    encoding: "utf-8",
-    shell: process.platform === "win32",
-  },
-);
+const eslint = new ESLint({ fix: true, cwd: projectDir });
 
-const output = ((result.stdout ?? "") + (result.stderr ?? "")).trimEnd();
+if (await eslint.isPathIgnored(filePath)) process.exit(0);
+
+const results = await eslint.lintFiles([filePath]);
+await ESLint.outputFixes(results);
+
+const formatter = await eslint.loadFormatter("stylish");
+const output = await formatter.format(results);
 if (output) console.log(output);
 
-if (result.status !== 0) process.exit(result.status ?? 1);
+const errorCount = results.reduce((n, r) => n + r.errorCount, 0);
+if (errorCount > 0) process.exit(1);
