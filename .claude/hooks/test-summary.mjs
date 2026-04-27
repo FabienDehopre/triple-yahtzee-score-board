@@ -3,6 +3,7 @@
 
 import { spawnSync } from "child_process";
 import { startVitest } from "vitest/node";
+import { printTestSummary } from "./helpers.mjs";
 
 const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 
@@ -24,5 +25,8 @@ const vitest = await startVitest("test", [], {
 
 if (!vitest) process.exit(1);
 
-const failed = vitest.state.getTestModules().some((m) => !m.ok());
+const modules = vitest.state.getTestModules();
+printTestSummary(modules, projectDir);
+
+const failed = modules.some((m) => !m.ok());
 process.exit(failed ? 1 : 0);
