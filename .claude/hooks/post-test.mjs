@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-import { spawnSync } from "child_process";
 import { readFileSync } from "fs";
+import { startVitest } from "vitest/node";
 
 const input = JSON.parse(readFileSync(0, "utf-8"));
 const filePath = input.tool_input?.file_path ?? "";
@@ -9,14 +9,12 @@ if (!filePath.endsWith(".spec.ts")) process.exit(0);
 
 const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 
-const result = spawnSync("pnpm", ["test", "--run"], {
-  cwd: projectDir,
-  encoding: "utf-8",
-  shell: process.platform === "win32",
+const vitest = await startVitest("test", [], {
+  watch: false,
+  root: projectDir,
 });
 
-const output = ((result.stdout ?? "") + (result.stderr ?? "")).trimEnd();
-const lines = output.split("\n");
-console.log(lines.slice(-30).join("\n"));
+if (!vitest) process.exit(1);
 
-if (result.status !== 0) process.exit(result.status ?? 1);
+const failed = vitest.state.getTestModules().some((m) => !m.ok());
+process.exit(failed ? 1 : 0);
