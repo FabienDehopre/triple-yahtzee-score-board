@@ -5,6 +5,16 @@ import { spawnSync } from "child_process";
 import { startVitest } from "vitest/node";
 import { printTestSummary } from "./helpers.mjs";
 
+const input = JSON.parse(
+  await new Promise((res) => {
+    let buf = "";
+    process.stdin.on("data", (d) => (buf += d));
+    process.stdin.on("end", () => res(buf || "{}"));
+  }),
+);
+
+if (input.stop_hook_active) process.exit(0);
+
 const projectDir = process.env.CLAUDE_PROJECT_DIR ?? process.cwd();
 
 const gitStatus = spawnSync("git", ["status", "--porcelain"], {
@@ -29,4 +39,14 @@ const modules = vitest.state.getTestModules();
 printTestSummary(modules, projectDir);
 
 const failed = modules.some((m) => !m.ok());
-process.exit(failed ? 1 : 0);
+
+if (failed) {
+  process.stdout.write(
+    JSON.stringify({
+      decision: "block",
+      reason: "Unit tests are failing. Fix them before stopping.",
+    }),
+  );
+}
+
+process.exit(0);
