@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-check
+
 import { ESLint } from "eslint";
 import { readFileSync } from "fs";
 

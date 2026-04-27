@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-check
+
 import { readFileSync } from "fs";
 import { startVitest } from "vitest/node";
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-check
+
 import { readFileSync } from "fs";
 
 const input = JSON.parse(readFileSync(0, "utf-8"));

@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-check
+
 /**
  * Stop hook: shows compact test summary when .ts files have uncommitted changes.
  * Skips silently if no TS changes exist (avoids running on every response).

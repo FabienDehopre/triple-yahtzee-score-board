@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// @ts-check
+
 import { spawnSync } from "child_process";
 import { readFileSync } from "fs";
 
