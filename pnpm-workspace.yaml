@@ -1,4 +1,3 @@
-
 allowBuilds:
   '@fabdeh/eslint-config': true
   '@parcel/watcher': true
@@ -8,5 +7,5 @@ allowBuilds:
   simple-git-hooks: true
   unrs-resolver: true
 shellEmulator: true
-
 trustPolicy: no-downgrade
+trustPolicyIgnoreAfter: 43200 # 30 days
