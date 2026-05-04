@@ -90,7 +90,9 @@ describe('gameStateService', () => {
       const dice: DiceSet = [3, 0, 0, 0, 2, 0];
       service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
 
       const game = service.games()[0];
@@ -103,11 +105,13 @@ describe('gameStateService', () => {
       const dice: DiceSet = [3, 0, 0, 0, 2, 0];
       service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0);
 
       const gamesBefore = service.games();
-      service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // no dice set → no-op
       expect(service.games()).toEqual(gamesBefore);
     });
 
@@ -149,6 +153,13 @@ describe('gameStateService', () => {
 
       expect(service.games()[1].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]?.value).toBe(3);
       expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    });
+
+    test('should clear currentDice after placing a score', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0);
+
+      expect(service.currentDice()).toBeUndefined();
     });
   });
 
@@ -244,8 +255,10 @@ describe('gameStateService', () => {
     });
 
     test('should apply ×2 multiplier to TWO column upperTotal', () => {
-      service.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+      const dice: DiceSet = [5, 0, 0, 0, 0, 0];
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0); // fills ONE
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.aces, 0); // fills TWO
 
       const stats = service.columnStats()[0];
@@ -254,9 +267,12 @@ describe('gameStateService', () => {
     });
 
     test('should apply ×3 multiplier to THREE column lowerTotal', () => {
-      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet); // five 6s → chance = 30
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // fills ONE
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // fills TWO
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // fills THREE
 
       const stats = service.columnStats()[0];
@@ -293,8 +309,10 @@ describe('gameStateService', () => {
     });
 
     test('should compute combined total as upperTotal + lowerTotal', () => {
-      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet); // five 6s → sixes=30, chance=30
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → sixes=30, chance=30
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.sixes, 0); // upper ONE: raw=30
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // lower ONE: raw=30
 
       const stats = service.columnStats()[0];
@@ -311,10 +329,12 @@ describe('gameStateService', () => {
     });
 
     test('should sum combined totals across all columns (×1 + ×2 + ×3)', () => {
-      // five 6s → chance = 30 (×1 in ONE, ×2 in TWO, ×3 in THREE)
-      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1 = 30
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 30×2 = 60
+      service.setCurrentDice(dice);
       service.placeScore(SCORE_CATEGORY.chance, 0); // THREE: 30×3 = 90
 
       expect(service.grandTotal()).toBe(180); // 30 + 60 + 90
@@ -337,11 +357,11 @@ describe('gameStateService', () => {
     });
 
     test('should sum totals across multiple games', () => {
-      // game[0]: chance ONE = 30×1 = 30
-      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
-      service.placeScore(SCORE_CATEGORY.chance, 0);
-      // game[1]: chance ONE = 30×1 = 30
-      service.placeScore(SCORE_CATEGORY.chance, 1);
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5];
+      service.setCurrentDice(dice);
+      service.placeScore(SCORE_CATEGORY.chance, 0); // game[0] ONE: 30×1 = 30
+      service.setCurrentDice(dice);
+      service.placeScore(SCORE_CATEGORY.chance, 1); // game[1] ONE: 30×1 = 30
 
       expect(service.grandTotal()).toBe(60); // 30 + 30
     });
@@ -412,10 +432,13 @@ describe('gameStateService', () => {
     });
 
     test('should reset grandTotal to 0', () => {
-      service.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
-      service.placeScore(SCORE_CATEGORY.chance, 0);
-      service.placeScore(SCORE_CATEGORY.chance, 0);
-      service.placeScore(SCORE_CATEGORY.chance, 0);
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5];
+      service.setCurrentDice(dice);
+      service.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30
+      service.setCurrentDice(dice);
+      service.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 60
+      service.setCurrentDice(dice);
+      service.placeScore(SCORE_CATEGORY.chance, 0); // THREE: 90
       expect(service.grandTotal()).toBe(180);
 
       service.newGame();

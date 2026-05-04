@@ -38,10 +38,12 @@ describe('gameOverComponent', () => {
   test('should display the grand total', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
-    // five 6s → chance = 30 (×1 in ONE, ×2 in TWO, ×3 in THREE)
-    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+    const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 60
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // THREE: 90
 
     expect(await screen.findByTestId('game-over-grand-total')).toHaveTextContent('180');
@@ -59,8 +61,10 @@ describe('gameOverComponent', () => {
   test('should display the double combined (TWO column) for game 0', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+    const dice: DiceSet = [0, 0, 0, 0, 0, 5];
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 30×2 = 60
 
     expect(await screen.findByTestId(`game-over-combined-0-${GAME_COLUMN.two}`)).toHaveTextContent('60');
@@ -69,9 +73,12 @@ describe('gameOverComponent', () => {
   test('should display the triple combined (THREE column) for game 0', async () => {
     await render(GameOverComponent);
     const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+    const dice: DiceSet = [0, 0, 0, 0, 0, 5];
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // TWO: 30×2
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // THREE: 30×3 = 90
 
     expect(await screen.findByTestId(`game-over-combined-0-${GAME_COLUMN.three}`)).toHaveTextContent('90');

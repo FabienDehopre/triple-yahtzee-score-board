@@ -224,6 +224,8 @@ export class GameStateService {
         };
       })
     );
+
+    this.#currentDice.set(undefined);
   }
 
   /**

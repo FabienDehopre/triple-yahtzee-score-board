@@ -104,12 +104,11 @@ describe('scoreSheetComponent', () => {
   test('should apply column multiplier to potential score in TWO column', async () => {
     await render(ScoreSheetComponent);
     const gameState = TestBed.inject(GameStateService);
-    // five 6s → sixes = 30; in TWO column × 2 = 60
-    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
-
-    // Must first fill ONE before TWO becomes available
-    gameState.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0
-    // Now TWO is the next available for Sixes in game 0
+    const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → sixes = 30
+    gameState.setCurrentDice(dice);
+    gameState.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0, clears dice
+    gameState.setCurrentDice(dice); // re-set dice so TWO becomes visible
+    // TWO is the next available for Sixes in game 0; 30 × 2 = 60
     expect(await screen.findByTestId('available-cell-0-Sixes-TWO')).toHaveTextContent('60');
   });
 
@@ -132,26 +131,30 @@ describe('scoreSheetComponent', () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent);
     const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    const dice: DiceSet = [5, 0, 0, 0, 0, 0];
+    gameState.setCurrentDice(dice);
 
-    // Click the Aces available cell for game 1
+    // Click the Aces available cell for game 1 (places score, clears dice)
     await user.click(await screen.findByTestId('available-cell-1-Aces-ONE'));
 
     expect(await screen.findByTestId('cell-1-Aces-ONE')).toHaveTextContent('5');
-    // Game 0 cell should still be available
-    expect(screen.getByTestId('available-cell-0-Aces-ONE')).toBeInTheDocument();
+    // Re-set dice so game 0 cell becomes available again
+    gameState.setCurrentDice(dice);
+    expect(await screen.findByTestId('available-cell-0-Aces-ONE')).toBeInTheDocument();
   });
 
   test('should advance to next column after placement in game 0', async () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent);
     const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    const dice: DiceSet = [5, 0, 0, 0, 0, 0];
+    gameState.setCurrentDice(dice);
 
-    // Click the Aces available cell (ONE) for game 0
+    // Click the Aces available cell (ONE) for game 0 (places score, clears dice)
     await user.click(await screen.findByTestId('available-cell-0-Aces-ONE'));
 
-    // Now TWO should be the next available cell for Aces in game 0
+    // Re-set dice so TWO becomes the next available cell for Aces in game 0
+    gameState.setCurrentDice(dice);
     expect(await screen.findByTestId('available-cell-0-Aces-TWO')).toBeInTheDocument();
   });
 
@@ -216,11 +219,14 @@ describe('scoreSheetComponent', () => {
   test('should show grand total updating after placements across multiple games', async () => {
     await render(ScoreSheetComponent);
     const gameState = TestBed.inject(GameStateService);
-    // five 6s → chance = 30 (×1 in ONE, ×2 in TWO, ×3 in THREE)
-    gameState.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
+    const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 ONE: 30×1 = 30
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 TWO: 30×2 = 60
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 THREE: 30×3 = 90
+    gameState.setCurrentDice(dice);
     gameState.placeScore(SCORE_CATEGORY.chance, 1); // game 1 ONE: 30×1 = 30
 
     // grand = 30 + 60 + 90 + 30 = 210

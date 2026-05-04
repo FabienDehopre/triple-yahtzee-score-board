@@ -1,6 +1,8 @@
 import type { DiceSet } from '../../models/dice-set.model';
 
-import { ChangeDetectionStrategy, Component, computed, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal } from '@angular/core';
+
+import { GameStateService } from '../../services/game-state.service';
 
 interface DotPosition {
   cx: number;
@@ -14,6 +16,8 @@ interface DotPosition {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiceInputComponent {
+  readonly #gameState = inject(GameStateService);
+
   protected readonly counts = signal([0, 0, 0, 0, 0, 0] as DiceSet);
   protected readonly total = computed(() => this.counts().reduce((s, c) => s + c, 0));
   protected readonly remaining = computed(() => 5 - this.total());
@@ -55,6 +59,14 @@ export class DiceInputComponent {
   };
 
   readonly confirmed = output<DiceSet>();
+
+  constructor() {
+    effect(() => {
+      if (this.#gameState.currentDice() === undefined) {
+        this.counts.set([0, 0, 0, 0, 0, 0] as DiceSet);
+      }
+    });
+  }
 
   increment(index: number): void {
     if (this.total() >= 5) return;
