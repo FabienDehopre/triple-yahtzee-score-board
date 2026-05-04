@@ -11,3 +11,17 @@ Angular/TailwindCSS scoreboard for Triple Yahtzee — calculates best dice roll 
 - Use TDD: write failing test first (Vitest + Testing Library). Use `tdd` skill.
 - Commit with Conventional Commits (`feat:`, `fix:`, `chore:`, etc.).
 - E2e: use `playwright-cli`. See [e2e testing](.agents/conventions/e2e-testing.md).
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (`FabienDehopre/triple-yahtzee-score-board`). See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical label strings (no overrides). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context layout — `CONTEXT.md` + `docs/adr/` at repo root. See `docs/agents/domain.md`.
