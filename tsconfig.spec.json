@@ -5,13 +5,14 @@
   "compilerOptions": {
     "types": [
       "vitest/globals",
-      "@testing-library/jest-dom"
+      "@testing-library/jest-dom",
+      "node"
     ],
     "outDir": "./out-tsc/spec"
   },
+  "files": ["src/test-setup.ts"],
   "include": [
-    "src/**/*.d.ts",
     "src/**/*.spec.ts",
-    "src/test-setup.ts"
+    "src/**/*.d.ts"
   ]
 }

@@ -1,15 +1,84 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm install --frozen-lockfile --prefer-offline"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/enforce-pnpm.sh"
+            "command": "node .claude/hooks/enforce-pnpm.mjs"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check-edit-targets.mjs"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check-credentials.mjs"
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/test-summary.mjs"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-eslint.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-test.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-type-check.mjs"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(where:*)",
+      "Bash(which:*)",
+      "Bash(tasklist:*)",
+      "Bash(ps:*)",
+      "Bash(taskkill:*)",
+      "Bash(kill:*)",
+      "Bash(findstr:*)",
+      "Bash(node:*)"
     ]
   }
 }

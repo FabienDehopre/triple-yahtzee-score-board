@@ -65,12 +65,7 @@
           "defaultConfiguration": "development"
         },
         "test": {
-          "builder": "@angular/build:unit-test",
-          "options": {
-            "setupFiles": [
-              "src/test-setup.ts"
-            ]
-          }
+          "builder": "@analogjs/vitest-angular:test"
         }
       }
     }
