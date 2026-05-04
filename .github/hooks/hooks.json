@@ -1,0 +1,44 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "pnpm install --frozen-lockfile --prefer-offline"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/enforce-pnpm.mjs"
+      },
+      {
+        "type": "command",
+        "command": "node .github/hooks/check-edit-targets.mjs"
+      },
+      {
+        "type": "command",
+        "command": "node .github/hooks/check-credentials.mjs"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/post-eslint.mjs"
+      },
+      {
+        "type": "command",
+        "command": "node .github/hooks/post-test.mjs"
+      },
+      {
+        "type": "command",
+        "command": "node .github/hooks/post-type-check.mjs"
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node .github/hooks/test-summary.mjs"
+      }
+    ]
+  }
+}
