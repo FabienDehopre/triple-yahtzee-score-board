@@ -12,7 +12,8 @@
     "lint": "eslint . --fix",
     "e2e": "playwright test",
     "preinstall": "npx only-allow pnpm",
-    "prepare": "is-ci || simple-git-hooks"
+    "prepare": "is-ci || simple-git-hooks",
+    "typecheck": "tsc --noEmit --project tsconfig.app.json && tsc --noEmit --project tsconfig.spec.json && tsc --noEmit --project tsconfig.e2e.json"
   },
   "dependencies": {
     "@angular/common": "^21.2.10",

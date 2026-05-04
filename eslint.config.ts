@@ -7,6 +7,7 @@ export default defineConfig({
     '.claude/**',
     '.github/**',
     '.vscode/**',
+    '.sandcastle/**',
   ],
   angular: {
     banDeveloperPreviewApi: false,
