@@ -14,7 +14,7 @@
     "preinstall": "npx only-allow pnpm",
     "prepare": "is-ci || simple-git-hooks",
     "typecheck": "tsc --noEmit --project tsconfig.app.json && tsc --noEmit --project tsconfig.spec.json && tsc --noEmit --project tsconfig.e2e.json",
-    "sandcastle": "pnpx tsx .sandcastle/main.mts"
+    "sandcastle": "pnpm exec tsx .sandcastle/main.mts"
   },
   "dependencies": {
     "@angular/common": "^21.2.10",
@@ -51,6 +51,7 @@
     "prettier": "^3.8.3",
     "simple-git-hooks": "^2.13.1",
     "tailwindcss": "^4.2.4",
+    "tsx": "^4.21.0",
     "typescript": "~5.9.3",
     "vite": "^7.3.2",
     "vite-tsconfig-paths": "^6.1.1",

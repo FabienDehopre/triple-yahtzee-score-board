@@ -17,9 +17,9 @@
 // issues are picked up after each round of merges.
 //
 // Usage:
-//   pnpx tsx .sandcastle/main.mts
+//   pnpm exec tsx .sandcastle/main.mts
 // Or add to package.json:
-//   "scripts": { "sandcastle": "pnpx tsx .sandcastle/main.mts" }
+//   "scripts": { "sandcastle": "pnpm exec tsx .sandcastle/main.mts" }
 
 import * as sandcastle from "@ai-hero/sandcastle";
 import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
