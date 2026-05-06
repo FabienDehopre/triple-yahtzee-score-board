@@ -31,10 +31,15 @@ USER agent
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
 # Install PNPM CLI
-RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+# RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
 
-# Add Claude to PATH
-ENV PATH="/home/agent/.local/bin:$PATH"
+# Add Claude and PNPM to PATH
+ENV PNPM_HOME=/home/agent/.local/share/pnpm
+ENV PATH="/home/agent/.local/bin:$PNPM_HOME/bin:$PATH"
+
+# Set CI=true to disable interactive prompts in tools that support it (e.g., PNPM)
+ENV CI=true
 
 WORKDIR /home/agent
 
