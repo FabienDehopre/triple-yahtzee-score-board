@@ -1,11 +1,11 @@
 allowBuilds:
-  '@fabdeh/eslint-config': true
-  '@parcel/watcher': true
-  esbuild: true
-  lmdb: true
-  msgpackr-extract: true
-  simple-git-hooks: true
-  unrs-resolver: true
+  '@fabdeh/eslint-config': false
+  '@parcel/watcher': false
+  esbuild: false
+  lmdb: false
+  msgpackr-extract: false
+  simple-git-hooks: false
+  unrs-resolver: false
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days

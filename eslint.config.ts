@@ -6,6 +6,7 @@ export default defineConfig({
     '.angular/**',
     '.claude/**',
     '.github/**',
+    '.sandcastle/**',
     '.vscode/**',
   ],
   angular: {
