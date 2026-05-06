@@ -14,7 +14,6 @@ export class GameCountPickerComponent {
   readonly #gameState = inject(GameStateService);
 
   protected readonly gameCount = this.#gameState.gameCount;
-  protected readonly isAnyGameInProgress = this.#gameState.isAnyGameInProgress;
   protected readonly gameCountOptions = GAME_COUNT_OPTIONS;
 
   /**
@@ -29,7 +28,7 @@ export class GameCountPickerComponent {
   protected onCountChange(event: Event): void {
     const value = Number((event.target as HTMLSelectElement).value);
     this.displayCount.set(value);
-    if (this.isAnyGameInProgress()) {
+    if (value < this.gameCount() && this.#gameState.hasScoreInGamesFrom(value)) {
       this.pendingCount.set(value);
     } else {
       this.#gameState.setGameCount(value);

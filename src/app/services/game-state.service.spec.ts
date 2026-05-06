@@ -184,10 +184,11 @@ describe('gameStateService', () => {
       expect(service.isAnyGameInProgress()).toBeTruthy();
     });
 
-    test('should be false after setGameCount resets the state', () => {
-      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
-      service.placeScore(SCORE_CATEGORY.aces, 0);
+    test('should be false after setGameCount removes the only scored game from the tail', () => {
       service.setGameCount(3);
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 2); // score only in game 2
+      service.setGameCount(2); // removes game 2
 
       expect(service.isAnyGameInProgress()).toBeFalsy();
     });
@@ -201,13 +202,45 @@ describe('gameStateService', () => {
       expect(service.gameCount()).toBe(3);
     });
 
-    test('should reset games to the new count of empty games', () => {
+    test('should preserve existing scores when increasing game count', () => {
       service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
-      service.placeScore(SCORE_CATEGORY.aces, 0); // place a score first
+      service.placeScore(SCORE_CATEGORY.aces, 0); // score in game 0
       service.setGameCount(3);
 
       expect(service.games()).toHaveLength(3);
-      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]?.value).toBe(3);
+    });
+
+    test('should append empty games when increasing game count', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0);
+      service.setGameCount(3);
+
+      expect(service.games()[2].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    });
+
+    test('should preserve scores in remaining games when decreasing game count', () => {
+      service.setGameCount(3);
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // score in game 0
+      service.setGameCount(1);
+
+      expect(service.games()).toHaveLength(1);
+      expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]?.value).toBe(3);
+    });
+
+    test('should clamp activeGameIndex to last valid index when count decreases', () => {
+      service.setActiveGameIndex(1); // active = game 1 (out of 2)
+      service.setGameCount(1);
+
+      expect(service.activeGameIndex()).toBe(0);
+    });
+
+    test('should not change activeGameIndex when it remains within bounds', () => {
+      service.setActiveGameIndex(0);
+      service.setGameCount(3);
+
+      expect(service.activeGameIndex()).toBe(0);
     });
 
     test('should clear currentDice', () => {
@@ -239,6 +272,45 @@ describe('gameStateService', () => {
       expect(service.gameCount()).toBe(3);
       // games should remain unchanged
       expect(service.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeDefined();
+    });
+  });
+
+  // ─── activeGameIndex ───────────────────────────────────────────────────────
+
+  describe('activeGameIndex', () => {
+    test('should start at 0', () => {
+      expect(service.activeGameIndex()).toBe(0);
+    });
+
+    test('should update when setActiveGameIndex is called', () => {
+      service.setActiveGameIndex(1);
+      expect(service.activeGameIndex()).toBe(1);
+    });
+
+    test('should reset to 0 when newGame is called', () => {
+      service.setActiveGameIndex(1);
+      service.newGame();
+      expect(service.activeGameIndex()).toBe(0);
+    });
+  });
+
+  // ─── hasScoreInGamesFrom ───────────────────────────────────────────────────
+
+  describe('hasScoreInGamesFrom', () => {
+    test('should return false when all games from index are empty', () => {
+      expect(service.hasScoreInGamesFrom(0)).toBeFalsy();
+    });
+
+    test('should return true when a game at the start index has a scored cell', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 1); // game 1
+      expect(service.hasScoreInGamesFrom(1)).toBeTruthy();
+    });
+
+    test('should return false when all scored games are before the start index', () => {
+      service.setCurrentDice([3, 0, 0, 0, 2, 0] as DiceSet);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // game 0
+      expect(service.hasScoreInGamesFrom(1)).toBeFalsy();
     });
   });
 

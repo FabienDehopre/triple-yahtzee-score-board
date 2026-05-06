@@ -63,6 +63,7 @@ export class GameStateService {
   readonly #gameCount = signal(DEFAULT_GAME_COUNT);
   readonly #games = signal(Array.from({ length: DEFAULT_GAME_COUNT }, () => createEmptyGame()));
   readonly #currentDice = signal<DiceSet | undefined>(undefined);
+  readonly #activeGameIndex = signal(0);
 
   /** How many games are configured for this session (read-only). */
   readonly gameCount = this.#gameCount.asReadonly();
@@ -72,6 +73,9 @@ export class GameStateService {
 
   /** The most recently confirmed dice roll, or undefined when no dice have been set. */
   readonly currentDice = this.#currentDice.asReadonly();
+
+  /** Index of the currently active game (0-based). */
+  readonly activeGameIndex = this.#activeGameIndex.asReadonly();
 
   /**
    * True when at least one score has been placed in any game.
@@ -154,16 +158,59 @@ export class GameStateService {
   newGame(): void {
     this.#games.set(Array.from({ length: this.#gameCount() }, () => createEmptyGame()));
     this.#currentDice.set(undefined);
+    this.#activeGameIndex.set(0);
   }
 
   /**
-   * Changes the number of games and resets to a fresh session.
-   * The caller is responsible for confirming with the user if a game is in progress.
+   * Changes the number of games additively/subtractively.
+   * Increasing count appends empty games; decreasing removes from the tail.
+   * Clears current dice. The caller is responsible for confirming when scored trailing
+   * games will be removed (see hasScoreInGamesFrom).
    */
   setGameCount(count: number): void {
     this.#gameCount.set(count);
-    this.#games.set(Array.from({ length: count }, () => createEmptyGame()));
+    const current = this.#games();
+    if (count > current.length) {
+      this.#games.set([
+        ...current,
+        ...Array.from({ length: count - current.length }, () => createEmptyGame()),
+      ]);
+    } else if (count < current.length) {
+      this.#games.set(current.slice(0, count));
+      if (this.#activeGameIndex() >= count) {
+        this.#activeGameIndex.set(count - 1);
+      }
+    }
     this.#currentDice.set(undefined);
+  }
+
+  /**
+   * Sets the active game index. Used by the score sheet and suggestion engine
+   * to track which game is currently focused.
+   */
+  setActiveGameIndex(index: number): void {
+    this.#activeGameIndex.set(index);
+  }
+
+  /**
+   * Returns true when any game at or after startIndex has at least one scored cell.
+   * Used by the game count picker to decide whether a confirmation dialog is needed
+   * before removing trailing games.
+   */
+  hasScoreInGamesFrom(startIndex: number): boolean {
+    const games = this.#games();
+    for (let i = startIndex; i < games.length; i++) {
+      const game = games[i];
+      for (const col of COLUMN_ORDER) {
+        for (const cat of UPPER_CATEGORIES) {
+          if (game.columns[col].upper[cat] !== undefined) return true;
+        }
+        for (const cat of LOWER_CATEGORIES) {
+          if (game.columns[col].lower[cat] !== undefined) return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
