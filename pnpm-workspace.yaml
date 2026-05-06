@@ -8,6 +8,4 @@ allowBuilds:
   unrs-resolver: true
 shellEmulator: true
 trustPolicy: no-downgrade
-patchedDependencies:
-  '@ai-hero/sandcastle': patches/@ai-hero__sandcastle.patch
 trustPolicyIgnoreAfter: 43200 # 30 days
