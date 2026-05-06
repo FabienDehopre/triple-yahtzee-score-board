@@ -1,0 +1,15 @@
+diff --git a/dist/sandboxes/docker.js b/dist/sandboxes/docker.js
+index 4c2fc35b747c92e780f89a777a6d22847d24dfbf..e0b31863b1b9bbe1250c022263c6ae581e0964b9 100644
+--- a/dist/sandboxes/docker.js
++++ b/dist/sandboxes/docker.js
+@@ -39,8 +39,8 @@ export const docker = (options) => {
+             });
+             // Resolve image name
+             const imageName = configuredImageName ?? defaultImageName(createOptions.hostRepoPath);
+-            const hostUid = process.getuid?.() ?? 1000;
+-            const hostGid = process.getgid?.() ?? 1000;
++            const hostUid = 1000;
++            const hostGid = 1000;
+             // Start container
+             await Effect.runPromise(startContainer(containerName, imageName, {
+                 ...createOptions.env,
