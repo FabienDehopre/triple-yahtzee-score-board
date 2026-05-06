@@ -61,7 +61,7 @@ One play session: one to five **Games** played simultaneously, sharing a single 
 _Avoid_: Multi-game, game set
 
 **Game Count**:
-The number of parallel **Games** in a **Session**. Player-selectable (1–5). Default: 2. Changing mid-session should preserve existing games and only add or remove games — known gap: current implementation resets all games on change.
+The number of parallel **Games** in a **Session**. Player-selectable (1–5). Default: 2. Increasing the count appends empty **Games** to the tail; decreasing removes **Games** from the tail. Existing **Game** scores are never touched. A confirmation dialog appears only when decreasing the count would remove **Games** that contain scored cells.
 _Avoid_: Number of games, game number
 
 ### Suggestions
@@ -75,11 +75,11 @@ The only suggestion algorithm — ranks all available cells by raw score × colu
 _Avoid_: Algorithm, strategy (standalone)
 
 **Suggestion Scope**:
-Suggestions are computed per **Game**. Currently a known gap: the engine is hardcoded to the first **Game** regardless of active game in a multi-**Game** **Session**.
+Suggestions are computed for the currently active **Game** (tracked by `activeGameIndex` on `GameStateService`). Accepting a **Suggestion** places the score in that same active **Game**. Switching the active **Game** causes **Suggestions** to recompute immediately.
 _Avoid_: Global suggestion, session suggestion
 
 **Yahtzee Bonus**:
-100 points awarded per additional Yahtzee rolled after the first non-zero Yahtzee **ScoreCell** is filled. Computed by the engine but not yet wired into placement — known gap.
+100 points awarded per additional Yahtzee placed after the Yahtzee **ScoreCell** in that **GameColumn** is already scored non-zero. Bonuses accumulate per column (100, 200, 300 …) and are included in the column's lower-section total (multiplied by the column multiplier). A **Scratch** on the Yahtzee **ScoreCell** disqualifies all **Yahtzee Bonuses** for that column. The bonus is visible in the column score breakdown and is correctly reversed by Undo.
 _Avoid_: Bonus Yahtzee, extra Yahtzee
 
 ### Undo
