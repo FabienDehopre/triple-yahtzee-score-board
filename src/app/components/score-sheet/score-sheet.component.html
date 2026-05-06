@@ -205,6 +205,23 @@
         </tr>
         }
 
+        <!-- Yahtzee bonus row (mobile) -->
+        <tr class="border-b border-gray-200 bg-gray-50">
+          <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+            Yahtzee Bonus
+            <span class="font-normal text-gray-400">(+100 each)</span>
+          </td>
+          @for (col of columnOrder; track col) {
+          <td class="border-l border-gray-100 px-3 py-2 text-center">
+            @if (allStats()[mgi][col].yahtzeeBonus > 0) {
+            <span class="font-semibold text-green-600">
+              {{ allStats()[mgi][col].yahtzeeBonus * columnMultiplier[col] }}
+            </span>
+            }
+          </td>
+          }
+        </tr>
+
         <!-- Lower section total -->
         <tr class="border-b border-gray-200 bg-gray-50">
           <td class="px-4 py-2.5 font-bold text-gray-700">Lower Total</td>
@@ -440,6 +457,23 @@
         } }
       </tr>
       }
+
+      <!-- Yahtzee bonus row (desktop) -->
+      <tr class="border-b border-gray-200 bg-gray-50">
+        <td class="px-4 py-2 text-xs font-semibold text-gray-500">
+          Yahtzee Bonus
+          <span class="font-normal text-gray-400">(+100 each)</span>
+        </td>
+        @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
+        <td class="border-l border-gray-100 px-3 py-2 text-center">
+          @if (allStats()[gi][col].yahtzeeBonus > 0) {
+          <span class="font-semibold text-green-600" [attr.data-testid]="'yahtzee-bonus-' + gi + '-' + col">
+            {{ allStats()[gi][col].yahtzeeBonus * columnMultiplier[col] }}
+          </span>
+          }
+        </td>
+        } }
+      </tr>
 
       <!-- Lower section total -->
       <tr class="border-b border-gray-200 bg-gray-50">

@@ -12,6 +12,7 @@ import {
   LOWER_CATEGORIES,
   UPPER_CATEGORIES
 } from '../models/game-column.model';
+import { SCORE_CATEGORY } from '../models/score-category.model';
 import { ScoringEngineService } from './scoring-engine.service';
 import { UndoService } from './undo.service';
 
@@ -28,7 +29,9 @@ export interface ColumnStats {
   upperTotal: number;
   /** Raw sum of placed lower-section scores (before multiplier). */
   lowerRaw: number;
-  /** lowerRaw x column multiplier. */
+  /** Accumulated Yahtzee bonus: 100 per extra Yahtzee rolled while Yahtzee cell is non-zero. */
+  yahtzeeBonus: number;
+  /** (lowerRaw + yahtzeeBonus) x column multiplier. */
   lowerTotal: number;
   /** upperTotal + lowerTotal. */
   combinedTotal: number;
@@ -39,9 +42,9 @@ function createEmptyGame(): Game {
   return {
     id: crypto.randomUUID(),
     columns: {
-      [GAME_COLUMN.one]: { upper: {}, lower: {} },
-      [GAME_COLUMN.two]: { upper: {}, lower: {} },
-      [GAME_COLUMN.three]: { upper: {}, lower: {} },
+      [GAME_COLUMN.one]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+      [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+      [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
     },
     createdAt: new Date().toISOString(),
   };
@@ -253,6 +256,11 @@ export class GameStateService {
     const rawScore = this.#scoringEngine.computeScore(dice, category);
     const sectionKey = isUpper ? 'upper' : 'lower';
 
+    const yahtzeeCell = game.columns[column].lower[SCORE_CATEGORY.yahtzee];
+    const bonusEarned = yahtzeeCell === undefined
+      ? 0
+      : this.#scoringEngine.computeYahtzeeBonus(dice, yahtzeeCell.value);
+
     this.#games.update((gs) =>
       gs.map((g, i) => {
         if (i !== gameIndex) return g;
@@ -262,6 +270,7 @@ export class GameStateService {
             ...g.columns,
             [column]: {
               ...g.columns[column],
+              yahtzeeBonus: (g.columns[column].yahtzeeBonus ?? 0) + bonusEarned,
               [sectionKey]: {
                 ...g.columns[column][sectionKey],
                 [category]: { value: rawScore, isScratched: rawScore === 0 },
@@ -302,9 +311,10 @@ export class GameStateService {
       lowerRaw += cell?.value ?? 0;
     }
 
-    const lowerTotal = lowerRaw * multiplier;
+    const yahtzeeBonus = colScores.yahtzeeBonus ?? 0;
+    const lowerTotal = (lowerRaw + yahtzeeBonus) * multiplier;
     const combinedTotal = upperTotal + lowerTotal;
 
-    return { upperRaw, upperBonus, upperTotal, lowerRaw, lowerTotal, combinedTotal };
+    return { upperRaw, upperBonus, upperTotal, lowerRaw, yahtzeeBonus, lowerTotal, combinedTotal };
   }
 }

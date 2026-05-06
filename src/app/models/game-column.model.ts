@@ -59,4 +59,6 @@ export type SectionScores = Record<ScoreCategory, ScoreCell>;
 export interface ColumnScores {
   upper: Partial<SectionScores>;
   lower: Partial<SectionScores>;
+  /** Accumulated Yahtzee bonus points for this column (100 per extra Yahtzee while Yahtzee cell is non-zero). */
+  yahtzeeBonus?: number;
 }

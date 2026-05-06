@@ -314,6 +314,80 @@ describe('gameStateService', () => {
     });
   });
 
+  // ─── yahtzeeBonus in columnStats ──────────────────────────────────────────
+
+  describe('yahtzeeBonus in columnStats', () => {
+    /** Dice that form a Yahtzee (five 1s); computeYahtzeeBonus uses dice.includes(5). */
+    const yahtzeeDice: DiceSet = [5, 0, 0, 0, 0, 0];
+
+    test('should be 0 when no additional Yahtzee has been placed', () => {
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+    });
+
+    test('should be 100 after placing a score with Yahtzee dice when Yahtzee cell is non-zero', () => {
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.yahtzee, 0); // Yahtzee = 5 in column ONE
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // bonus triggered: Yahtzee ONE = 5 > 0
+
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(100);
+    });
+
+    test('should be 0 when Yahtzee cell is scratched', () => {
+      service.setCurrentDice([1, 0, 0, 0, 4, 0] as DiceSet); // not a Yahtzee → score 0 → scratched
+      service.placeScore(SCORE_CATEGORY.yahtzee, 0); // Yahtzee scratched in column ONE
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // no bonus: existing Yahtzee is 0
+
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+    });
+
+    test('should accumulate to 200 after two bonus-triggering placements in the same column', () => {
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.yahtzee, 0); // Yahtzee = 5 in column ONE
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // bonus +100 → total 100
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.twos, 0); // bonus +100 again → total 200
+
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(200);
+    });
+
+    test('should include yahtzeeBonus in combinedTotal', () => {
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.yahtzee, 0); // Yahtzee = 5 in column ONE
+
+      const beforeBonus = service.columnStats()[0][GAME_COLUMN.one].combinedTotal;
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // aces = 5, bonus = 100
+
+      const afterBonus = service.columnStats()[0][GAME_COLUMN.one].combinedTotal;
+      expect(afterBonus - beforeBonus).toBe(5 + 100); // aces score + yahtzee bonus
+    });
+
+    test('should be reversed when restoreGames is called with the pre-bonus snapshot', () => {
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.yahtzee, 0); // Yahtzee = 5 in column ONE
+
+      const snapshotBeforeBonus = service.games(); // games state before next placement
+
+      service.setCurrentDice(yahtzeeDice);
+      service.placeScore(SCORE_CATEGORY.aces, 0); // triggers bonus
+
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(100);
+
+      // Simulate what undo does: restore games to the pre-placement snapshot
+      service.restoreGames(snapshotBeforeBonus);
+
+      expect(service.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+    });
+  });
+
   // ─── columnStats ───────────────────────────────────────────────────────────
 
   describe('columnStats', () => {
