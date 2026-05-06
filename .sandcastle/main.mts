@@ -62,7 +62,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     branchStrategy: { type: "merge-to-head" },
     name: "implementer",
     maxIterations: 100,
-    agent: sandcastle.claudeCode("claude-opus-4-6"),
+    agent: sandcastle.claudeCode("claude-sonnet-4-6"),
     promptFile: "./.sandcastle/implement-prompt.md",
   });
 
