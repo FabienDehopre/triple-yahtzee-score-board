@@ -1,7 +1,7 @@
 import type { GameColumn } from '../../models/game-column.model';
 import type { ScoreCategory } from '../../models/score-category.model';
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
@@ -29,19 +29,8 @@ export class ScoreSheetComponent {
   /** Total number of data columns: games × 3 columns per game. */
   protected readonly totalColumns = computed(() => this.games().length * COLUMN_ORDER.length);
 
-  /** Index of the game currently shown in the mobile card layout (0-based). */
-  protected readonly activeGameIndex = signal(0);
-
-  /**
-   * Clamped active game index: ensures it stays within valid bounds
-   * even when the number of games changes.
-   */
-  protected readonly effectiveActiveGameIndex = computed(() => {
-    const count = this.games().length;
-    if (count === 0) return 0;
-    const idx = this.activeGameIndex();
-    return Math.max(0, Math.min(idx, count - 1));
-  });
+  /** Index of the game currently shown in the mobile card layout, driven by game-state service. */
+  protected readonly activeGameIndex = this.#gameState.activeGameIndex;
 
   protected readonly upperCategories = UPPER_CATEGORIES;
   protected readonly lowerCategories = LOWER_CATEGORIES;
@@ -145,6 +134,6 @@ export class ScoreSheetComponent {
 
   /** Switches the active game shown in the mobile card layout. */
   protected setActiveGame(index: number): void {
-    this.activeGameIndex.set(index);
+    this.#gameState.setActiveGameIndex(index);
   }
 }

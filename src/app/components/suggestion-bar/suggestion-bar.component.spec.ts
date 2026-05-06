@@ -97,6 +97,26 @@ describe('suggestionBarComponent', () => {
     });
   });
 
+  test('should place the suggested score in the active game when activeGameIndex = 1', async () => {
+    const user = userEvent.setup();
+    const { fixture } = await render(SuggestionBarComponent);
+    const gameState = fixture.debugElement.injector.get(GameStateService);
+
+    gameState.setActiveGameIndex(1); // active game is now game 1
+
+    const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → YAHTZEE top suggestion
+    gameState.setCurrentDice(dice);
+    fixture.detectChanges();
+
+    await user.click(screen.getByRole('button', { name: 'Accept suggestion' }));
+
+    expect(gameState.games()[1].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toEqual({
+      value: 50,
+      isScratched: false,
+    });
+    expect(gameState.games()[0].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toBeUndefined();
+  });
+
   // ─── Dismiss button ───────────────────────────────────────────────────────
 
   test('should hide the bar after Dismiss is clicked', async () => {

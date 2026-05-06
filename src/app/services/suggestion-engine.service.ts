@@ -27,12 +27,12 @@ export class SuggestionEngineService {
   readonly suggestions = computed((): SuggestionResult[] => {
     const dice = this.#gameState.currentDice();
     if (!dice) return [];
-    const game = this.#gameState.games()[0];
+    const game = this.#gameState.games()[this.#gameState.activeGameIndex()];
     const availableCells = this.#computeAvailableCells(game);
     return this.#strategy.suggest(dice, availableCells);
   });
 
-  /** Builds the list of currently fillable cells for game 0. */
+  /** Builds the list of currently fillable cells for the active game. */
   #computeAvailableCells(game: Game): AvailableCell[] {
     const cells: AvailableCell[] = [];
     for (const category of [...UPPER_CATEGORIES, ...LOWER_CATEGORIES]) {

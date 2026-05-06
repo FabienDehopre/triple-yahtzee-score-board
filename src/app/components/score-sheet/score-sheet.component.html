@@ -12,11 +12,11 @@
       class="flex-1 rounded-lg py-2 text-sm font-semibold transition-colors"
       role="tab"
       type="button"
-      [attr.aria-selected]="effectiveActiveGameIndex() === gi ? 'true' : 'false'"
+      [attr.aria-selected]="activeGameIndex() === gi ? 'true' : 'false'"
       [attr.data-testid]="'mobile-tab-' + gi"
-      [class.bg-indigo-700]="effectiveActiveGameIndex() === gi"
-      [class.text-indigo-700]="effectiveActiveGameIndex() !== gi"
-      [class.text-white]="effectiveActiveGameIndex() === gi"
+      [class.bg-indigo-700]="activeGameIndex() === gi"
+      [class.text-indigo-700]="activeGameIndex() !== gi"
+      [class.text-white]="activeGameIndex() === gi"
       (click)="setActiveGame(gi)"
     >
       Game {{ gi + 1 }}
@@ -24,7 +24,7 @@
     }
   </div>
 
-  @let mgi = effectiveActiveGameIndex();
+  @let mgi = activeGameIndex();
 
   <!-- Upper Section Card -->
   <div class="

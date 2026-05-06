@@ -63,7 +63,7 @@ export class SuggestionBarComponent {
   protected onAccept(): void {
     const suggestion = this.topSuggestion();
     if (!suggestion) return;
-    this.#gameState.placeScore(suggestion.category, 0);
+    this.#gameState.placeScore(suggestion.category, this.#gameState.activeGameIndex());
     this.#dismissed.set(true);
   }
 
