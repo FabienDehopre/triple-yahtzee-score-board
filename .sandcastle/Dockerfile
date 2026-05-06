@@ -36,6 +36,7 @@ RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV
 
 # Add Claude and PNPM to PATH
 ENV PNPM_HOME=/home/agent/.local/share/pnpm
+ENV PNPM_CONFIG_STORE_DIR="$PNPM_HOME/store"
 ENV PATH="/home/agent/.local/bin:$PNPM_HOME/bin:$PATH"
 
 # Set CI=true to disable interactive prompts in tools that support it (e.g., PNPM)
