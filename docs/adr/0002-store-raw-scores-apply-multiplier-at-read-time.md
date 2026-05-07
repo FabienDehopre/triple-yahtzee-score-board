@@ -7,3 +7,13 @@ We chose this because the data model stays multiplier-agnostic: if column multip
 ## Consequences
 
 Every place that renders a cell value or computes a total must apply the multiplier explicitly. The stored value is never what's shown to the player — callers must not read `ScoreCell.value` directly for display without going through the scoring engine or display helpers.
+
+## Canonical entry points
+
+The multiplier rule has one home: `ScoringEngineService`. Callers must route through:
+
+- `applyMultiplier(rawScore, column)` — when the raw score is already known (column-stats aggregation, cell display, bonus display).
+- `computeMultipliedScore(dice, category, column)` — when starting from a **DiceSet** (suggestion ranking, potential-score preview).
+- `computeColumnStats(game, column)` — pre-computes the read-model `ColumnStats` (raw + multiplied bonus/total fields). Components and templates read fields directly; templates do no arithmetic.
+
+Direct use of `COLUMN_MULTIPLIER[column]` outside `ScoringEngineService` is a violation of this ADR.

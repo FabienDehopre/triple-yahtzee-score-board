@@ -71,7 +71,7 @@ A recommended (ScoreCategory, GameColumn) placement for the current **DiceSet**,
 _Avoid_: Hint, tip, recommendation
 
 **Greedy Strategy**:
-The only suggestion algorithm — ranks all available cells by raw score × column multiplier, descending. Not swappable via DI; the strategy abstraction is not in use.
+The only suggestion algorithm — ranks all available cells by raw score × column multiplier, descending. Ties broken by **ScoreCategory** then **GameColumn** (ascending). Implemented inline in `SuggestionEngineService`; no strategy abstraction.
 _Avoid_: Algorithm, strategy (standalone)
 
 **Suggestion Scope**:
@@ -81,6 +81,12 @@ _Avoid_: Global suggestion, session suggestion
 **Yahtzee Bonus**:
 100 points awarded per additional Yahtzee placed after the Yahtzee **ScoreCell** in that **GameColumn** is already scored non-zero. Bonuses accumulate per column (100, 200, 300 …) and are included in the column's lower-section total (multiplied by the column multiplier). A **Scratch** on the Yahtzee **ScoreCell** disqualifies all **Yahtzee Bonuses** for that column. The bonus is visible in the column score breakdown and is correctly reversed by Undo.
 _Avoid_: Bonus Yahtzee, extra Yahtzee
+
+### Placement
+
+**Placement**:
+The act of applying a confirmed **DiceSet** to the next available **ScoreCell** for a **ScoreCategory** in the active **Game**. Triggers **Snapshot** save, **Yahtzee Bonus** check, and **Left-to-Right Fill Rule** resolution. Owned by `PlacementService`; `GameStateService` holds state but does not coordinate placement.
+_Avoid_: Score entry, fill, write
 
 ### Undo
 
