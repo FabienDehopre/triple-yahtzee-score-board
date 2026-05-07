@@ -14,7 +14,7 @@
     "preinstall": "npx only-allow pnpm",
     "prepare": "is-ci || simple-git-hooks",
     "typecheck": "tsc --noEmit --project tsconfig.app.json && tsc --noEmit --project tsconfig.spec.json && tsc --noEmit --project tsconfig.e2e.json",
-    "sandcastle": "tsx .sandcastle/main.mts",
+    "sandcastle": "LC_ALL=C tsx .sandcastle/main.mts",
     "build-image": ".sandcastle/build.sh"
   },
   "dependencies": {
