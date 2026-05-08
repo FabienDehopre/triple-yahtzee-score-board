@@ -30,7 +30,8 @@ Pick the highest-priority open issue that is not blocked by another open issue.
 3. **Execute** — use RGR (Red → Green → Repeat → Refactor): write a failing test first, then write the implementation to pass it.
 4. **Verify** — run `npm run typecheck` and `npm run test` before committing. Fix any failures before proceeding.
 5. **Commit** — make a single git commit. The message MUST:
-   - Start with `RALPH:` prefix
+   - follow the conventional commit format (https://www.conventionalcommits.org/en/v1.0.0/)
+   - End with `(#<ISSUE_ID>) via RALPH` suffix
    - Include the task completed and any PRD reference
    - List key decisions made
    - List files changed
