@@ -3,13 +3,16 @@ import type { DiceSet } from '../../models/dice-set.model';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { DiceInputComponent } from './dice-input.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('diceInputComponent', () => {
   // ─── Render ──────────────────────────────────────────────────────────────────
 
   test('should render 6 dice face increment buttons', async () => {
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     for (let face = 1; face <= 6; face++) {
       expect(screen.getByRole('button', { name: `Increment face ${face}` })).toBeInTheDocument();
@@ -20,7 +23,7 @@ describe('diceInputComponent', () => {
 
   test('should display count 1 after tapping a die face button once', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     await user.click(screen.getByRole('button', { name: 'Increment face 3' }));
 
@@ -29,7 +32,7 @@ describe('diceInputComponent', () => {
 
   test('should not increment beyond a total of 5 dice', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     const face1Btn = screen.getByRole('button', { name: 'Increment face 1' });
     await user.click(face1Btn);
@@ -47,7 +50,7 @@ describe('diceInputComponent', () => {
 
   test('should decrement a face count when the decrement button is clicked', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     await user.click(screen.getByRole('button', { name: 'Increment face 2' }));
     await user.click(screen.getByRole('button', { name: 'Increment face 2' }));
@@ -58,7 +61,7 @@ describe('diceInputComponent', () => {
 
   test('should not decrement a face count below 0', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     await user.click(screen.getByRole('button', { name: 'Decrement face 4' }));
 
@@ -68,14 +71,14 @@ describe('diceInputComponent', () => {
   // ─── Confirm button ──────────────────────────────────────────────────────────
 
   test('should disable the confirm button when total is less than 5', async () => {
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     expect(screen.getByRole('button', { name: 'Confirm' })).toBeDisabled();
   });
 
   test('should enable the confirm button when total equals exactly 5', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     const face1Btn = screen.getByRole('button', { name: 'Increment face 1' });
     await user.click(face1Btn);
@@ -93,6 +96,7 @@ describe('diceInputComponent', () => {
     const user = userEvent.setup();
     let emitted: DiceSet | undefined;
     await render(DiceInputComponent, {
+      imports: [getTranslocoTestingModule()],
       on: { confirmed: (v: DiceSet) => (emitted = v) },
     });
 
@@ -114,7 +118,7 @@ describe('diceInputComponent', () => {
 
   test('should reset all counts to 0 when the reset button is clicked', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     await user.click(screen.getByRole('button', { name: 'Increment face 1' }));
     await user.click(screen.getByRole('button', { name: 'Increment face 3' }));
@@ -128,14 +132,14 @@ describe('diceInputComponent', () => {
   // ─── Remaining display ───────────────────────────────────────────────────────
 
   test('should show remaining dice count starting at 5', async () => {
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     expect(screen.getByTestId('remaining')).toHaveTextContent(/5/);
   });
 
   test('should decrease remaining count as dice are added', async () => {
     const user = userEvent.setup();
-    await render(DiceInputComponent);
+    await render(DiceInputComponent, T);
 
     await user.click(screen.getByRole('button', { name: 'Increment face 6' }));
     await user.click(screen.getByRole('button', { name: 'Increment face 6' }));

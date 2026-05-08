@@ -4,7 +4,10 @@ import userEvent from '@testing-library/user-event';
 
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { GameCountPickerComponent } from './game-count-picker.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('gameCountPickerComponent', () => {
   beforeEach(() => {
@@ -14,13 +17,13 @@ describe('gameCountPickerComponent', () => {
   // ─── Rendering ─────────────────────────────────────────────────────────────
 
   test('should render the game count selector', async () => {
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
 
     expect(screen.getByTestId('game-count-select')).toBeInTheDocument();
   });
 
   test('should show the current game count as the selected option', async () => {
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
 
     const currentCount = gameState.gameCount();
@@ -30,7 +33,7 @@ describe('gameCountPickerComponent', () => {
   });
 
   test('should offer options from 1 to 5', async () => {
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
 
     const options = screen.getAllByRole('option');
     expect(options).toHaveLength(5);
@@ -42,7 +45,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should apply the new game count immediately when no game is in progress', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '3');
@@ -52,7 +55,7 @@ describe('gameCountPickerComponent', () => {
   });
 
   test('should not show confirmation panel when no game is in progress', async () => {
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
 
     expect(screen.queryByTestId('game-count-confirm')).not.toBeInTheDocument();
   });
@@ -61,7 +64,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should never show confirmation when increasing game count', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -77,7 +80,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should preserve existing scores when increasing game count', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -94,7 +97,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should not show confirmation when trailing games are empty', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const placement = TestBed.inject(PlacementService);
 
     // Score only in game 0; game 1 (the one being removed) is empty
@@ -110,7 +113,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should preserve remaining scores when decreasing past empty trailing games', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -126,7 +129,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should show confirmation when a trailing game being removed has scored cells', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const placement = TestBed.inject(PlacementService);
 
     // Score in game 1 (index 1) — this game will be removed when decreasing to 1
@@ -140,7 +143,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should apply new count when user confirms removal of scored trailing game', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -157,7 +160,7 @@ describe('gameCountPickerComponent', () => {
 
   test('should revert selection when user cancels removal of scored trailing game', async () => {
     const user = userEvent.setup();
-    await render(GameCountPickerComponent);
+    await render(GameCountPickerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 

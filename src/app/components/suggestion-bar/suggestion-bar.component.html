@@ -9,18 +9,19 @@
   role="status"
 >
   <div class="flex flex-col">
-    <span class="text-xs font-semibold tracking-wide text-indigo-500 uppercase">Suggested</span>
+    <span class="text-xs font-semibold tracking-wide text-indigo-500 uppercase">
+      {{ 'suggestionBar.suggested' | transloco }}
+    </span>
     <span class="mt-0.5 text-base font-bold text-indigo-900" data-testid="suggestion-category">
-      {{ categoryLabels[suggestion.category] }}
+      {{ categoryLabelKeys[suggestion.category] | transloco }}
     </span>
     <span class="text-sm text-indigo-700" data-testid="suggestion-score">
-      Score: <strong>{{ suggestion.score }}</strong>
+      {{ 'suggestionBar.score' | transloco }} <strong>{{ suggestion.score }}</strong>
     </span>
   </div>
 
   <div class="flex shrink-0 gap-2">
     <button
-      aria-label="Accept suggestion"
       class="
         rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white
         transition-colors
@@ -29,12 +30,12 @@
       "
       data-testid="accept-suggestion"
       type="button"
+      [attr.aria-label]="'suggestionBar.acceptAriaLabel' | transloco"
       (click)="onAccept()"
     >
-      Accept
+      {{ 'suggestionBar.accept' | transloco }}
     </button>
     <button
-      aria-label="Dismiss suggestion"
       class="
         rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-600
         ring-1 ring-indigo-300 transition-colors
@@ -43,9 +44,10 @@
       "
       data-testid="dismiss-suggestion"
       type="button"
+      [attr.aria-label]="'suggestionBar.dismissAriaLabel' | transloco"
       (click)="onDismiss()"
     >
-      Dismiss
+      {{ 'suggestionBar.dismiss' | transloco }}
     </button>
   </div>
 </div>

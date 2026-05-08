@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { GameStateService } from '../../services/game-state.service';
 
 @Component({
   selector: 'app-clear-session-button',
+  imports: [TranslocoPipe],
   templateUrl: './clear-session-button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

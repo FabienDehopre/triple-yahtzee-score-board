@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
 import { App } from './app';
+import { getTranslocoTestingModule } from './testing/transloco-testing';
 
 describe('app', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, getTranslocoTestingModule()],
     }).compileComponents();
   });
 

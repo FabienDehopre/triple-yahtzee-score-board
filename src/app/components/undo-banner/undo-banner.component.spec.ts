@@ -8,13 +8,16 @@ import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
 import { UndoService } from '../../services/undo.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { UndoBannerComponent } from './undo-banner.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('undoBannerComponent', () => {
   // ─── Hidden state ──────────────────────────────────────────────────────────
 
   test('should not render the banner when canUndo is false', async () => {
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
 
     expect(screen.queryByTestId('undo-banner')).not.toBeInTheDocument();
   });
@@ -22,7 +25,7 @@ describe('undoBannerComponent', () => {
   // ─── Visible state ─────────────────────────────────────────────────────────
 
   test('should render the banner after a score is placed', async () => {
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.aces, 0);
@@ -31,7 +34,7 @@ describe('undoBannerComponent', () => {
   });
 
   test('should show the category name in the banner', async () => {
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.aces, 0);
@@ -40,7 +43,7 @@ describe('undoBannerComponent', () => {
   });
 
   test('should render an undo button when the banner is visible', async () => {
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.aces, 0);
@@ -52,7 +55,7 @@ describe('undoBannerComponent', () => {
 
   test('should hide the banner after clicking Undo', async () => {
     const user = userEvent.setup();
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.aces, 0);
@@ -64,7 +67,7 @@ describe('undoBannerComponent', () => {
 
   test('should restore the previous game state after clicking Undo', async () => {
     const user = userEvent.setup();
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
@@ -83,7 +86,7 @@ describe('undoBannerComponent', () => {
   // ─── Auto-hide on new dice ─────────────────────────────────────────────────
 
   test('should auto-hide the banner when new dice are entered', async () => {
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.aces, 0);
@@ -104,7 +107,7 @@ describe('undoBannerComponent', () => {
 
   test('canUndo should be false after undo is performed', async () => {
     const user = userEvent.setup();
-    await render(UndoBannerComponent);
+    await render(UndoBannerComponent, T);
     const placement = TestBed.inject(PlacementService);
     const undoService = TestBed.inject(UndoService);
 

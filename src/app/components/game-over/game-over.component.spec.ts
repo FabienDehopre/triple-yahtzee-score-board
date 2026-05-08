@@ -8,7 +8,10 @@ import { GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/ga
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { GameOverComponent } from './game-over.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 /** Fill all 39 cells for a single game index to trigger game-over for that game. */
 function fillAllCellsForGame(placement: PlacementService, gameIndex: number): void {
@@ -31,13 +34,13 @@ describe('gameOverComponent', () => {
   // ─── Rendering ─────────────────────────────────────────────────────────────
 
   test('should render the game-over heading', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
 
     expect(screen.getByTestId('game-over-heading')).toBeInTheDocument();
   });
 
   test('should display the grand total', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
     placement.setCurrentDice(dice);
@@ -51,7 +54,7 @@ describe('gameOverComponent', () => {
   });
 
   test('should display the combined total (ONE column) for game 0', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.chance, 0); // ONE: 30×1
@@ -60,7 +63,7 @@ describe('gameOverComponent', () => {
   });
 
   test('should display the double combined (TWO column) for game 0', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5];
     placement.setCurrentDice(dice);
@@ -72,7 +75,7 @@ describe('gameOverComponent', () => {
   });
 
   test('should display the triple combined (THREE column) for game 0', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5];
     placement.setCurrentDice(dice);
@@ -86,7 +89,7 @@ describe('gameOverComponent', () => {
   });
 
   test('should display the combined total for game 1', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
     placement.setCurrentDice([0, 0, 0, 0, 0, 5] as DiceSet);
     placement.placeScore(SCORE_CATEGORY.chance, 1); // game 1, ONE: 30×1
@@ -95,7 +98,7 @@ describe('gameOverComponent', () => {
   });
 
   test('should display upper bonus when earned', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const placement = TestBed.inject(PlacementService);
 
     // Earn bonus in ONE column (raw ≥ 63 → bonus = 35)
@@ -116,14 +119,14 @@ describe('gameOverComponent', () => {
   // ─── New Game Button ────────────────────────────────────────────────────────
 
   test('should render the New Game button', async () => {
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
 
     expect(screen.getByTestId('new-game-button')).toBeInTheDocument();
   });
 
   test('should reset the game state when New Game is clicked', async () => {
     const user = userEvent.setup();
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -141,7 +144,7 @@ describe('gameOverComponent', () => {
 
   test('should reset isGameOver when New Game is clicked after a completed game', async () => {
     const user = userEvent.setup();
-    await render(GameOverComponent);
+    await render(GameOverComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 

@@ -1,7 +1,37 @@
 import type { ApplicationConfig } from '@angular/core';
 
-import { provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideTransloco, TranslocoService } from '@jsverse/transloco';
+
+import { TranslocoHttpLoader } from './transloco-loader';
+
+const LOCALE_STORAGE_KEY = 'triple-yahtzee-locale';
+const AVAILABLE_LANGS = ['en', 'fr'];
+const DEFAULT_LANG = 'en';
+
+export { AVAILABLE_LANGS, DEFAULT_LANG, LOCALE_STORAGE_KEY };
 
 export const APP_CONFIG: ApplicationConfig = {
-  providers: [provideBrowserGlobalErrorListeners()],
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideHttpClient(),
+    provideTransloco({
+      config: {
+        availableLangs: AVAILABLE_LANGS,
+        defaultLang: DEFAULT_LANG,
+        reRenderOnLangChange: true,
+        prodMode: false,
+      },
+      loader: TranslocoHttpLoader,
+    }),
+    provideAppInitializer(() => {
+      const transloco = inject(TranslocoService);
+      const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
+      const lang = stored && AVAILABLE_LANGS.includes(stored) ? stored : DEFAULT_LANG;
+      transloco.setActiveLang(lang);
+      document.documentElement.lang = lang;
+      return transloco.load(lang);
+    }),
+  ],
 };

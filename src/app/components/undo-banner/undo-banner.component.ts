@@ -1,27 +1,9 @@
-import type { ScoreCategory } from '../../models/score-category.model';
-
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 
-import { SCORE_CATEGORY } from '../../models/score-category.model';
+import { CATEGORY_LABEL_KEYS } from '../../models/i18n-keys';
 import { GameStateService } from '../../services/game-state.service';
 import { UndoService } from '../../services/undo.service';
-
-/** Human-readable labels for each score category. */
-const CATEGORY_LABELS: Record<ScoreCategory, string> = {
-  [SCORE_CATEGORY.aces]: 'Aces',
-  [SCORE_CATEGORY.twos]: 'Twos',
-  [SCORE_CATEGORY.threes]: 'Threes',
-  [SCORE_CATEGORY.fours]: 'Fours',
-  [SCORE_CATEGORY.fives]: 'Fives',
-  [SCORE_CATEGORY.sixes]: 'Sixes',
-  [SCORE_CATEGORY.threeOfAKind]: '3 of a Kind',
-  [SCORE_CATEGORY.fourOfAKind]: '4 of a Kind',
-  [SCORE_CATEGORY.fullHouse]: 'Full House',
-  [SCORE_CATEGORY.smallStraight]: 'Sm. Straight',
-  [SCORE_CATEGORY.largeStraight]: 'Lg. Straight',
-  [SCORE_CATEGORY.yahtzee]: 'YAHTZEE',
-  [SCORE_CATEGORY.chance]: 'Chance',
-};
 
 /**
  * Floating toast-style banner that appears after a score placement.
@@ -30,6 +12,7 @@ const CATEGORY_LABELS: Record<ScoreCategory, string> = {
  */
 @Component({
   selector: 'app-undo-banner',
+  imports: [TranslocoPipe],
   templateUrl: './undo-banner.component.html',
   styleUrl: './undo-banner.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,12 +20,16 @@ const CATEGORY_LABELS: Record<ScoreCategory, string> = {
 export class UndoBannerComponent {
   readonly #undoService = inject(UndoService);
   readonly #gameState = inject(GameStateService);
+  readonly #transloco = inject(TranslocoService);
 
   protected readonly canUndo = this.#undoService.canUndo;
 
-  protected readonly categoryLabel = computed(() => {
+  protected readonly undoMessage = computed(() => {
+    void this.#transloco.activeLang();
     const cat = this.#undoService.lastCategory();
-    return cat === undefined ? '' : CATEGORY_LABELS[cat];
+    if (cat === undefined) return '';
+    const categoryName = this.#transloco.translate(CATEGORY_LABEL_KEYS[cat]);
+    return this.#transloco.translate('undoBanner.message', { category: categoryName });
   });
 
   protected onUndo(): void {

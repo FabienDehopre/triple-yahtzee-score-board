@@ -1,5 +1,7 @@
 <div class="flex flex-wrap items-center gap-3">
-  <label class="text-sm font-semibold text-gray-600" for="game-count-select">Number of Games:</label>
+  <label class="text-sm font-semibold text-gray-600" for="game-count-select">
+    {{ 'gameCountPicker.label' | transloco }}
+  </label>
   <select
     class="
       rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium
@@ -21,7 +23,7 @@
     flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3
     py-1.5 text-sm
   ">
-    <span class="text-amber-700">Decreasing game count will remove scored games from the end.</span>
+    <span class="text-amber-700">{{ 'gameCountPicker.decreaseWarning' | transloco }}</span>
     <button
       class="
         rounded-md bg-indigo-600 px-2.5 py-1 text-xs font-bold text-white
@@ -33,7 +35,7 @@
       type="button"
       (click)="onConfirm()"
     >
-      Confirm
+      {{ 'gameCountPicker.confirm' | transloco }}
     </button>
     <button
       class="
@@ -46,7 +48,7 @@
       type="button"
       (click)="onCancel()"
     >
-      Cancel
+      {{ 'gameCountPicker.cancel' | transloco }}
     </button>
   </div>
   }

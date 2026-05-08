@@ -7,13 +7,16 @@ import userEvent from '@testing-library/user-event';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { ScoreSheetComponent } from './score-sheet.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('scoreSheetComponent', () => {
   // ─── Rendering ─────────────────────────────────────────────────────────────
 
   test('should render column headers for each game', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     // Default is 2 games; each game has ONE, TWO, THREE columns
     expect(screen.getByTestId('column-header-0-ONE')).toHaveTextContent('ONE ×1');
@@ -25,14 +28,14 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should render game group headers', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     expect(screen.getByTestId('game-group-header-0')).toHaveTextContent('Game 1');
     expect(screen.getByTestId('game-group-header-1')).toHaveTextContent('Game 2');
   });
 
   test('should render upper section category labels', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     // Each label appears once in the mobile layout and once in the desktop layout
     expect(screen.getAllByText('Aces')).toHaveLength(2);
@@ -44,7 +47,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should render lower section category labels', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     // Each label appears once in the mobile layout and once in the desktop layout
     expect(screen.getAllByText('3 of a Kind')).toHaveLength(2);
@@ -57,7 +60,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should render the grand total row', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     expect(screen.getByTestId('grand-total')).toBeInTheDocument();
   });
@@ -65,7 +68,7 @@ describe('scoreSheetComponent', () => {
   // ─── No-dice state ─────────────────────────────────────────────────────────
 
   test('should show no available-cell buttons when no dice are set', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     const buttons = screen.queryAllByRole('button');
     expect(buttons).toHaveLength(0);
@@ -74,7 +77,7 @@ describe('scoreSheetComponent', () => {
   // ─── With dice ─────────────────────────────────────────────────────────────
 
   test('should show available-cell buttons for all categories in all games when dice are set', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
 
@@ -85,7 +88,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should show the potential score for Aces in game 0 ONE column', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     // five 1s → aces = 5 (×1 = 5 in column ONE)
     gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
@@ -94,7 +97,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should show the potential score for Aces in game 1 ONE column', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     // five 1s → aces = 5 (×1 = 5 in column ONE)
     gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
@@ -103,7 +106,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should apply column multiplier to potential score in TWO column', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → sixes = 30
@@ -118,7 +121,7 @@ describe('scoreSheetComponent', () => {
 
   test('should place score and display it when an available cell is clicked for game 0', async () => {
     const user = userEvent.setup();
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet); // five 1s → aces = 5
 
@@ -131,7 +134,7 @@ describe('scoreSheetComponent', () => {
 
   test('should place score in game 1 independently from game 0', async () => {
     const user = userEvent.setup();
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const dice: DiceSet = [5, 0, 0, 0, 0, 0];
     gameState.setCurrentDice(dice);
@@ -147,7 +150,7 @@ describe('scoreSheetComponent', () => {
 
   test('should advance to next column after placement in game 0', async () => {
     const user = userEvent.setup();
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const dice: DiceSet = [5, 0, 0, 0, 0, 0];
     gameState.setCurrentDice(dice);
@@ -161,7 +164,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should show 0 for a scratch (potential score is 0)', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     // no 1s → aces = 0
     gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
@@ -171,7 +174,7 @@ describe('scoreSheetComponent', () => {
 
   test('should display filled cell with 0 after a scratch is placed', async () => {
     const user = userEvent.setup();
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const gameState = TestBed.inject(GameStateService);
     gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet); // no aces
 
@@ -183,14 +186,14 @@ describe('scoreSheetComponent', () => {
   // ─── Mobile tab navigation ─────────────────────────────────────────────────
 
   test('should render a mobile game tab for each game', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     expect(screen.getByTestId('mobile-tab-0')).toHaveTextContent('Game 1');
     expect(screen.getByTestId('mobile-tab-1')).toHaveTextContent('Game 2');
   });
 
   test('should mark the first game tab as selected by default', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     expect(screen.getByTestId('mobile-tab-0')).toHaveAttribute('aria-selected', 'true');
     expect(screen.getByTestId('mobile-tab-1')).toHaveAttribute('aria-selected', 'false');
@@ -198,7 +201,7 @@ describe('scoreSheetComponent', () => {
 
   test('should switch the active game tab when another tab is clicked', async () => {
     const user = userEvent.setup();
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
 
     await user.click(screen.getByTestId('mobile-tab-1'));
 
@@ -209,7 +212,7 @@ describe('scoreSheetComponent', () => {
   // ─── Totals ─────────────────────────────────────────────────────────────────
 
   test('should show upper section total after placing scores', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const placement = TestBed.inject(PlacementService);
     // five 1s → aces = 5
     placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
@@ -219,7 +222,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should show grand total updating after placements across multiple games', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
     placement.setCurrentDice(dice);
@@ -236,7 +239,7 @@ describe('scoreSheetComponent', () => {
   });
 
   test('should show upper bonus when raw total reaches 63', async () => {
-    await render(ScoreSheetComponent);
+    await render(ScoreSheetComponent, T);
     const placement = TestBed.inject(PlacementService);
 
     // Build up to 70 raw in ONE column of game 0

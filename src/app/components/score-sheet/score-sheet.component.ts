@@ -2,10 +2,11 @@ import type { GameColumn } from '../../models/game-column.model';
 import type { ScoreCategory } from '../../models/score-category.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
-import { COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
+import { COLUMN_ORDER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
 import { nextUnfilledColumn } from '../../models/game.model';
-import { SCORE_CATEGORY } from '../../models/score-category.model';
+import { CATEGORY_HINT_KEYS, CATEGORY_LABEL_KEYS, SCORE_SHEET_COLUMN_KEYS } from '../../models/i18n-keys';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
 import { ScoringEngineService } from '../../services/scoring-engine.service';
@@ -15,6 +16,7 @@ const UPPER_SET = new Set<ScoreCategory>(UPPER_CATEGORIES);
 
 @Component({
   selector: 'app-score-sheet',
+  imports: [TranslocoPipe],
   templateUrl: './score-sheet.component.html',
   styleUrl: './score-sheet.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,43 +41,9 @@ export class ScoreSheetComponent {
   protected readonly lowerCategories = LOWER_CATEGORIES;
   protected readonly columnOrder = COLUMN_ORDER;
 
-  protected readonly columnLabels: Record<GameColumn, string> = {
-    [GAME_COLUMN.one]: 'ONE ×1',
-    [GAME_COLUMN.two]: 'TWO ×2',
-    [GAME_COLUMN.three]: 'THREE ×3',
-  };
-
-  protected readonly categoryLabels: Record<ScoreCategory, string> = {
-    [SCORE_CATEGORY.aces]: 'Aces',
-    [SCORE_CATEGORY.twos]: 'Twos',
-    [SCORE_CATEGORY.threes]: 'Threes',
-    [SCORE_CATEGORY.fours]: 'Fours',
-    [SCORE_CATEGORY.fives]: 'Fives',
-    [SCORE_CATEGORY.sixes]: 'Sixes',
-    [SCORE_CATEGORY.threeOfAKind]: '3 of a Kind',
-    [SCORE_CATEGORY.fourOfAKind]: '4 of a Kind',
-    [SCORE_CATEGORY.fullHouse]: 'Full House',
-    [SCORE_CATEGORY.smallStraight]: 'Sm. Straight',
-    [SCORE_CATEGORY.largeStraight]: 'Lg. Straight',
-    [SCORE_CATEGORY.yahtzee]: 'YAHTZEE',
-    [SCORE_CATEGORY.chance]: 'Chance',
-  };
-
-  protected readonly categoryHints: Record<ScoreCategory, string> = {
-    [SCORE_CATEGORY.aces]: '= 1',
-    [SCORE_CATEGORY.twos]: '= 2',
-    [SCORE_CATEGORY.threes]: '= 3',
-    [SCORE_CATEGORY.fours]: '= 4',
-    [SCORE_CATEGORY.fives]: '= 5',
-    [SCORE_CATEGORY.sixes]: '= 6',
-    [SCORE_CATEGORY.threeOfAKind]: 'Add all dice',
-    [SCORE_CATEGORY.fourOfAKind]: 'Add all dice',
-    [SCORE_CATEGORY.fullHouse]: 'Score 25',
-    [SCORE_CATEGORY.smallStraight]: 'Score 30',
-    [SCORE_CATEGORY.largeStraight]: 'Score 40',
-    [SCORE_CATEGORY.yahtzee]: 'Score 50',
-    [SCORE_CATEGORY.chance]: 'Add all dice',
-  };
+  protected readonly columnLabelKeys = SCORE_SHEET_COLUMN_KEYS;
+  protected readonly categoryLabelKeys = CATEGORY_LABEL_KEYS;
+  protected readonly categoryHintKeys = CATEGORY_HINT_KEYS;
 
   /**
    * Returns the displayed score for a filled cell: raw value × column multiplier.

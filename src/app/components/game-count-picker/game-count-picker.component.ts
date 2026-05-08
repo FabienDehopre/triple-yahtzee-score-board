@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, linkedSignal, signal } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { GameStateService } from '../../services/game-state.service';
 
@@ -7,6 +8,7 @@ const GAME_COUNT_OPTIONS = [1, 2, 3, 4, 5];
 
 @Component({
   selector: 'app-game-count-picker',
+  imports: [TranslocoPipe],
   templateUrl: './game-count-picker.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

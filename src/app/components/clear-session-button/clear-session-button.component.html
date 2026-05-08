@@ -10,7 +10,7 @@
     type="button"
     (click)="onClearClick()"
   >
-    Clear Session
+    {{ 'clearSessionButton.label' | transloco }}
   </button>
 
   @if (isPending()) {
@@ -20,7 +20,7 @@
       px-3 py-1.5 text-sm
     "
   >
-    <span class="text-amber-700">This will erase all scores. Are you sure?</span>
+    <span class="text-amber-700">{{ 'clearSessionButton.confirmWarning' | transloco }}</span>
     <button
       class="
         rounded-md bg-red-600 px-2.5 py-1 text-xs font-bold text-white
@@ -32,7 +32,7 @@
       type="button"
       (click)="onConfirm()"
     >
-      Confirm
+      {{ 'clearSessionButton.confirm' | transloco }}
     </button>
     <button
       class="
@@ -45,7 +45,7 @@
       type="button"
       (click)="onCancel()"
     >
-      Cancel
+      {{ 'clearSessionButton.cancel' | transloco }}
     </button>
   </div>
   }

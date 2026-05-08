@@ -1,6 +1,7 @@
 import type { DiceSet } from '../../models/dice-set.model';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 
 import { GameStateService } from '../../services/game-state.service';
 
@@ -11,6 +12,7 @@ interface DotPosition {
 
 @Component({
   selector: 'app-dice-input',
+  imports: [TranslocoPipe],
   templateUrl: './dice-input.component.html',
   styleUrl: './dice-input.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

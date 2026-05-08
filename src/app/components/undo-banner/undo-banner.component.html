@@ -8,18 +8,18 @@
   data-testid="undo-banner"
   role="status"
 >
-  <span class="text-sm">Score placed in <strong>{{ categoryLabel() }}</strong>. Undo?</span>
+  <span class="text-sm" [innerHTML]="undoMessage()"></span>
   <button
-    aria-label="Undo last score placement"
     class="
       rounded-lg bg-indigo-500 px-3 py-1 text-xs font-semibold transition-colors
       hover:bg-indigo-400
       focus-visible:outline-2 focus-visible:outline-indigo-300
     "
     type="button"
+    [attr.aria-label]="'undoBanner.undoAriaLabel' | transloco"
     (click)="onUndo()"
   >
-    Undo
+    {{ 'undoBanner.undo' | transloco }}
   </button>
 </div>
 }

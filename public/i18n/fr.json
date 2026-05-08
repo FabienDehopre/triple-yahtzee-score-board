@@ -1,0 +1,125 @@
+{
+  "app": {
+    "title": "Triple Yahtzee",
+    "subtitle": "Tableau de Scores"
+  },
+  "diceInput": {
+    "diceRemaining": "Dés restants",
+    "reset": "Réinitialiser",
+    "confirm": "Confirmer",
+    "incrementFace": "Incrémenter la face {{ face }}",
+    "decrementFace": "Décrémenter la face {{ face }}"
+  },
+  "suggestionBar": {
+    "suggested": "Suggestion",
+    "score": "Score :",
+    "accept": "Accepter",
+    "acceptAriaLabel": "Accepter la suggestion",
+    "dismiss": "Ignorer",
+    "dismissAriaLabel": "Ignorer la suggestion"
+  },
+  "scoreSheet": {
+    "enterDiceRoll": "Saisir le Lancer de Dés",
+    "category": "Catégorie",
+    "upperSection": "Section Supérieure",
+    "lowerSection": "Section Inférieure",
+    "upperSectionGame": "Section Supérieure — Partie {{ number }}",
+    "lowerSectionGame": "Section Inférieure — Partie {{ number }}",
+    "game": "Partie {{ number }}",
+    "totalNeed63": "Total",
+    "totalNeed63Hint": "(besoin de 63)",
+    "totalScoreNeed63": "Score Total",
+    "totalScoreNeed63Hint": "(besoin de 63 pour le bonus)",
+    "bonus": "Bonus",
+    "bonusHint": "(+35 si ≥ 63)",
+    "upperTotal": "Total Supérieur",
+    "upperSectionTotal": "Total Section Supérieure",
+    "yahtzeeBonus": "Bonus Yahtzee",
+    "yahtzeeBonusHint": "(+100 chacun)",
+    "lowerTotal": "Total Inférieur",
+    "lowerSectionTotal": "Total Section Inférieure",
+    "grandTotal": "Total Général",
+    "grandTotalHint": "(Additionner le Total de Toutes les Colonnes)",
+    "combinedTotal": "Total Combinés",
+    "doubleCombined": "Total Double",
+    "tripleCombined": "Total Triple",
+    "tripleYahtzeeTotalScore": "Score Total Triple Yahtzee →",
+    "placeScoreAriaLabel": "Placer le score {{ category }} : {{ score }}",
+    "columns": {
+      "one": "UN ×1",
+      "two": "DEUX ×2",
+      "three": "TROIS ×3"
+    },
+    "categories": {
+      "aces": "As",
+      "twos": "Deux",
+      "threes": "Trois",
+      "fours": "Quatre",
+      "fives": "Cinq",
+      "sixes": "Six",
+      "threeOfAKind": "Brelan",
+      "fourOfAKind": "Carré",
+      "fullHouse": "Full",
+      "smallStraight": "Petite Suite",
+      "largeStraight": "Grande Suite",
+      "yahtzee": "YAHTZEE",
+      "chance": "Chance"
+    },
+    "hints": {
+      "aces": "= 1",
+      "twos": "= 2",
+      "threes": "= 3",
+      "fours": "= 4",
+      "fives": "= 5",
+      "sixes": "= 6",
+      "threeOfAKind": "Additionner tous les dés",
+      "fourOfAKind": "Additionner tous les dés",
+      "fullHouse": "Score 25",
+      "smallStraight": "Score 30",
+      "largeStraight": "Score 40",
+      "yahtzee": "Score 50",
+      "chance": "Additionner tous les dés"
+    }
+  },
+  "gameOver": {
+    "heading": "Partie Terminée !",
+    "subheading": "Triple Yahtzee Terminé",
+    "grandTotal": "Total Général",
+    "grandTotalHint": "(Somme de toutes les parties et colonnes)",
+    "scoreBreakdown": "Détail des Scores",
+    "game": "Partie {{ number }}",
+    "bonusesEarned": "Bonus Obtenus",
+    "upperBonusWithGame": "Bonus Supérieur (Partie {{ game }} – {{ column }})",
+    "upperBonus": "Bonus Supérieur ({{ column }})",
+    "noBonusesEarned": "Aucun bonus obtenu",
+    "newGame": "Nouvelle Partie",
+    "bonusLabel": "+{{ amount }} bonus",
+    "columns": {
+      "one": "Total Combinés",
+      "two": "Total Double",
+      "three": "Total Triple"
+    }
+  },
+  "undoBanner": {
+    "message": "Score placé dans <strong>{{ category }}</strong>. Annuler ?",
+    "undo": "Annuler",
+    "undoAriaLabel": "Annuler le dernier placement"
+  },
+  "gameCountPicker": {
+    "label": "Nombre de Parties :",
+    "decreaseWarning": "Diminuer le nombre de parties supprimera les parties avec des scores à la fin.",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "clearSessionButton": {
+    "label": "Effacer la Session",
+    "confirmWarning": "Cela effacera tous les scores. Êtes-vous sûr ?",
+    "confirm": "Confirmer",
+    "cancel": "Annuler"
+  },
+  "languagePicker": {
+    "ariaLabel": "Sélectionner la langue",
+    "en": "Anglais",
+    "fr": "Français"
+  }
+}

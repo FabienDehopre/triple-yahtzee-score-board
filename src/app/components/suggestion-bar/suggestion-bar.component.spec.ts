@@ -5,13 +5,16 @@ import userEvent from '@testing-library/user-event';
 
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { SuggestionBarComponent } from './suggestion-bar.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('suggestionBarComponent', () => {
   // ─── Not visible without dice ─────────────────────────────────────────────
 
   test('should not render the bar when no dice are set', async () => {
-    await render(SuggestionBarComponent);
+    await render(SuggestionBarComponent, T);
 
     expect(screen.queryByTestId('suggestion-bar')).not.toBeInTheDocument();
   });
@@ -19,7 +22,7 @@ describe('suggestionBarComponent', () => {
   // ─── Visible after dice entry ─────────────────────────────────────────────
 
   test('should render the bar after dice are confirmed', async () => {
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     // five 5s: Yahtzee is top suggestion
@@ -31,7 +34,7 @@ describe('suggestionBarComponent', () => {
   });
 
   test('should show the suggested category name', async () => {
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → YAHTZEE top suggestion
@@ -42,7 +45,7 @@ describe('suggestionBarComponent', () => {
   });
 
   test('should show the suggested score', async () => {
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → YAHTZEE = 50
@@ -55,7 +58,7 @@ describe('suggestionBarComponent', () => {
   // ─── Accept button ────────────────────────────────────────────────────────
 
   test('should render Accept and Dismiss buttons when visible', async () => {
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     gameState.setCurrentDice([0, 0, 0, 0, 5, 0]);
@@ -67,7 +70,7 @@ describe('suggestionBarComponent', () => {
 
   test('should hide the bar after Accept is clicked', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     gameState.setCurrentDice([0, 0, 0, 0, 5, 0]);
@@ -81,7 +84,7 @@ describe('suggestionBarComponent', () => {
 
   test('should place the suggested score when Accept is clicked', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // top suggestion: YAHTZEE in ONE → 50
@@ -99,7 +102,7 @@ describe('suggestionBarComponent', () => {
 
   test('should place the suggested score in the active game when activeGameIndex = 1', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     gameState.setActiveGameIndex(1); // active game is now game 1
@@ -121,7 +124,7 @@ describe('suggestionBarComponent', () => {
 
   test('should hide the bar after Dismiss is clicked', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     gameState.setCurrentDice([0, 0, 0, 0, 5, 0]);
@@ -135,7 +138,7 @@ describe('suggestionBarComponent', () => {
 
   test('should not place a score when Dismiss is clicked', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     const dice: DiceSet = [0, 0, 0, 0, 5, 0];
@@ -154,7 +157,7 @@ describe('suggestionBarComponent', () => {
 
   test('should re-appear after a new dice roll following a Dismiss', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     // First roll — dismiss
@@ -172,7 +175,7 @@ describe('suggestionBarComponent', () => {
 
   test('should re-appear after a new dice roll following an Accept', async () => {
     const user = userEvent.setup();
-    const { fixture } = await render(SuggestionBarComponent);
+    const { fixture } = await render(SuggestionBarComponent, T);
     const gameState = fixture.debugElement.injector.get(GameStateService);
 
     // First roll — accept

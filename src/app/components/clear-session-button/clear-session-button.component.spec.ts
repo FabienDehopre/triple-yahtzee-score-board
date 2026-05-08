@@ -7,17 +7,20 @@ import userEvent from '@testing-library/user-event';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
+import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { ClearSessionButtonComponent } from './clear-session-button.component';
+
+const T = { imports: [getTranslocoTestingModule()] };
 
 describe('clearSessionButtonComponent', () => {
   test('renders clear session button', async () => {
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
 
     expect(screen.getByTestId('clear-session-button')).toBeInTheDocument();
   });
 
   test('does not show confirmation initially', async () => {
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
 
     expect(screen.queryByTestId('clear-session-confirm')).not.toBeInTheDocument();
     expect(screen.queryByTestId('clear-session-cancel')).not.toBeInTheDocument();
@@ -25,7 +28,7 @@ describe('clearSessionButtonComponent', () => {
 
   test('clears immediately when no game in progress', async () => {
     const user = userEvent.setup();
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -47,7 +50,7 @@ describe('clearSessionButtonComponent', () => {
 
   test('shows confirmation when game is in progress', async () => {
     const user = userEvent.setup();
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
     const placement = TestBed.inject(PlacementService);
 
     placement.setCurrentDice([1, 0, 0, 0, 0, 0] as DiceSet);
@@ -61,7 +64,7 @@ describe('clearSessionButtonComponent', () => {
 
   test('clears session on confirm', async () => {
     const user = userEvent.setup();
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
@@ -78,7 +81,7 @@ describe('clearSessionButtonComponent', () => {
 
   test('cancels without clearing on cancel', async () => {
     const user = userEvent.setup();
-    await render(ClearSessionButtonComponent);
+    await render(ClearSessionButtonComponent, T);
     const gameState = TestBed.inject(GameStateService);
     const placement = TestBed.inject(PlacementService);
 
