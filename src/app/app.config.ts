@@ -6,11 +6,9 @@ import { provideTransloco, TranslocoService } from '@jsverse/transloco';
 
 import { TranslocoHttpLoader } from './transloco-loader';
 
-const LOCALE_STORAGE_KEY = 'triple-yahtzee-locale';
-const AVAILABLE_LANGS = ['en', 'fr'];
-const DEFAULT_LANG = 'en';
-
-export { AVAILABLE_LANGS, DEFAULT_LANG, LOCALE_STORAGE_KEY };
+export const LOCALE_STORAGE_KEY = 'triple-yahtzee-locale';
+export const AVAILABLE_LANGS = ['en', 'fr'];
+export const DEFAULT_LANG = 'en';
 
 export const APP_CONFIG: ApplicationConfig = {
   providers: [

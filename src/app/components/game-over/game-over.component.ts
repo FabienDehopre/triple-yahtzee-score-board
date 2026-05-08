@@ -3,7 +3,7 @@ import type { GameColumn } from '../../models/game-column.model';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
-import { COLUMN_ORDER, GAME_COLUMN } from '../../models/game-column.model';
+import { COLUMN_ORDER } from '../../models/game-column.model';
 import { GAME_OVER_COLUMN_KEYS } from '../../models/i18n-keys';
 import { GameStateService } from '../../services/game-state.service';
 
@@ -21,11 +21,7 @@ export class GameOverComponent {
   protected readonly games = this.#gameState.games;
   protected readonly columnOrder = COLUMN_ORDER;
 
-  protected readonly columnLabelKeys: Record<GameColumn, string> = {
-    [GAME_COLUMN.one]: GAME_OVER_COLUMN_KEYS[GAME_COLUMN.one],
-    [GAME_COLUMN.two]: GAME_OVER_COLUMN_KEYS[GAME_COLUMN.two],
-    [GAME_COLUMN.three]: GAME_OVER_COLUMN_KEYS[GAME_COLUMN.three],
-  };
+  protected readonly columnLabelKeys = GAME_OVER_COLUMN_KEYS;
 
   /** Upper bonus totals (already multiplied) for each game/column. */
   protected readonly upperBonusDisplay = computed(() =>
