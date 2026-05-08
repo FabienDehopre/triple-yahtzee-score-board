@@ -1,16 +1,13 @@
 import type { GameColumn } from '../models/game-column.model';
-import type { Game } from '../models/game.model';
 import type { ScoreCategory } from '../models/score-category.model';
 import type { SuggestionResult } from '../models/suggestion-result.model';
 
 import { computed, inject, Injectable } from '@angular/core';
 
-import { COLUMN_ORDER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
+import { LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
+import { nextUnfilledColumn } from '../models/game.model';
 import { GameStateService } from './game-state.service';
 import { ScoringEngineService } from './scoring-engine.service';
-
-/** Fast lookup set for upper-section categories. */
-const UPPER_SET = new Set(UPPER_CATEGORIES);
 
 interface AvailableCell { category: ScoreCategory; column: GameColumn }
 
@@ -54,17 +51,11 @@ export class SuggestionEngineService {
   });
 
   /** Builds the list of currently fillable cells for the active game. */
-  #computeAvailableCells(game: Game): AvailableCell[] {
+  #computeAvailableCells(game: Parameters<typeof nextUnfilledColumn>[0]): AvailableCell[] {
     const cells: AvailableCell[] = [];
     for (const category of [...UPPER_CATEGORIES, ...LOWER_CATEGORIES]) {
-      const isUpper = UPPER_SET.has(category);
-      for (const col of COLUMN_ORDER) {
-        const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-        if (!section[category]) {
-          cells.push({ category, column: col });
-          break; // only the next unfilled column per category
-        }
-      }
+      const column = nextUnfilledColumn(game, category);
+      if (column !== undefined) cells.push({ category, column });
     }
     return cells;
   }

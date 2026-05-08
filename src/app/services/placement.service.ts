@@ -3,7 +3,8 @@ import type { ScoreCategory } from '../models/score-category.model';
 
 import { inject, Injectable } from '@angular/core';
 
-import { COLUMN_ORDER, UPPER_CATEGORIES } from '../models/game-column.model';
+import { UPPER_CATEGORIES } from '../models/game-column.model';
+import { nextUnfilledColumn } from '../models/game.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { GameStateService } from './game-state.service';
 import { ScoringEngineService } from './scoring-engine.service';
@@ -49,19 +50,13 @@ export class PlacementService {
     if (gameIndex < 0 || gameIndex >= games.length) return;
 
     const game = games[gameIndex];
-    const isUpper = UPPER_SET.has(category);
-
-    const column = COLUMN_ORDER.find((col) => {
-      const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-      return !section[category];
-    });
-
+    const column = nextUnfilledColumn(game, category);
     if (!column) return;
 
     this.#undo.saveSnapshot(games, category);
 
     const rawScore = this.#scoringEngine.computeScore(dice, category);
-    const sectionKey = isUpper ? 'upper' : 'lower';
+    const sectionKey = UPPER_SET.has(category) ? 'upper' : 'lower';
 
     const yahtzeeCell = game.columns[column].lower[SCORE_CATEGORY.yahtzee];
     const bonusEarned =

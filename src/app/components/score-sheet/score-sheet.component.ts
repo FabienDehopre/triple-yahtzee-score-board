@@ -4,6 +4,7 @@ import type { ScoreCategory } from '../../models/score-category.model';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
 import { COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
+import { nextUnfilledColumn } from '../../models/game.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
@@ -86,7 +87,7 @@ export class ScoreSheetComponent {
     const section = isUpper ? game.columns[column].upper : game.columns[column].lower;
     const cell = section[category];
     if (cell === undefined) return undefined;
-    return this.#scoringEngine.applyMultiplier(cell.value ?? 0, column);
+    return this.#scoringEngine.applyMultiplier(cell.value, column);
   }
 
   /**
@@ -95,27 +96,13 @@ export class ScoreSheetComponent {
    */
   protected isAvailableCell(gameIndex: number, column: GameColumn, category: ScoreCategory): boolean {
     if (!this.currentDice()) return false;
-    const game = this.games()[gameIndex];
-    const isUpper = UPPER_SET.has(category);
-    for (const col of COLUMN_ORDER) {
-      const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-      if (!section[category]) return col === column;
-    }
-    return false;
+    return nextUnfilledColumn(this.games()[gameIndex], category) === column;
   }
 
   /** Returns true when dice are set AND the category has at least one unfilled column in any game. */
   protected isCategoryAvailable(category: ScoreCategory): boolean {
     if (!this.currentDice()) return false;
-    const games = this.games();
-    const isUpper = UPPER_SET.has(category);
-    for (const game of games) {
-      for (const col of COLUMN_ORDER) {
-        const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-        if (!section[category]) return true;
-      }
-    }
-    return false;
+    return this.games().some((game) => nextUnfilledColumn(game, category) !== undefined);
   }
 
   /**
