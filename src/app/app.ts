@@ -2,6 +2,7 @@ import type { DiceSet } from './models/dice-set.model';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { ClearSessionButtonComponent } from './components/clear-session-button/clear-session-button.component';
 import { DiceInputComponent } from './components/dice-input/dice-input.component';
 import { GameCountPickerComponent } from './components/game-count-picker/game-count-picker.component';
 import { GameOverComponent } from './components/game-over/game-over.component';
@@ -14,7 +15,7 @@ import { PlacementService } from './services/placement.service';
 
 @Component({
   selector: 'app-root',
-  imports: [DiceInputComponent, GameCountPickerComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent],
+  imports: [ClearSessionButtonComponent, DiceInputComponent, GameCountPickerComponent, GameOverComponent, ScoreSheetComponent, SuggestionBarComponent, UndoBannerComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

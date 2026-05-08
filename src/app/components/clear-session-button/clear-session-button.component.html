@@ -1,0 +1,52 @@
+<div class="flex flex-wrap items-center gap-3">
+  <button
+    class="
+      rounded-lg border border-red-300 bg-white px-3 py-1.5 text-sm font-medium
+      text-red-600 shadow-sm transition-colors
+      hover:bg-red-50
+      focus-visible:outline-2 focus-visible:outline-red-400
+    "
+    data-testid="clear-session-button"
+    type="button"
+    (click)="onClearClick()"
+  >
+    Clear Session
+  </button>
+
+  @if (isPending()) {
+  <div
+    class="
+      flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50
+      px-3 py-1.5 text-sm
+    "
+  >
+    <span class="text-amber-700">This will erase all scores. Are you sure?</span>
+    <button
+      class="
+        rounded-md bg-red-600 px-2.5 py-1 text-xs font-bold text-white
+        transition-colors
+        hover:bg-red-500
+        focus-visible:outline-2 focus-visible:outline-red-500
+      "
+      data-testid="clear-session-confirm"
+      type="button"
+      (click)="onConfirm()"
+    >
+      Confirm
+    </button>
+    <button
+      class="
+        rounded-md bg-gray-200 px-2.5 py-1 text-xs font-bold text-gray-700
+        transition-colors
+        hover:bg-gray-300
+        focus-visible:outline-2 focus-visible:outline-gray-400
+      "
+      data-testid="clear-session-cancel"
+      type="button"
+      (click)="onCancel()"
+    >
+      Cancel
+    </button>
+  </div>
+  }
+</div>
