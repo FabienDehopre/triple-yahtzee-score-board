@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
 import { GameStateService } from '../../services/game-state.service';
+import { PlacementService } from '../../services/placement.service';
 import { GameCountPickerComponent } from './game-count-picker.component';
 
 describe('gameCountPickerComponent', () => {
@@ -62,10 +63,11 @@ describe('gameCountPickerComponent', () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
     // Score in game 0 — a game is in progress
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 0);
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 0);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '3');
 
@@ -77,9 +79,10 @@ describe('gameCountPickerComponent', () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 0);
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 0);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '3');
 
@@ -92,15 +95,16 @@ describe('gameCountPickerComponent', () => {
   test('should not show confirmation when trailing games are empty', async () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
     // Score only in game 0; game 1 (the one being removed) is empty
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 0);
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 0);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
 
     expect(screen.queryByTestId('game-count-confirm')).not.toBeInTheDocument();
+    const gameState = TestBed.inject(GameStateService);
     expect(gameState.gameCount()).toBe(1);
   });
 
@@ -108,9 +112,10 @@ describe('gameCountPickerComponent', () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 0);
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 0);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
 
@@ -122,11 +127,11 @@ describe('gameCountPickerComponent', () => {
   test('should show confirmation when a trailing game being removed has scored cells', async () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
     // Score in game 1 (index 1) — this game will be removed when decreasing to 1
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 1);
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 1);
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
 
@@ -137,9 +142,10 @@ describe('gameCountPickerComponent', () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 1); // score in game 1
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 1); // score in game 1
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
     await user.click(screen.getByTestId('game-count-confirm'));
@@ -153,11 +159,12 @@ describe('gameCountPickerComponent', () => {
     const user = userEvent.setup();
     await render(GameCountPickerComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
     const originalCount = gameState.gameCount();
 
-    gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-    gameState.placeScore('Aces', 1); // score in game 1
+    placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+    placement.placeScore('Aces', 1); // score in game 1
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
     await user.click(screen.getByTestId('game-count-cancel'));

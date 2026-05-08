@@ -6,6 +6,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
+import { PlacementService } from '../../services/placement.service';
 import { ScoringEngineService } from '../../services/scoring-engine.service';
 
 /** Fast lookup set for upper-section categories. */
@@ -19,6 +20,7 @@ const UPPER_SET = new Set<ScoreCategory>(UPPER_CATEGORIES);
 })
 export class ScoreSheetComponent {
   readonly #gameState = inject(GameStateService);
+  readonly #placement = inject(PlacementService);
   readonly #scoringEngine = inject(ScoringEngineService);
 
   protected readonly games = this.#gameState.games;
@@ -38,9 +40,9 @@ export class ScoreSheetComponent {
   protected readonly columnMultiplier = COLUMN_MULTIPLIER;
 
   protected readonly columnLabels: Record<GameColumn, string> = {
-    [GAME_COLUMN.one]: 'ONE \u00D71',
-    [GAME_COLUMN.two]: 'TWO \u00D72',
-    [GAME_COLUMN.three]: 'THREE \u00D73',
+    [GAME_COLUMN.one]: 'ONE ×1',
+    [GAME_COLUMN.two]: 'TWO ×2',
+    [GAME_COLUMN.three]: 'THREE ×3',
   };
 
   protected readonly categoryLabels: Record<ScoreCategory, string> = {
@@ -129,7 +131,7 @@ export class ScoreSheetComponent {
 
   /** Places the score for category in the next available column of the given game. */
   protected onCellClick(category: ScoreCategory, gameIndex: number): void {
-    this.#gameState.placeScore(category, gameIndex);
+    this.#placement.placeScore(category, gameIndex);
   }
 
   /** Switches the active game shown in the mobile card layout. */

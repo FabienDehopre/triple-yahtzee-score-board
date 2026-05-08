@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
+import { PlacementService } from '../../services/placement.service';
 import { UndoService } from '../../services/undo.service';
 import { UndoBannerComponent } from './undo-banner.component';
 
@@ -22,27 +23,27 @@ describe('undoBannerComponent', () => {
 
   test('should render the banner after a score is placed', async () => {
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     expect(await screen.findByTestId('undo-banner')).toBeInTheDocument();
   });
 
   test('should show the category name in the banner', async () => {
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     expect(await screen.findByTestId('undo-banner')).toHaveTextContent('Aces');
   });
 
   test('should render an undo button when the banner is visible', async () => {
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     expect(await screen.findByRole('button', { name: /undo/i })).toBeInTheDocument();
   });
@@ -52,9 +53,9 @@ describe('undoBannerComponent', () => {
   test('should hide the banner after clicking Undo', async () => {
     const user = userEvent.setup();
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     await user.click(await screen.findByRole('button', { name: /undo/i }));
 
@@ -65,8 +66,9 @@ describe('undoBannerComponent', () => {
     const user = userEvent.setup();
     await render(UndoBannerComponent);
     const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     const gamesBefore = gameState.games();
     // Undo should restore state to before placement (empty board)
@@ -82,15 +84,15 @@ describe('undoBannerComponent', () => {
 
   test('should auto-hide the banner when new dice are entered', async () => {
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    const placement = TestBed.inject(PlacementService);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     // Verify it's visible
     expect(await screen.findByTestId('undo-banner')).toBeInTheDocument();
 
-    // Enter new dice
-    gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
+    // Entering new dice clears the undo snapshot
+    placement.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
 
     // Banner should be gone
     await waitFor(() => {
@@ -103,11 +105,11 @@ describe('undoBannerComponent', () => {
   test('canUndo should be false after undo is performed', async () => {
     const user = userEvent.setup();
     await render(UndoBannerComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
     const undoService = TestBed.inject(UndoService);
 
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
     expect(undoService.canUndo()).toBeTruthy();
 
     await user.click(await screen.findByRole('button', { name: /undo/i }));

@@ -4,23 +4,26 @@ import { TestBed } from '@angular/core/testing';
 
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { GameStateService } from './game-state.service';
+import { PlacementService } from './placement.service';
 import { SuggestionEngineService } from './suggestion-engine.service';
 
 describe('suggestionEngineService', () => {
   let service: SuggestionEngineService;
   let gameState: GameStateService;
+  let placement: PlacementService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(SuggestionEngineService);
     gameState = TestBed.inject(GameStateService);
+    placement = TestBed.inject(PlacementService);
   });
 
   // ─── Default (activeGameIndex = 0) ────────────────────────────────────────
 
   test('should compute suggestions from game 0 by default', () => {
     const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → Yahtzee available
-    gameState.setCurrentDice(dice);
+    placement.setCurrentDice(dice);
 
     expect(service.suggestions().some((s) => s.category === SCORE_CATEGORY.yahtzee)).toBeTruthy();
   });
@@ -35,16 +38,16 @@ describe('suggestionEngineService', () => {
     const yahtzeeDice: DiceSet = [0, 0, 0, 0, 5, 0];
 
     // Fill Yahtzee in all 3 columns of game 0 so it is no longer available for game 0
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
 
     // Switch to game 1 (Yahtzee still available there)
     gameState.setActiveGameIndex(1);
-    gameState.setCurrentDice(yahtzeeDice);
+    placement.setCurrentDice(yahtzeeDice);
 
     expect(service.suggestions().some((s) => s.category === SCORE_CATEGORY.yahtzee)).toBeTruthy();
   });
@@ -53,14 +56,14 @@ describe('suggestionEngineService', () => {
     const yahtzeeDice: DiceSet = [0, 0, 0, 0, 5, 0];
 
     // Fill Yahtzee in all 3 columns of game 0
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
 
-    gameState.setCurrentDice(yahtzeeDice);
+    placement.setCurrentDice(yahtzeeDice);
 
     // activeGameIndex = 0: Yahtzee fully filled → not in suggestions
     expect(service.suggestions().some((s) => s.category === SCORE_CATEGORY.yahtzee)).toBeFalsy();
@@ -75,7 +78,7 @@ describe('suggestionEngineService', () => {
   test('should return suggestions sorted by descending multiplied score', () => {
     // five 5s: yahtzee=50, fives=25, chance=25 — yahtzee must be first
     const dice: DiceSet = [0, 0, 0, 0, 5, 0];
-    gameState.setCurrentDice(dice);
+    placement.setCurrentDice(dice);
 
     const results = service.suggestions();
     expect(results[0].category).toBe(SCORE_CATEGORY.yahtzee);
@@ -89,10 +92,10 @@ describe('suggestionEngineService', () => {
   test('should apply the column multiplier in the ranked score', () => {
     // Fill column ONE for yahtzee, so column TWO becomes the next unfilled
     const yahtzeeDice: DiceSet = [0, 0, 0, 0, 5, 0];
-    gameState.setCurrentDice(yahtzeeDice);
-    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
+    placement.setCurrentDice(yahtzeeDice);
+    placement.placeScore(SCORE_CATEGORY.yahtzee, 0);
 
-    gameState.setCurrentDice(yahtzeeDice);
+    placement.setCurrentDice(yahtzeeDice);
     const yahtzeeResult = service.suggestions().find((s) => s.category === SCORE_CATEGORY.yahtzee);
     expect(yahtzeeResult?.score).toBe(100); // 50 × 2 (column TWO)
   });
@@ -103,7 +106,7 @@ describe('suggestionEngineService', () => {
     // five 3s: threeOfAKind=15 and chance=15 both in column ONE
     // 'Chance' < 'ThreeOfAKind' → chance must appear first
     const dice: DiceSet = [0, 0, 5, 0, 0, 0];
-    gameState.setCurrentDice(dice);
+    placement.setCurrentDice(dice);
 
     const results = service.suggestions();
     const chanceIndex = results.findIndex((r) => r.category === SCORE_CATEGORY.chance);
@@ -113,7 +116,7 @@ describe('suggestionEngineService', () => {
 
   test('should produce a consistent ordering across multiple calls', () => {
     const dice: DiceSet = [0, 0, 5, 0, 0, 0]; // five 3s — many ties
-    gameState.setCurrentDice(dice);
+    placement.setCurrentDice(dice);
 
     const first = service.suggestions().map((r) => r.category);
     const second = service.suggestions().map((r) => r.category);

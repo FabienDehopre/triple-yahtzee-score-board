@@ -10,6 +10,7 @@ import { SuggestionBarComponent } from './components/suggestion-bar/suggestion-b
 import { UndoBannerComponent } from './components/undo-banner/undo-banner.component';
 import { GameStateService } from './services/game-state.service';
 import { PersistenceManagerService } from './services/persistence-manager.service';
+import { PlacementService } from './services/placement.service';
 
 @Component({
   selector: 'app-root',
@@ -19,15 +20,15 @@ import { PersistenceManagerService } from './services/persistence-manager.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  readonly #gameState = inject(GameStateService);
+  readonly #placement = inject(PlacementService);
 
-  protected readonly isGameOver = this.#gameState.isGameOver;
+  protected readonly isGameOver = inject(GameStateService).isGameOver;
 
   constructor() {
     inject(PersistenceManagerService);
   }
 
   protected onDiceConfirmed(roll: DiceSet): void {
-    this.#gameState.setCurrentDice(roll);
+    this.#placement.setCurrentDice(roll);
   }
 }

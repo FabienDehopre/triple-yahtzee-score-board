@@ -4,6 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
+import { PlacementService } from '../../services/placement.service';
 import { SuggestionEngineService } from '../../services/suggestion-engine.service';
 
 /** Human-readable labels for every score category. */
@@ -37,6 +38,7 @@ const CATEGORY_LABELS: Record<ScoreCategory, string> = {
 })
 export class SuggestionBarComponent {
   readonly #gameState = inject(GameStateService);
+  readonly #placement = inject(PlacementService);
   readonly #suggestionEngine = inject(SuggestionEngineService);
 
   readonly #dismissed = signal(false);
@@ -63,7 +65,7 @@ export class SuggestionBarComponent {
   protected onAccept(): void {
     const suggestion = this.topSuggestion();
     if (!suggestion) return;
-    this.#gameState.placeScore(suggestion.category, this.#gameState.activeGameIndex());
+    this.#placement.placeScore(suggestion.category, this.#gameState.activeGameIndex());
     this.#dismissed.set(true);
   }
 

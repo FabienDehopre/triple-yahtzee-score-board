@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
+import { PlacementService } from '../../services/placement.service';
 import { ScoreSheetComponent } from './score-sheet.component';
 
 describe('scoreSheetComponent', () => {
@@ -104,9 +105,10 @@ describe('scoreSheetComponent', () => {
   test('should apply column multiplier to potential score in TWO column', async () => {
     await render(ScoreSheetComponent);
     const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → sixes = 30
-    gameState.setCurrentDice(dice);
-    gameState.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0, clears dice
+    placement.setCurrentDice(dice);
+    placement.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0, clears dice
     gameState.setCurrentDice(dice); // re-set dice so TWO becomes visible
     // TWO is the next available for Sixes in game 0; 30 × 2 = 60
     expect(await screen.findByTestId('available-cell-0-Sixes-TWO')).toHaveTextContent('60');
@@ -208,26 +210,26 @@ describe('scoreSheetComponent', () => {
 
   test('should show upper section total after placing scores', async () => {
     await render(ScoreSheetComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
     // five 1s → aces = 5
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0);
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0);
 
     expect(await screen.findByTestId('upper-total-0-ONE')).toHaveTextContent('5');
   });
 
   test('should show grand total updating after placements across multiple games', async () => {
     await render(ScoreSheetComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
-    gameState.setCurrentDice(dice);
-    gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 ONE: 30×1 = 30
-    gameState.setCurrentDice(dice);
-    gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 TWO: 30×2 = 60
-    gameState.setCurrentDice(dice);
-    gameState.placeScore(SCORE_CATEGORY.chance, 0); // game 0 THREE: 30×3 = 90
-    gameState.setCurrentDice(dice);
-    gameState.placeScore(SCORE_CATEGORY.chance, 1); // game 1 ONE: 30×1 = 30
+    placement.setCurrentDice(dice);
+    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 ONE: 30×1 = 30
+    placement.setCurrentDice(dice);
+    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 TWO: 30×2 = 60
+    placement.setCurrentDice(dice);
+    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 THREE: 30×3 = 90
+    placement.setCurrentDice(dice);
+    placement.placeScore(SCORE_CATEGORY.chance, 1); // game 1 ONE: 30×1 = 30
 
     // grand = 30 + 60 + 90 + 30 = 210
     expect(await screen.findByTestId('grand-total')).toHaveTextContent('210');
@@ -235,19 +237,19 @@ describe('scoreSheetComponent', () => {
 
   test('should show upper bonus when raw total reaches 63', async () => {
     await render(ScoreSheetComponent);
-    const gameState = TestBed.inject(GameStateService);
+    const placement = TestBed.inject(PlacementService);
 
     // Build up to 70 raw in ONE column of game 0
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.aces, 0); // 5
-    gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.twos, 0); // 10
-    gameState.setCurrentDice([0, 0, 5, 0, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.threes, 0); // 15
-    gameState.setCurrentDice([0, 0, 0, 5, 0, 0] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.fours, 0); // 20
-    gameState.setCurrentDice([0, 0, 0, 0, 4, 1] as DiceSet);
-    gameState.placeScore(SCORE_CATEGORY.fives, 0); // 20 → total = 70 ≥ 63
+    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.aces, 0); // 5
+    placement.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.twos, 0); // 10
+    placement.setCurrentDice([0, 0, 5, 0, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.threes, 0); // 15
+    placement.setCurrentDice([0, 0, 0, 5, 0, 0] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.fours, 0); // 20
+    placement.setCurrentDice([0, 0, 0, 0, 4, 1] as DiceSet);
+    placement.placeScore(SCORE_CATEGORY.fives, 0); // 20 → total = 70 ≥ 63
 
     // Bonus = 35 × 1 = 35 for ONE column of game 0
     expect(await screen.findByTestId('upper-bonus-0-ONE')).toHaveTextContent('35');

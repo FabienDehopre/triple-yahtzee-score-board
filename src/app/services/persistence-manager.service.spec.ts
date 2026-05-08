@@ -6,6 +6,7 @@ import { GAME_COLUMN } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { DEFAULT_GAME_COUNT, GameStateService } from './game-state.service';
 import { PERSISTENCE_KEY, PersistenceManagerService } from './persistence-manager.service';
+import { PlacementService } from './placement.service';
 
 describe('persistenceManagerService', () => {
   const mockGame: Game = {
@@ -134,11 +135,11 @@ describe('persistenceManagerService', () => {
   describe('auto-save', () => {
     test('should write to localStorage after score is placed', () => {
       TestBed.inject(PersistenceManagerService);
-      const gameState = TestBed.inject(GameStateService);
+      const placement = TestBed.inject(PlacementService);
 
-      gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
+      placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
       TestBed.tick();
-      gameState.placeScore(SCORE_CATEGORY.aces, 0);
+      placement.placeScore(SCORE_CATEGORY.aces, 0);
       TestBed.tick();
 
       const raw = localStorage.getItem(PERSISTENCE_KEY);
@@ -157,14 +158,14 @@ describe('persistenceManagerService', () => {
 
     test('should overwrite previous save on subsequent mutations', () => {
       TestBed.inject(PersistenceManagerService);
-      const gameState = TestBed.inject(GameStateService);
+      const placement = TestBed.inject(PlacementService);
 
-      gameState.setCurrentDice([3, 0, 0, 0, 2, 0]);
-      gameState.placeScore(SCORE_CATEGORY.aces, 0);
+      placement.setCurrentDice([3, 0, 0, 0, 2, 0]);
+      placement.placeScore(SCORE_CATEGORY.aces, 0);
       TestBed.tick();
 
-      gameState.setCurrentDice([0, 4, 0, 0, 1, 0]);
-      gameState.placeScore(SCORE_CATEGORY.twos, 0);
+      placement.setCurrentDice([0, 4, 0, 0, 1, 0]);
+      placement.placeScore(SCORE_CATEGORY.twos, 0);
       TestBed.tick();
 
       const raw = localStorage.getItem(PERSISTENCE_KEY);

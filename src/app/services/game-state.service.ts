@@ -1,7 +1,6 @@
 import type { DiceSet } from '../models/dice-set.model';
 import type { GameColumn } from '../models/game-column.model';
 import type { Game } from '../models/game.model';
-import type { ScoreCategory } from '../models/score-category.model';
 
 import { computed, inject, Injectable, signal } from '@angular/core';
 
@@ -12,12 +11,7 @@ import {
   LOWER_CATEGORIES,
   UPPER_CATEGORIES
 } from '../models/game-column.model';
-import { SCORE_CATEGORY } from '../models/score-category.model';
 import { ScoringEngineService } from './scoring-engine.service';
-import { UndoService } from './undo.service';
-
-/** Fast lookup set for upper-section categories. */
-const UPPER_SET = new Set<ScoreCategory>(UPPER_CATEGORIES);
 
 /** Per-column computed statistics for one game. */
 export interface ColumnStats {
@@ -57,11 +51,11 @@ export const DEFAULT_GAME_COUNT = 2;
  * Central reactive state for a Triple Yahtzee session.
  * Holds the list of games and the current dice roll.
  * All state is exposed via Angular Signals.
+ * Placement logic lives in PlacementService.
  */
 @Injectable({ providedIn: 'root' })
 export class GameStateService {
   readonly #scoringEngine = inject(ScoringEngineService);
-  readonly #undo = inject(UndoService);
 
   readonly #gameCount = signal(DEFAULT_GAME_COUNT);
   readonly #games = signal(Array.from({ length: DEFAULT_GAME_COUNT }, () => createEmptyGame()));
@@ -146,12 +140,20 @@ export class GameStateService {
   });
 
   /**
-   * Updates the current dice roll used for potential-score preview
-   * and subsequent placeScore calls.
+   * Updates the current dice signal. Called by PlacementService — use
+   * PlacementService.setCurrentDice from application code so the undo
+   * snapshot is cleared at the correct time.
    */
-  setCurrentDice(dice: DiceSet): void {
-    this.#undo.clearSnapshot();
+  setCurrentDice(dice: DiceSet | undefined): void {
     this.#currentDice.set(dice);
+  }
+
+  /**
+   * Applies an updater function to the game at the given index.
+   * Used by PlacementService to write placement results.
+   */
+  updateGameAt(index: number, updater: (g: Game) => Game): void {
+    this.#games.update((gs) => gs.map((g, i) => (i === index ? updater(g) : g)));
   }
 
   /**
@@ -222,66 +224,6 @@ export class GameStateService {
    */
   restoreGameCount(count: number): void {
     this.#gameCount.set(count);
-  }
-
-  /**
-   * Places the score for category in the next available column of game gameIndex.
-   * Columns are filled left-to-right: ONE -> TWO -> THREE.
-   *
-   * No-ops when:
-   * - no dice are currently set
-   * - gameIndex is out of bounds
-   * - all three columns are already filled for this category
-   */
-  placeScore(category: ScoreCategory, gameIndex: number): void {
-    const dice = this.#currentDice();
-    if (!dice) return;
-
-    const games = this.#games();
-    if (gameIndex < 0 || gameIndex >= games.length) return;
-
-    const game = games[gameIndex];
-    const isUpper = UPPER_SET.has(category);
-
-    // Find the first unfilled column for this category (left-to-right).
-    const column = COLUMN_ORDER.find((col) => {
-      const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-      return !section[category];
-    });
-
-    if (!column) return;
-
-    this.#undo.saveSnapshot(this.#games(), category);
-
-    const rawScore = this.#scoringEngine.computeScore(dice, category);
-    const sectionKey = isUpper ? 'upper' : 'lower';
-
-    const yahtzeeCell = game.columns[column].lower[SCORE_CATEGORY.yahtzee];
-    const bonusEarned = yahtzeeCell === undefined
-      ? 0
-      : this.#scoringEngine.computeYahtzeeBonus(dice, yahtzeeCell.value);
-
-    this.#games.update((gs) =>
-      gs.map((g, i) => {
-        if (i !== gameIndex) return g;
-        return {
-          ...g,
-          columns: {
-            ...g.columns,
-            [column]: {
-              ...g.columns[column],
-              yahtzeeBonus: (g.columns[column].yahtzeeBonus ?? 0) + bonusEarned,
-              [sectionKey]: {
-                ...g.columns[column][sectionKey],
-                [category]: { value: rawScore, isScratched: rawScore === 0 },
-              },
-            },
-          },
-        };
-      })
-    );
-
-    this.#currentDice.set(undefined);
   }
 
   /**
