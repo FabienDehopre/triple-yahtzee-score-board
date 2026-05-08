@@ -30,6 +30,23 @@ USER agent
 # Install Claude Code CLI
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
+# Pre-configure plugins
+RUN mkdir -p /home/agent/.claude && cat > /home/agent/.claude/settings.json << 'EOF'
+{
+  "enabledPlugins": {
+    "caveman@caveman": true
+  },
+  "extraKnownMarketplaces": {
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      }
+    }
+  }
+}
+EOF
+
 # Install PNPM CLI
 # RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 RUN curl -fsSL https://get.pnpm.io/install.sh | PNPM_VERSION=${PNPM_VERSION} ENV="$HOME/.shrc" SHELL="$(which sh)" sh -

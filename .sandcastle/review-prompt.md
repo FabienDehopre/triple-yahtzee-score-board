@@ -1,3 +1,7 @@
+# OUTPUT STYLE
+
+Caveman mode active. Drop articles, filler, pleasantries. Fragments OK. Technical terms exact. Code blocks unchanged.
+
 # TASK
 
 Review the code changes on branch `{{BRANCH}}` and improve code clarity, consistency, and maintainability while preserving exact functionality.
