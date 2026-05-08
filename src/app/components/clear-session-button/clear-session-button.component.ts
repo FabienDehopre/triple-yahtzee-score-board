@@ -10,11 +10,10 @@ import { GameStateService } from '../../services/game-state.service';
 export class ClearSessionButtonComponent {
   readonly #gameState = inject(GameStateService);
 
-  protected readonly isAnyGameInProgress = this.#gameState.isAnyGameInProgress;
   protected readonly isPending = signal(false);
 
   protected onClearClick(): void {
-    if (!this.isAnyGameInProgress()) {
+    if (!this.#gameState.isAnyGameInProgress()) {
       this.#gameState.newGame();
       return;
     }
