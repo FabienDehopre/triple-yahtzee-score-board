@@ -382,6 +382,146 @@ describe('scoringEngineService', () => {
     });
   });
 
+  // ─── computeColumnStats ───────────────────────────────────────────────────
+
+  describe('computeColumnStats', () => {
+    test('should return zero stats for an empty column', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.one);
+
+      expect(stats.upperRaw).toBe(0);
+      expect(stats.upperBonusRaw).toBe(0);
+      expect(stats.upperBonusTotal).toBe(0);
+      expect(stats.upperTotal).toBe(0);
+      expect(stats.lowerRaw).toBe(0);
+      expect(stats.yahtzeeBonusRaw).toBe(0);
+      expect(stats.yahtzeeBonusTotal).toBe(0);
+      expect(stats.lowerTotal).toBe(0);
+      expect(stats.combinedTotal).toBe(0);
+    });
+
+    test('should compute upperRaw as sum of placed upper cells', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: {
+            upper: {
+              [SCORE_CATEGORY.aces]: { value: 5, isScratched: false },
+              [SCORE_CATEGORY.twos]: { value: 10, isScratched: false },
+            },
+            lower: {},
+            yahtzeeBonus: 0,
+          },
+          [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.one);
+
+      expect(stats.upperRaw).toBe(15);
+    });
+
+    test('should award upperBonusRaw=35 and upperBonusTotal=35 when upper >= 63 in ONE', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: {
+            upper: { [SCORE_CATEGORY.aces]: { value: 63, isScratched: false } },
+            lower: {},
+            yahtzeeBonus: 0,
+          },
+          [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.one);
+
+      expect(stats.upperBonusRaw).toBe(35);
+      expect(stats.upperBonusTotal).toBe(35); // ×1
+      expect(stats.upperTotal).toBe((63 + 35) * 1);
+    });
+
+    test('should apply column multiplier ×2 for TWO column', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.two]: {
+            upper: { [SCORE_CATEGORY.aces]: { value: 63, isScratched: false } },
+            lower: {},
+            yahtzeeBonus: 0,
+          },
+          [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.two);
+
+      expect(stats.upperBonusRaw).toBe(35);
+      expect(stats.upperBonusTotal).toBe(70); // 35 × 2
+      expect(stats.upperTotal).toBe((63 + 35) * 2);
+    });
+
+    test('should apply column multiplier ×3 for THREE column', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.three]: {
+            upper: { [SCORE_CATEGORY.aces]: { value: 30, isScratched: false } },
+            lower: { [SCORE_CATEGORY.yahtzee]: { value: 50, isScratched: false } },
+            yahtzeeBonus: 100,
+          },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.three);
+
+      expect(stats.lowerRaw).toBe(50);
+      expect(stats.yahtzeeBonusRaw).toBe(100);
+      expect(stats.yahtzeeBonusTotal).toBe(300); // 100 × 3
+      expect(stats.lowerTotal).toBe((50 + 100) * 3);
+      expect(stats.combinedTotal).toBe(30 * 3 + (50 + 100) * 3);
+    });
+
+    test('should not award upper bonus when upperRaw < 63', () => {
+      const game = {
+        id: 'g1',
+        createdAt: '',
+        columns: {
+          [GAME_COLUMN.one]: {
+            upper: { [SCORE_CATEGORY.aces]: { value: 62, isScratched: false } },
+            lower: {},
+            yahtzeeBonus: 0,
+          },
+          [GAME_COLUMN.two]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+          [GAME_COLUMN.three]: { upper: {}, lower: {}, yahtzeeBonus: 0 },
+        },
+      };
+
+      const stats = service.computeColumnStats(game, GAME_COLUMN.one);
+
+      expect(stats.upperBonusRaw).toBe(0);
+      expect(stats.upperBonusTotal).toBe(0);
+    });
+  });
+
   // ─── computeMultipliedScore ────────────────────────────────────────────────
 
   describe('computeMultipliedScore', () => {

@@ -3,7 +3,7 @@ import type { ScoreCategory } from '../../models/score-category.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
+import { COLUMN_ORDER, GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { GameStateService } from '../../services/game-state.service';
 import { PlacementService } from '../../services/placement.service';
@@ -37,7 +37,6 @@ export class ScoreSheetComponent {
   protected readonly upperCategories = UPPER_CATEGORIES;
   protected readonly lowerCategories = LOWER_CATEGORIES;
   protected readonly columnOrder = COLUMN_ORDER;
-  protected readonly columnMultiplier = COLUMN_MULTIPLIER;
 
   protected readonly columnLabels: Record<GameColumn, string> = {
     [GAME_COLUMN.one]: 'ONE ×1',
@@ -78,7 +77,7 @@ export class ScoreSheetComponent {
   };
 
   /**
-   * Returns the displayed score for a filled cell: raw value x column multiplier.
+   * Returns the displayed score for a filled cell: raw value × column multiplier.
    * Returns undefined when the cell has not been scored yet.
    */
   protected getCellDisplayValue(gameIndex: number, column: GameColumn, category: ScoreCategory): number | undefined {
@@ -87,7 +86,7 @@ export class ScoreSheetComponent {
     const section = isUpper ? game.columns[column].upper : game.columns[column].lower;
     const cell = section[category];
     if (cell === undefined) return undefined;
-    return (cell.value ?? 0) * COLUMN_MULTIPLIER[column];
+    return this.#scoringEngine.applyMultiplier(cell.value ?? 0, column);
   }
 
   /**
@@ -121,12 +120,12 @@ export class ScoreSheetComponent {
 
   /**
    * Returns the potential score to display in an available cell:
-   * raw computed score x column multiplier.
+   * raw computed score × column multiplier.
    */
   protected getPotentialDisplayScore(column: GameColumn, category: ScoreCategory): number {
     const dice = this.currentDice();
     if (!dice) return 0;
-    return this.#scoringEngine.computeScore(dice, category) * COLUMN_MULTIPLIER[column];
+    return this.#scoringEngine.computeMultipliedScore(dice, category, column);
   }
 
   /** Places the score for category in the next available column of the given game. */

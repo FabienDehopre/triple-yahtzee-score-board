@@ -278,7 +278,7 @@ describe('gameStateService', () => {
 
       const stats = service.columnStats()[0];
       expect(stats[GAME_COLUMN.one].upperRaw).toBe(70);
-      expect(stats[GAME_COLUMN.one].upperBonus).toBe(35);
+      expect(stats[GAME_COLUMN.one].upperBonusRaw).toBe(35);
       expect(stats[GAME_COLUMN.one].upperTotal).toBe(105); // (70 + 35) × 1
     });
 
@@ -288,7 +288,7 @@ describe('gameStateService', () => {
 
       const stats = service.columnStats()[0];
       expect(stats[GAME_COLUMN.one].upperRaw).toBe(5);
-      expect(stats[GAME_COLUMN.one].upperBonus).toBe(0);
+      expect(stats[GAME_COLUMN.one].upperBonusRaw).toBe(0);
     });
 
     test('should compute combined total as upperTotal + lowerTotal', () => {

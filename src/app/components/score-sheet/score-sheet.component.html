@@ -117,9 +117,9 @@
           </td>
           @for (col of columnOrder; track col) {
           <td class="border-l border-gray-100 px-3 py-2 text-center">
-            @if (allStats()[mgi][col].upperBonus > 0) {
+            @if (allStats()[mgi][col].upperBonusRaw > 0) {
             <span class="font-semibold text-green-600">
-              {{ allStats()[mgi][col].upperBonus * columnMultiplier[col] }}
+              {{ allStats()[mgi][col].upperBonusTotal }}
             </span>
             }
           </td>
@@ -213,9 +213,9 @@
           </td>
           @for (col of columnOrder; track col) {
           <td class="border-l border-gray-100 px-3 py-2 text-center">
-            @if (allStats()[mgi][col].yahtzeeBonus > 0) {
+            @if (allStats()[mgi][col].yahtzeeBonusRaw > 0) {
             <span class="font-semibold text-green-600">
-              {{ allStats()[mgi][col].yahtzeeBonus * columnMultiplier[col] }}
+              {{ allStats()[mgi][col].yahtzeeBonusTotal }}
             </span>
             }
           </td>
@@ -383,9 +383,9 @@
         </td>
         @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2 text-center">
-          @if (allStats()[gi][col].upperBonus > 0) {
+          @if (allStats()[gi][col].upperBonusRaw > 0) {
           <span class="font-semibold text-green-600" [attr.data-testid]="'upper-bonus-' + gi + '-' + col">
-            {{ allStats()[gi][col].upperBonus * columnMultiplier[col] }}
+            {{ allStats()[gi][col].upperBonusTotal }}
           </span>
           }
         </td>
@@ -466,9 +466,9 @@
         </td>
         @for (game of games(); track game.id; let gi = $index) { @for (col of columnOrder; track col) {
         <td class="border-l border-gray-100 px-3 py-2 text-center">
-          @if (allStats()[gi][col].yahtzeeBonus > 0) {
+          @if (allStats()[gi][col].yahtzeeBonusRaw > 0) {
           <span class="font-semibold text-green-600" [attr.data-testid]="'yahtzee-bonus-' + gi + '-' + col">
-            {{ allStats()[gi][col].yahtzeeBonus * columnMultiplier[col] }}
+            {{ allStats()[gi][col].yahtzeeBonusTotal }}
           </span>
           }
         </td>

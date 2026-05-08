@@ -2,7 +2,7 @@ import type { GameColumn } from '../../models/game-column.model';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
-import { COLUMN_MULTIPLIER, COLUMN_ORDER, GAME_COLUMN } from '../../models/game-column.model';
+import { COLUMN_ORDER, GAME_COLUMN } from '../../models/game-column.model';
 import { GameStateService } from '../../services/game-state.service';
 
 @Component({
@@ -17,7 +17,6 @@ export class GameOverComponent {
   protected readonly columnStats = this.#gameState.columnStats;
   protected readonly games = this.#gameState.games;
   protected readonly columnOrder = COLUMN_ORDER;
-  protected readonly columnMultiplier = COLUMN_MULTIPLIER;
 
   protected readonly columnLabels: Record<GameColumn, string> = {
     [GAME_COLUMN.one]: 'Combined Total',
@@ -25,11 +24,11 @@ export class GameOverComponent {
     [GAME_COLUMN.three]: 'Triple Combined',
   };
 
-  /** Upper bonus for each game/column multiplied by the column's multiplier (for display). */
+  /** Upper bonus totals (already multiplied) for each game/column. */
   protected readonly upperBonusDisplay = computed(() =>
     this.columnStats().map((gameStats) =>
       Object.fromEntries(
-        COLUMN_ORDER.map((col) => [col, gameStats[col].upperBonus * COLUMN_MULTIPLIER[col]])
+        COLUMN_ORDER.map((col) => [col, gameStats[col].upperBonusTotal])
       ) as Record<GameColumn, number>
     )
   );
@@ -37,7 +36,7 @@ export class GameOverComponent {
   /** True when any game/column has earned an upper bonus. */
   protected readonly hasAnyBonus = computed(() =>
     this.columnStats().some((gameStats) =>
-      COLUMN_ORDER.some((col) => gameStats[col].upperBonus > 0)
+      COLUMN_ORDER.some((col) => gameStats[col].upperBonusRaw > 0)
     )
   );
 

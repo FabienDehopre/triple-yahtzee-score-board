@@ -1,3 +1,4 @@
+import type { ColumnStats } from '../models/column-stats.model';
 import type { DiceSet } from '../models/dice-set.model';
 import type { GameColumn } from '../models/game-column.model';
 import type { Game } from '../models/game.model';
@@ -5,31 +6,12 @@ import type { Game } from '../models/game.model';
 import { computed, inject, Injectable, signal } from '@angular/core';
 
 import {
-  COLUMN_MULTIPLIER,
   COLUMN_ORDER,
   GAME_COLUMN,
   LOWER_CATEGORIES,
   UPPER_CATEGORIES
 } from '../models/game-column.model';
 import { ScoringEngineService } from './scoring-engine.service';
-
-/** Per-column computed statistics for one game. */
-export interface ColumnStats {
-  /** Raw sum of placed upper-section scores (used for the 63-point bonus threshold check). */
-  upperRaw: number;
-  /** Upper bonus: 35 if upperRaw >= 63, otherwise 0. */
-  upperBonus: number;
-  /** (upperRaw + upperBonus) x column multiplier. */
-  upperTotal: number;
-  /** Raw sum of placed lower-section scores (before multiplier). */
-  lowerRaw: number;
-  /** Accumulated Yahtzee bonus: 100 per extra Yahtzee rolled while Yahtzee cell is non-zero. */
-  yahtzeeBonus: number;
-  /** (lowerRaw + yahtzeeBonus) x column multiplier. */
-  lowerTotal: number;
-  /** upperTotal + lowerTotal. */
-  combinedTotal: number;
-}
 
 /** Returns a fresh Game with all three columns empty. */
 function createEmptyGame(): Game {
@@ -100,7 +82,7 @@ export class GameStateService {
     this.#games().map(
       (game) =>
         Object.fromEntries(
-          COLUMN_ORDER.map((col) => [col, this.#computeColumnStats(game, col)])
+          COLUMN_ORDER.map((col) => [col, this.#scoringEngine.computeColumnStats(game, col)])
         ) as Record<GameColumn, ColumnStats>
     )
   );
@@ -233,30 +215,6 @@ export class GameStateService {
   restoreGames(games: Game[]): void {
     this.#games.set(games);
   }
-
-  #computeColumnStats(game: Game, column: GameColumn): ColumnStats {
-    const multiplier = COLUMN_MULTIPLIER[column];
-    const colScores = game.columns[column];
-
-    let upperRaw = 0;
-    for (const cat of UPPER_CATEGORIES) {
-      const cell = colScores.upper[cat];
-      upperRaw += cell?.value ?? 0;
-    }
-
-    const upperBonus = this.#scoringEngine.computeUpperBonus(upperRaw);
-    const upperTotal = (upperRaw + upperBonus) * multiplier;
-
-    let lowerRaw = 0;
-    for (const cat of LOWER_CATEGORIES) {
-      const cell = colScores.lower[cat];
-      lowerRaw += cell?.value ?? 0;
-    }
-
-    const yahtzeeBonus = colScores.yahtzeeBonus ?? 0;
-    const lowerTotal = (lowerRaw + yahtzeeBonus) * multiplier;
-    const combinedTotal = upperTotal + lowerTotal;
-
-    return { upperRaw, upperBonus, upperTotal, lowerRaw, yahtzeeBonus, lowerTotal, combinedTotal };
-  }
 }
+
+export { type ColumnStats } from '../models/column-stats.model';

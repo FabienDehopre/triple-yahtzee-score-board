@@ -146,7 +146,7 @@ describe('placementService', () => {
     const yahtzeeDice: DiceSet = [5, 0, 0, 0, 0, 0]; // five 1s (dice.includes(5))
 
     test('should be 0 when no additional Yahtzee has been placed', () => {
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(0);
     });
 
     test('should be 100 after placing a score with Yahtzee dice when Yahtzee cell is non-zero', () => {
@@ -156,7 +156,7 @@ describe('placementService', () => {
       service.setCurrentDice(yahtzeeDice);
       service.placeScore(SCORE_CATEGORY.aces, 0); // bonus triggered
 
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(100);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(100);
     });
 
     test('should be 0 when Yahtzee cell is scratched', () => {
@@ -166,7 +166,7 @@ describe('placementService', () => {
       service.setCurrentDice(yahtzeeDice);
       service.placeScore(SCORE_CATEGORY.aces, 0); // no bonus: existing Yahtzee is 0
 
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(0);
     });
 
     test('should accumulate to 200 after two bonus-triggering placements in the same column', () => {
@@ -179,7 +179,7 @@ describe('placementService', () => {
       service.setCurrentDice(yahtzeeDice);
       service.placeScore(SCORE_CATEGORY.twos, 0); // +100 again
 
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(200);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(200);
     });
 
     test('should include yahtzeeBonus in combinedTotal', () => {
@@ -204,11 +204,11 @@ describe('placementService', () => {
       service.setCurrentDice(yahtzeeDice);
       service.placeScore(SCORE_CATEGORY.aces, 0); // triggers bonus
 
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(100);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(100);
 
       gameState.restoreGames(snapshotBeforeBonus);
 
-      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonus).toBe(0);
+      expect(gameState.columnStats()[0][GAME_COLUMN.one].yahtzeeBonusRaw).toBe(0);
     });
   });
 });

@@ -1,10 +1,12 @@
+import type { ColumnStats } from '../models/column-stats.model';
 import type { DiceSet } from '../models/dice-set.model';
 import type { GameColumn } from '../models/game-column.model';
+import type { Game } from '../models/game.model';
 import type { ScoreCategory } from '../models/score-category.model';
 
 import { Injectable } from '@angular/core';
 
-import { COLUMN_MULTIPLIER } from '../models/game-column.model';
+import { COLUMN_MULTIPLIER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 
 /** Points awarded for reaching the upper-section bonus threshold. */
@@ -108,6 +110,46 @@ export class ScoringEngineService {
    */
   computeUpperBonus(upperTotal: number): number {
     return upperTotal >= UPPER_BONUS_THRESHOLD ? UPPER_BONUS_VALUE : 0;
+  }
+
+  /**
+   * Computes all per-column statistics for the given game column,
+   * including multiplied totals. Pure — no side effects or service deps.
+   */
+  computeColumnStats(game: Game, column: GameColumn): ColumnStats {
+    const multiplier = COLUMN_MULTIPLIER[column];
+    const colScores = game.columns[column];
+
+    let upperRaw = 0;
+    for (const cat of UPPER_CATEGORIES) {
+      upperRaw += colScores.upper[cat]?.value ?? 0;
+    }
+
+    const upperBonusRaw = this.computeUpperBonus(upperRaw);
+    const upperBonusTotal = upperBonusRaw * multiplier;
+    const upperTotal = (upperRaw + upperBonusRaw) * multiplier;
+
+    let lowerRaw = 0;
+    for (const cat of LOWER_CATEGORIES) {
+      lowerRaw += colScores.lower[cat]?.value ?? 0;
+    }
+
+    const yahtzeeBonusRaw = colScores.yahtzeeBonus ?? 0;
+    const yahtzeeBonusTotal = yahtzeeBonusRaw * multiplier;
+    const lowerTotal = (lowerRaw + yahtzeeBonusRaw) * multiplier;
+    const combinedTotal = upperTotal + lowerTotal;
+
+    return {
+      upperRaw,
+      upperBonusRaw,
+      upperBonusTotal,
+      upperTotal,
+      lowerRaw,
+      yahtzeeBonusRaw,
+      yahtzeeBonusTotal,
+      lowerTotal,
+      combinedTotal,
+    };
   }
 
   /**
