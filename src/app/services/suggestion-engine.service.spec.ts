@@ -69,4 +69,54 @@ describe('suggestionEngineService', () => {
     gameState.setActiveGameIndex(1);
     expect(service.suggestions().some((s) => s.category === SCORE_CATEGORY.yahtzee)).toBeTruthy();
   });
+
+  // ─── Ranking ──────────────────────────────────────────────────────────────
+
+  test('should return suggestions sorted by descending multiplied score', () => {
+    // five 5s: yahtzee=50, fives=25, chance=25 — yahtzee must be first
+    const dice: DiceSet = [0, 0, 0, 0, 5, 0];
+    gameState.setCurrentDice(dice);
+
+    const results = service.suggestions();
+    expect(results[0].category).toBe(SCORE_CATEGORY.yahtzee);
+    expect(results[0].score).toBe(50); // 50 × 1 (column ONE is first unfilled)
+    // Scores must be non-increasing
+    for (let i = 1; i < results.length; i++) {
+      expect(results[i - 1].score).toBeGreaterThanOrEqual(results[i].score);
+    }
+  });
+
+  test('should apply the column multiplier in the ranked score', () => {
+    // Fill column ONE for yahtzee, so column TWO becomes the next unfilled
+    const yahtzeeDice: DiceSet = [0, 0, 0, 0, 5, 0];
+    gameState.setCurrentDice(yahtzeeDice);
+    gameState.placeScore(SCORE_CATEGORY.yahtzee, 0);
+
+    gameState.setCurrentDice(yahtzeeDice);
+    const yahtzeeResult = service.suggestions().find((s) => s.category === SCORE_CATEGORY.yahtzee);
+    expect(yahtzeeResult?.score).toBe(100); // 50 × 2 (column TWO)
+  });
+
+  // ─── Tie-breaking ─────────────────────────────────────────────────────────
+
+  test('should break ties by category name ascending', () => {
+    // five 3s: threeOfAKind=15 and chance=15 both in column ONE
+    // 'Chance' < 'ThreeOfAKind' → chance must appear first
+    const dice: DiceSet = [0, 0, 5, 0, 0, 0];
+    gameState.setCurrentDice(dice);
+
+    const results = service.suggestions();
+    const chanceIndex = results.findIndex((r) => r.category === SCORE_CATEGORY.chance);
+    const threeIndex = results.findIndex((r) => r.category === SCORE_CATEGORY.threeOfAKind);
+    expect(chanceIndex).toBeLessThan(threeIndex);
+  });
+
+  test('should produce a consistent ordering across multiple calls', () => {
+    const dice: DiceSet = [0, 0, 5, 0, 0, 0]; // five 3s — many ties
+    gameState.setCurrentDice(dice);
+
+    const first = service.suggestions().map((r) => r.category);
+    const second = service.suggestions().map((r) => r.category);
+    expect(first).toEqual(second);
+  });
 });

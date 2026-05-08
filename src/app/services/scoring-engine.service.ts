@@ -97,6 +97,11 @@ export class ScoringEngineService {
     return score * COLUMN_MULTIPLIER[column];
   }
 
+  /** Computes the raw score for dice + category, then applies the column multiplier. */
+  computeMultipliedScore(dice: DiceSet, category: ScoreCategory, column: GameColumn): number {
+    return this.computeScore(dice, category) * COLUMN_MULTIPLIER[column];
+  }
+
   /**
    * Returns the upper-section bonus (35) when the upper total meets or
    * exceeds the threshold (63), otherwise 0.

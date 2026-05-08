@@ -381,4 +381,28 @@ describe('scoringEngineService', () => {
       expect(service.applyMultiplier(35, GAME_COLUMN.two)).toBe(70);
     });
   });
+
+  // ─── computeMultipliedScore ────────────────────────────────────────────────
+
+  describe('computeMultipliedScore', () => {
+    test('should compute raw score and apply column ONE multiplier (×1)', () => {
+      const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → yahtzee = 50
+      expect(service.computeMultipliedScore(dice, SCORE_CATEGORY.yahtzee, GAME_COLUMN.one)).toBe(50);
+    });
+
+    test('should compute raw score and apply column TWO multiplier (×2)', () => {
+      const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → yahtzee = 50
+      expect(service.computeMultipliedScore(dice, SCORE_CATEGORY.yahtzee, GAME_COLUMN.two)).toBe(100);
+    });
+
+    test('should compute raw score and apply column THREE multiplier (×3)', () => {
+      const dice: DiceSet = [0, 0, 0, 0, 5, 0]; // five 5s → yahtzee = 50
+      expect(service.computeMultipliedScore(dice, SCORE_CATEGORY.yahtzee, GAME_COLUMN.three)).toBe(150);
+    });
+
+    test('should return 0 when raw score is 0', () => {
+      const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → yahtzee = 50, aces = 0
+      expect(service.computeMultipliedScore(dice, SCORE_CATEGORY.aces, GAME_COLUMN.three)).toBe(0);
+    });
+  });
 });

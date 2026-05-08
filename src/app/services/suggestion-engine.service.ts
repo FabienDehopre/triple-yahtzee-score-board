@@ -1,24 +1,27 @@
-import type { AvailableCell } from '../models/available-cell.model';
+import type { GameColumn } from '../models/game-column.model';
 import type { Game } from '../models/game.model';
+import type { ScoreCategory } from '../models/score-category.model';
 import type { SuggestionResult } from '../models/suggestion-result.model';
 
 import { computed, inject, Injectable } from '@angular/core';
 
 import { COLUMN_ORDER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
 import { GameStateService } from './game-state.service';
-import { GreedySuggestionStrategy } from './greedy-suggestion-strategy';
+import { ScoringEngineService } from './scoring-engine.service';
 
 /** Fast lookup set for upper-section categories. */
 const UPPER_SET = new Set(UPPER_CATEGORIES);
 
+interface AvailableCell { category: ScoreCategory; column: GameColumn }
+
 /**
  * Computes ranked suggestions for the current dice and game state.
- * Uses a pluggable SuggestionStrategy (defaults to greedy).
+ * Greedy strategy: score desc, then category asc, then column asc.
  */
 @Injectable({ providedIn: 'root' })
 export class SuggestionEngineService {
   readonly #gameState = inject(GameStateService);
-  readonly #strategy = inject(GreedySuggestionStrategy);
+  readonly #scoringEngine = inject(ScoringEngineService);
 
   /**
    * Ranked suggestions for the current dice roll.
@@ -29,7 +32,25 @@ export class SuggestionEngineService {
     if (!dice) return [];
     const game = this.#gameState.games()[this.#gameState.activeGameIndex()];
     const availableCells = this.#computeAvailableCells(game);
-    return this.#strategy.suggest(dice, availableCells);
+    if (availableCells.length === 0) return [];
+
+    const results: SuggestionResult[] = availableCells.map((cell) => {
+      const score = this.#scoringEngine.computeMultipliedScore(dice, cell.category, cell.column);
+      return {
+        category: cell.category,
+        column: cell.column,
+        score,
+        reasoning: `Placing ${cell.category} in column ${cell.column} scores ${score} points.`,
+      };
+    });
+
+    results.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      if (a.category !== b.category) return a.category < b.category ? -1 : 1;
+      return a.column < b.column ? -1 : 1;
+    });
+
+    return results;
   });
 
   /** Builds the list of currently fillable cells for the active game. */
