@@ -114,6 +114,16 @@ _Avoid_: State backup, history
 - **Upper Bonus** threshold is 63 raw points; bonus is 35 points, applied before the column multiplier.
 - **Left-to-Right Fill Rule** is absolute — players cannot place in column TWO or THREE while column ONE is still open for that category.
 
+### Internationalization
+
+**Locale**:
+The active language setting for the UI. Currently English (`en`) at launch; French (`fr`) is the first additional language. Stored in the browser (no backend per ADR-0005).
+_Avoid_: Language code, translation setting
+
+**Language Picker**:
+A UI control that lets the player switch the active **Locale** at runtime without reloading the page. Currently placed top-left beside the app title (provisional — exact position subject to change).
+_Avoid_: i18n toggle, language selector
+
 ## Flagged ambiguities
 
 - "Roll" was used for both the player action and the result — resolved: **Roll** = the act, **DiceSet** = the result.
