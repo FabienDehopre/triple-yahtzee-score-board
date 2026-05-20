@@ -5,6 +5,7 @@ export default defineConfig({
     '.agents/**',
     '.angular/**',
     '.claude/**',
+    '.codex/**',
     '.github/**',
     '.sandcastle/**',
     '.vscode/**',

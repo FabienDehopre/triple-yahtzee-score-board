@@ -1,0 +1,72 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/enforce-pnpm.mjs'"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/check-edit-targets.mjs'"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/check-credentials.mjs'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/post-eslint.mjs'"
+          },
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/post-test.mjs'"
+          },
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/post-type-check.mjs'"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pnpm install --frozen-lockfile --prefer-offline"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node '/Users/fabien/Projects/GitHub/triple-yahtzee-score-board/.codex/hooks/test-summary.mjs'"
+          }
+        ]
+      }
+    ]
+  }
+}
