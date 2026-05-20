@@ -1,0 +1,170 @@
+<div
+  aria-modal="true"
+  class="
+    relative mx-auto my-8 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl
+    sm:p-8
+  "
+  role="dialog"
+  [attr.aria-label]="'reportIssue.dialogTitle' | transloco"
+>
+  <h2 class="mb-6 text-xl font-bold text-gray-900">
+    {{ 'reportIssue.dialogTitle' | transloco }}
+  </h2>
+
+  <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Type -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-type">
+        {{ 'reportIssue.typeLabel' | transloco }}
+      </label>
+      <select
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        formControlName="type"
+        id="issue-type"
+      >
+        <option value="bug">{{ 'reportIssue.typeBug' | transloco }}</option>
+        <option value="enhancement">{{ 'reportIssue.typeEnhancement' | transloco }}</option>
+      </select>
+    </div>
+
+    <!-- Title -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-title">
+        {{ 'reportIssue.titleLabel' | transloco }}
+      </label>
+      <input
+        autocomplete="off"
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        formControlName="title"
+        id="issue-title"
+        type="text"
+        [placeholder]="'reportIssue.titlePlaceholder' | transloco"
+      />
+      @if (titleErrors?.invalid && titleErrors?.touched) {
+        @if (titleErrors?.errors?.['required']) {
+          <p class="mt-1 text-xs text-red-600">{{ 'reportIssue.titleRequired' | transloco }}</p>
+        } @else if (titleErrors?.errors?.['maxlength']) {
+          <p class="mt-1 text-xs text-red-600">{{ 'reportIssue.titleMaxLength' | transloco }}</p>
+        }
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-description">
+        {{ 'reportIssue.descriptionLabel' | transloco }}
+      </label>
+      <textarea
+        class="
+          w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        formControlName="description"
+        id="issue-description"
+        rows="5"
+        [placeholder]="'reportIssue.descriptionPlaceholder' | transloco"
+      ></textarea>
+      @if (descriptionErrors?.invalid && descriptionErrors?.touched) {
+        @if (descriptionErrors?.errors?.['required']) {
+          <p class="mt-1 text-xs text-red-600">
+            {{ 'reportIssue.descriptionRequired' | transloco }}
+          </p>
+        } @else if (descriptionErrors?.errors?.['minlength']) {
+          <p class="mt-1 text-xs text-red-600">
+            {{ 'reportIssue.descriptionMinLength' | transloco }}
+          </p>
+        } @else if (descriptionErrors?.errors?.['maxlength']) {
+          <p class="mt-1 text-xs text-red-600">
+            {{ 'reportIssue.descriptionMaxLength' | transloco }}
+          </p>
+        }
+      }
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-contact">
+        {{ 'reportIssue.contactLabel' | transloco }}
+      </label>
+      <input
+        autocomplete="off"
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        formControlName="contact"
+        id="issue-contact"
+        type="text"
+        [placeholder]="'reportIssue.contactPlaceholder' | transloco"
+      />
+      @if (contactErrors?.invalid && contactErrors?.touched && contactErrors?.errors?.['maxlength']) {
+        <p class="mt-1 text-xs text-red-600">{{ 'reportIssue.contactMaxLength' | transloco }}</p>
+      }
+    </div>
+
+    <!--
+      Hidden input that receives the Turnstile token in tests.
+      In production, the real TurnstileComponent emits via (tokenChange).
+      The data-testid attribute makes it discoverable in both unit tests and e2e.
+    -->
+    <input
+      class="sr-only"
+      data-testid="turnstile-token-input"
+      tabindex="-1"
+      type="text"
+      [value]="turnstileToken()"
+      (input)="onTurnstileTokenInput($event)"
+    />
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-3 pt-2">
+      <button
+        class="
+          rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+          font-medium text-gray-700 transition-colors
+          hover:bg-gray-50
+          focus-visible:outline-2 focus-visible:outline-gray-400
+        "
+        type="button"
+        (click)="onCancel()"
+      >
+        {{ 'reportIssue.cancel' | transloco }}
+      </button>
+      <button
+        class="
+          rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white
+          transition-colors
+          hover:bg-indigo-500
+          focus-visible:outline-2 focus-visible:outline-indigo-400
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+        type="submit"
+        [disabled]="!canSubmit"
+      >
+        @if (isSubmitting()) {
+          <span class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" d="M4 12a8 8 0 018-8v8H4z" fill="currentColor" />
+            </svg>
+            {{ 'reportIssue.submit' | transloco }}
+          </span>
+        } @else {
+          {{ 'reportIssue.submit' | transloco }}
+        }
+      </button>
+    </div>
+  </form>
+
+  <app-toast />
+</div>

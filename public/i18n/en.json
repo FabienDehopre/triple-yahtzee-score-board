@@ -125,5 +125,31 @@
   "footer": {
     "copyright": "© {{ year }} Fabien Dehopré",
     "githubLinkLabel": "View source on GitHub"
+  },
+  "reportIssue": {
+    "fabAriaLabel": "Report an issue",
+    "dialogTitle": "Report an Issue",
+    "typeLabel": "Type",
+    "typeBug": "Bug",
+    "typeEnhancement": "Enhancement",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Brief summary of the issue",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Please describe the issue in detail…",
+    "contactLabel": "Contact (optional)",
+    "contactPlaceholder": "Email or handle so we can follow up",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "titleRequired": "Title is required.",
+    "titleMaxLength": "Title must be 100 characters or fewer.",
+    "descriptionRequired": "Description is required.",
+    "descriptionMinLength": "Description must be at least 10 characters.",
+    "descriptionMaxLength": "Description must be 2000 characters or fewer.",
+    "contactMaxLength": "Contact must be 200 characters or fewer.",
+    "turnstileHint": "Please complete the security check to submit.",
+    "successToast": "Issue filed! <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\" class=\"underline font-semibold\">View #{{ number }}</a>",
+    "errorRateLimited": "Too many reports. Please wait before trying again.",
+    "errorTurnstileFailed": "Security check failed. Please try again.",
+    "errorNetwork": "Something went wrong. Please try again later."
   }
 }

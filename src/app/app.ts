@@ -9,6 +9,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { GameCountPickerComponent } from './components/game-count-picker/game-count-picker.component';
 import { GameOverComponent } from './components/game-over/game-over.component';
 import { LanguagePickerComponent } from './components/language-picker/language-picker.component';
+import { ReportIssueButtonComponent } from './components/report-issue-button/report-issue-button.component';
 import { ScoreSheetComponent } from './components/score-sheet/score-sheet.component';
 import { SuggestionBarComponent } from './components/suggestion-bar/suggestion-bar.component';
 import { UndoBannerComponent } from './components/undo-banner/undo-banner.component';
@@ -25,6 +26,7 @@ import { PlacementService } from './services/placement.service';
     GameCountPickerComponent,
     GameOverComponent,
     LanguagePickerComponent,
+    ReportIssueButtonComponent,
     ScoreSheetComponent,
     SuggestionBarComponent,
     TranslocoPipe,
