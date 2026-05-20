@@ -10,7 +10,7 @@ import { GameStateAnonymizerService } from '../../services/game-state-anonymizer
 import { GameStateService } from '../../services/game-state.service';
 import { ReportIssueService } from '../../services/report-issue.service';
 import { ToastService } from '../../services/toast.service';
-import { ToastComponent } from '../toast/toast.component';
+import { TurnstileComponent } from '../turnstile/turnstile.component';
 
 const TITLE_MAX = 100;
 const DESC_MIN = 10;
@@ -24,7 +24,7 @@ const CONTACT_MAX = 200;
  */
 @Component({
   selector: 'app-report-issue-dialog',
-  imports: [ReactiveFormsModule, TranslocoPipe, ToastComponent],
+  imports: [ReactiveFormsModule, TranslocoPipe, TurnstileComponent],
   templateUrl: './report-issue-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -66,6 +66,7 @@ export class TurnstileComponent implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     const id = this.#widgetId();
+
     if (id !== undefined && turnstile !== undefined) {
       turnstile.remove(id);
     }
@@ -73,6 +74,7 @@ export class TurnstileComponent implements AfterViewInit, OnDestroy {
 
   reset(): void {
     const id = this.#widgetId();
+
     if (id !== undefined && turnstile !== undefined) {
       turnstile.reset(id);
     }

@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 import { ReportIssueDialogComponent } from '../report-issue-dialog/report-issue-dialog.component';
-import { ToastComponent } from '../toast/toast.component';
 
 /**
  * Floating action button anchored to the bottom-right of the viewport.
@@ -12,7 +11,7 @@ import { ToastComponent } from '../toast/toast.component';
  */
 @Component({
   selector: 'app-report-issue-button',
-  imports: [TranslocoPipe, ToastComponent],
+  imports: [TranslocoPipe],
   templateUrl: './report-issue-button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

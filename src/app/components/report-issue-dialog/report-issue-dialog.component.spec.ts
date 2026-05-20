@@ -7,6 +7,7 @@ import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
 import { ENVIRONMENT } from '../../../environments/environment';
+import { ToastComponent } from '../toast/toast.component';
 import { ReportIssueDialogComponent } from './report-issue-dialog.component';
 
 const EN = {
@@ -42,18 +43,22 @@ const MOCK_DIALOG_REF = {
 };
 
 async function renderComponent() {
-  return render(ReportIssueDialogComponent, {
-    providers: [
-      provideHttpClient(),
-      provideHttpClientTesting(),
-      { provide: DialogRef, useValue: MOCK_DIALOG_REF },
-    ],
+  // Render the dialog alongside the toast so toast assertions work in isolation.
+  // In the real app the toast lives at app root; here we co-render it.
+  return render(`<app-report-issue-dialog /><app-toast />`, {
     imports: [
+      ReportIssueDialogComponent,
+      ToastComponent,
       TranslocoTestingModule.forRoot({
         langs: { en: EN },
         translocoConfig: { availableLangs: ['en'], defaultLang: 'en' },
         preloadLangs: true,
       }),
+    ],
+    providers: [
+      provideHttpClient(),
+      provideHttpClientTesting(),
+      { provide: DialogRef, useValue: MOCK_DIALOG_REF },
     ],
   });
 }

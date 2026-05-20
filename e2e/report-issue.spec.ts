@@ -51,7 +51,8 @@ test.describe('report Issue FAB', () => {
 
     // Dialog should close and toast should be visible
     await expect(page.getByRole('dialog')).toBeHidden();
-    await expect(page.locator('[class*="bg-green"]')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId('toast')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId('toast')).toHaveClass(/bg-green/);
   });
 
   test('shows error toast when worker returns 429', async ({ page }) => {
@@ -75,6 +76,7 @@ test.describe('report Issue FAB', () => {
 
     await page.getByRole('button', { name: /submit/i }).click();
 
-    await expect(page.locator('[class*="bg-red"]')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId('toast')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByTestId('toast')).toHaveClass(/bg-red/);
   });
 });

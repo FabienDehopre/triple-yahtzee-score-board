@@ -113,6 +113,13 @@
     </div>
 
     <!--
+      Cloudflare Turnstile widget — renders the challenge in production.
+      In tests the `turnstile` global is absent so the widget is a no-op;
+      use the hidden input below to inject a fake token instead.
+    -->
+    <app-turnstile [siteKey]="siteKey" (tokenChange)="onTurnstileToken($event)" />
+
+    <!--
       Hidden input that receives the Turnstile token in tests.
       In production, the real TurnstileComponent emits via (tokenChange).
       The data-testid attribute makes it discoverable in both unit tests and e2e.
@@ -165,6 +172,4 @@
       </button>
     </div>
   </form>
-
-  <app-toast />
 </div>

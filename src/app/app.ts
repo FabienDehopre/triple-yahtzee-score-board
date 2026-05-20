@@ -12,6 +12,7 @@ import { LanguagePickerComponent } from './components/language-picker/language-p
 import { ReportIssueButtonComponent } from './components/report-issue-button/report-issue-button.component';
 import { ScoreSheetComponent } from './components/score-sheet/score-sheet.component';
 import { SuggestionBarComponent } from './components/suggestion-bar/suggestion-bar.component';
+import { ToastComponent } from './components/toast/toast.component';
 import { UndoBannerComponent } from './components/undo-banner/undo-banner.component';
 import { GameStateService } from './services/game-state.service';
 import { PersistenceManagerService } from './services/persistence-manager.service';
@@ -29,6 +30,7 @@ import { PlacementService } from './services/placement.service';
     ReportIssueButtonComponent,
     ScoreSheetComponent,
     SuggestionBarComponent,
+    ToastComponent,
     TranslocoPipe,
     UndoBannerComponent,
   ],
