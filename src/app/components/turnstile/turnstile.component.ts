@@ -45,15 +45,16 @@ declare const turnstile: TurnstileAPI | undefined;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TurnstileComponent implements AfterViewInit, OnDestroy {
-  readonly #container = viewChild.required<ElementRef<HTMLElement>>('container');
   readonly #widgetId = signal<string | undefined>(undefined);
+
+  protected readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
 
   readonly siteKey = input.required<string>();
   readonly tokenChange = output<string>();
 
   ngAfterViewInit(): void {
     if (turnstile === undefined) return;
-    const id = turnstile.render(this.#container().nativeElement, {
+    const id = turnstile.render(this.container().nativeElement, {
       sitekey: this.siteKey(),
       theme: 'light',
       callback: (token) => this.tokenChange.emit(token),

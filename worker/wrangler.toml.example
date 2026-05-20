@@ -1,0 +1,17 @@
+name = "triple-yahtzee-report-worker"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+
+[vars]
+GITHUB_REPO = "FabienDehopre/triple-yahtzee-score-board"
+
+# Secrets to configure via `wrangler secret put`:
+#   TURNSTILE_SECRET_KEY   — Cloudflare Turnstile secret
+#   GITHUB_APP_ID          — GitHub App numeric ID
+#   GITHUB_PRIVATE_KEY     — GitHub App PEM private key (base64-encoded)
+#   GITHUB_INSTALLATION_ID — GitHub App installation ID
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "PLACEHOLDER_REPLACE_WITH_REAL_KV_ID"
+preview_id = "PLACEHOLDER_REPLACE_WITH_PREVIEW_KV_ID"

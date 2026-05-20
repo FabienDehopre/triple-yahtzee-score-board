@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
+import { TranslocoService } from '@jsverse/transloco';
 
 import { ToastService } from '../../services/toast.service';
 
@@ -9,7 +9,7 @@ import { ToastService } from '../../services/toast.service';
  */
 @Component({
   selector: 'app-toast',
-  imports: [TranslocoPipe],
+  imports: [],
   templateUrl: './toast.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
