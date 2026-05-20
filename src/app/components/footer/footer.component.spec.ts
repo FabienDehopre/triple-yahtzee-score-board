@@ -25,6 +25,10 @@ function setup() {
 }
 
 describe('footerComponent', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   test('renders a footer element', async () => {
     await setup();
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
@@ -37,8 +41,10 @@ describe('footerComponent', () => {
     await setup();
 
     expect(screen.getByRole('contentinfo')).toHaveTextContent('2030');
+  });
 
-    vi.useRealTimers();
+  test('restores real timers after each test', () => {
+    expect(vi.isFakeTimers()).toBeFalsy();
   });
 
   test('github link has correct href', async () => {
