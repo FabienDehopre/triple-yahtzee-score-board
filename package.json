@@ -63,6 +63,6 @@
     "pre-commit": "pnpm nano-staged"
   },
   "nano-staged": {
-    "*": "eslint --fix --pass-on-no-patterns"
+    "*": "eslint --fix --pass-on-no-patterns --no-error-on-unmatched-pattern"
   }
 }
