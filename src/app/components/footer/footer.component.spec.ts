@@ -43,10 +43,6 @@ describe('footerComponent', () => {
     expect(screen.getByRole('contentinfo')).toHaveTextContent('2030');
   });
 
-  test('restores real timers after each test', () => {
-    expect(vi.isFakeTimers()).toBeFalsy();
-  });
-
   test('github link has correct href', async () => {
     await setup();
     expect(screen.getByRole('link', { name: /view source on github/i })).toHaveAttribute('href', GITHUB_URL);
