@@ -1,0 +1,13 @@
+<footer class="mt-8 py-4 text-center text-sm text-gray-400">
+  <p>{{ 'footer.copyright' | transloco: { year: year() } }}</p>
+  <a
+    class="
+      underline
+      hover:text-gray-600
+    "
+    href="https://github.com/FabienDehopre/triple-yahtzee-score-board"
+    rel="noopener noreferrer"
+    target="_blank"
+    [attr.aria-label]="'footer.githubLinkLabel' | transloco"
+  >{{ 'footer.githubLinkLabel' | transloco }}</a>
+</footer>

@@ -121,5 +121,9 @@
     "ariaLabel": "Sélectionner la langue",
     "en": "Anglais",
     "fr": "Français"
+  },
+  "footer": {
+    "copyright": "© {{ year }} Fabien Dehopré",
+    "githubLinkLabel": "Voir le code source sur GitHub"
   }
 }

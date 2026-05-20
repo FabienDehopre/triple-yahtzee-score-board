@@ -5,6 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
 import { ClearSessionButtonComponent } from './components/clear-session-button/clear-session-button.component';
 import { DiceInputComponent } from './components/dice-input/dice-input.component';
+import { FooterComponent } from './components/footer/footer.component';
 import { GameCountPickerComponent } from './components/game-count-picker/game-count-picker.component';
 import { GameOverComponent } from './components/game-over/game-over.component';
 import { LanguagePickerComponent } from './components/language-picker/language-picker.component';
@@ -20,6 +21,7 @@ import { PlacementService } from './services/placement.service';
   imports: [
     ClearSessionButtonComponent,
     DiceInputComponent,
+    FooterComponent,
     GameCountPickerComponent,
     GameOverComponent,
     LanguagePickerComponent,

@@ -109,6 +109,10 @@ const EN = {
     cancel: 'Cancel',
   },
   languagePicker: { ariaLabel: 'Select language', en: 'English', fr: 'French' },
+  footer: {
+    copyright: '© {{ year }} Fabien Dehopré',
+    githubLinkLabel: 'View source on GitHub',
+  },
 };
 
 export function getTranslocoTestingModule(): ReturnType<typeof TranslocoTestingModule.forRoot> {
