@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({
@@ -8,5 +8,5 @@ import { TranslocoPipe } from '@jsverse/transloco';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
-  protected readonly year = computed(() => new Date().getFullYear());
+  protected readonly year = signal(new Date().getFullYear()).asReadonly();
 }
