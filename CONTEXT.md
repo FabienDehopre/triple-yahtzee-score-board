@@ -71,11 +71,11 @@ A recommended (ScoreCategory, GameColumn) placement for the current **DiceSet**,
 _Avoid_: Hint, tip, recommendation
 
 **Greedy Strategy**:
-The only suggestion algorithm — ranks all available cells by raw score × column multiplier, descending. Ties broken by **ScoreCategory** then **GameColumn** (ascending). Implemented inline in `SuggestionEngineService`; no strategy abstraction.
+The only suggestion algorithm — ranks all available cells by raw score × column multiplier, descending. Ties broken by **ScoreCategory** then **GameColumn** (ascending). Pure ranking lives in `SuggestionEngineService.computeSuggestions(dice, game)`; the reactive `suggestions` computed lives on `SessionStore`. No strategy abstraction.
 _Avoid_: Algorithm, strategy (standalone)
 
 **Suggestion Scope**:
-Suggestions are computed for the currently active **Game** (tracked by `activeGameIndex` on `GameStateService`). Accepting a **Suggestion** places the score in that same active **Game**. Switching the active **Game** causes **Suggestions** to recompute immediately.
+Suggestions are computed for the currently active **Game** (tracked by `activeGameIndex` on `SessionStore`). Accepting a **Suggestion** places the score in that same active **Game**. Switching the active **Game** causes **Suggestions** to recompute immediately.
 _Avoid_: Global suggestion, session suggestion
 
 **Yahtzee Bonus**:
@@ -85,7 +85,7 @@ _Avoid_: Bonus Yahtzee, extra Yahtzee
 ### Placement
 
 **Placement**:
-The act of applying a confirmed **DiceSet** to the next available **ScoreCell** for a **ScoreCategory** in the active **Game**. Triggers **Snapshot** save, **Yahtzee Bonus** check, and **Left-to-Right Fill Rule** resolution. Owned by `PlacementService`; `GameStateService` holds state but does not coordinate placement.
+The act of applying a confirmed **DiceSet** to the next available **ScoreCell** for a **ScoreCategory** in the active **Game**. Triggers **Snapshot** save, **Yahtzee Bonus** check, and **Left-to-Right Fill Rule** resolution. Owned by `SessionStore.placeScore` (see [ADR-0008](./docs/adr/0008-ngrx-signal-store-for-session-and-undo-state.md)).
 _Avoid_: Score entry, fill, write
 
 ### Undo

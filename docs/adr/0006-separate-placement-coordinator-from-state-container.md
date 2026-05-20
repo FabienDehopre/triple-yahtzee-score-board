@@ -1,5 +1,7 @@
 # Separate placement coordinator from game state container
 
+> **Superseded by [ADR-0008](./0008-ngrx-signal-store-for-session-and-undo-state.md).** Placement now lives as `withMethods` on `SessionStore`. The reasoning below is preserved as historical context.
+
 `GameStateService` is a state container: it holds the games array, dice, game count, and active game index as signals, plus computed read-models (`columnStats`, `grandTotal`, `isGameOver`). It exposes low-level mutators (`updateGameAt`, `restoreGames`, etc.) but does not encode placement rules.
 
 `PlacementService` is the operation coordinator: it owns the **Placement** action — applying a confirmed **DiceSet** to the next available **ScoreCell**. It computes the raw score via `ScoringEngineService`, applies **Yahtzee Bonus** rules, saves a **Snapshot** to `UndoService`, and writes the new game tree through `GameStateService`'s mutator. It also owns `setCurrentDice` because entering new dice clears the snapshot — a placement-coupled concern.
