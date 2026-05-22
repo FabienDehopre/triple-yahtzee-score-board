@@ -39,7 +39,6 @@ export class TurnstileComponent implements FormValueControl<string> {
 
   readonly siteKey = input.required<string>();
   readonly value = model('');
-  // readonly tokenChange = output<string>();
 
   constructor() {
     afterNextRender(() => {
@@ -76,33 +75,4 @@ export class TurnstileComponent implements FormValueControl<string> {
       this.value.set('');
     }
   }
-
-  // ngAfterViewInit(): void {
-  //   if (typeof turnstile === 'undefined') return;
-  //   const id = turnstile.render(this.container().nativeElement, {
-  //     sitekey: this.siteKey(),
-  //     theme: 'light',
-  //     callback: (token) => this.tokenChange.emit(token),
-  //     'expired-callback': () => this.tokenChange.emit(''),
-  //     'error-callback': () => this.tokenChange.emit(''),
-  //   });
-  //   this.#widgetId.set(id);
-  // }
-
-  // ngOnDestroy(): void {
-  //   const id = this.#widgetId();
-
-  //   if (id !== undefined && typeof turnstile !== 'undefined') {
-  //     turnstile.remove(id);
-  //   }
-  // }
-
-  // reset(): void {
-  //   const id = this.#widgetId();
-
-  //   if (id !== undefined && typeof turnstile !== 'undefined') {
-  //     turnstile.reset(id);
-  //   }
-  //   this.tokenChange.emit('');
-  // }
 }

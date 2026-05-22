@@ -83,33 +83,6 @@ export class ReportIssueDialogComponent {
   protected readonly canSubmit = computed(() => this.form().valid() && !this.form().submitting());
   protected readonly cannotSubmit = computed(() => !this.canSubmit());
 
-  // protected readonly isSubmitting = signal(false);
-  // protected readonly turnstileToken = signal('');
-
-  // protected get canSubmit(): boolean {
-  //   return this.form.valid && this.turnstileToken() !== '' && !this.isSubmitting();
-  // }
-
-  // get titleErrors(): AbstractControl | null {
-  //   return this.form.get('title');
-  // }
-
-  // get descriptionErrors(): AbstractControl | null {
-  //   return this.form.get('description');
-  // }
-
-  // get contactErrors(): AbstractControl | null {
-  //   return this.form.get('contact');
-  // }
-
-  // protected onTurnstileToken(token: string): void {
-  //   this.turnstileToken.set(token);
-  // }
-
-  // protected onTurnstileTokenInput(event: Event): void {
-  //   this.turnstileToken.set((event.target as HTMLInputElement).value);
-  // }
-
   protected onCancel(): void {
     this.#dialogRef.close();
   }
@@ -126,35 +99,4 @@ export class ReportIssueDialogComponent {
       })
     );
   }
-
-  // protected onSubmit(): void {
-  //   if (!this.canSubmit) return;
-  //   this.isSubmitting.set(true);
-
-  //   const games = this.#gameState.games();
-  //   const lang = this.#transloco.getActiveLang();
-  //   const gameState = this.#anonymizer.anonymize(games, lang);
-  //   const raw = this.form.getRawValue();
-
-  //   this.#reportService
-  //     .submit({
-  //       type: raw.type as 'bug' | 'enhancement',
-  //       title: raw.title ?? '',
-  //       description: raw.description ?? '',
-  //       contact: raw.contact ?? undefined,
-  //       gameState,
-  //       turnstileToken: this.turnstileToken(),
-  //     })
-  //     .subscribe({
-  //       next: (result) => {
-  //         this.isSubmitting.set(false);
-  //         this.#toastService.show({ type: 'success', url: result.url, issueNumber: result.issueNumber });
-  //         this.#dialogRef.close();
-  //       },
-  //       error: (err: { code: 'network_error' | 'rate_limited' | 'turnstile_failed' | 'validation' }) => {
-  //         this.isSubmitting.set(false);
-  //         this.#toastService.show({ type: 'error', code: err.code });
-  //       },
-  //     });
-  // }
 }
