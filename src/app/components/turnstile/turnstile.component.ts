@@ -1,6 +1,7 @@
 import type {
   ElementRef
 } from '@angular/core';
+import type { FormValueControl } from '@angular/forms/signals';
 
 import {
   afterNextRender,
@@ -9,7 +10,7 @@ import {
   DestroyRef,
   inject,
   input,
-  output,
+  model,
   signal,
   untracked,
   viewChild
@@ -29,7 +30,7 @@ import { TurnstileService } from './turnstile.service';
   template: '<div #container></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TurnstileComponent {
+export class TurnstileComponent implements FormValueControl<string> {
   readonly #widgetId = signal<string | undefined>(undefined);
   readonly #transloco = inject(TranslocoService);
   readonly #turnstile = inject(TurnstileService);
@@ -37,7 +38,8 @@ export class TurnstileComponent {
   protected readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
 
   readonly siteKey = input.required<string>();
-  readonly tokenChange = output<string>();
+  readonly value = model('');
+  // readonly tokenChange = output<string>();
 
   constructor() {
     afterNextRender(() => {
@@ -47,10 +49,10 @@ export class TurnstileComponent {
           sitekey: this.siteKey(),
           theme: 'light',
           language: this.#transloco.getActiveLang(),
-          callback: (token) => this.tokenChange.emit(token),
+          callback: (token) => this.value.set(token),
           'expired-callback': () => this.reset(),
           'error-callback': (errorCode: string): void => {
-            this.tokenChange.emit('');
+            this.value.set('');
             console.error('Turnstile error:', errorCode);
           },
         });
@@ -71,7 +73,7 @@ export class TurnstileComponent {
 
     if (id !== undefined) {
       this.#turnstile.reset(id);
-      this.tokenChange.emit('');
+      this.value.set('');
     }
   }
 

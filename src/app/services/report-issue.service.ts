@@ -35,6 +35,17 @@ const STATUS_TO_CODE: Partial<Record<number, ReportIssueError['code']>> = {
   429: 'rate_limited',
 };
 
+export function isReportIssueError(error: unknown): error is ReportIssueError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    typeof error.code === 'string' &&
+    'message' in error &&
+    typeof error.message === 'string'
+  );
+}
+
 /**
  * Submits a bug/enhancement report to the Cloudflare Worker proxy,
  * which creates a GitHub issue on behalf of the user.
