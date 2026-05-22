@@ -1,7 +1,6 @@
 import type { ReportIssuePayload, ReportIssueResult } from '../../services/report-issue.service';
 
 import { DialogRef } from '@angular/cdk/dialog';
-import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { form, FormField, FormRoot, maxLength, minLength, required } from '@angular/forms/signals';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
@@ -28,7 +27,7 @@ type ReportIssueFormModel = Required<Omit<ReportIssuePayload, 'gameState'>>;
  */
 @Component({
   selector: 'app-report-issue-dialog',
-  imports: [FormField, FormRoot, TranslocoPipe, TurnstileComponent, CdkPortalOutlet],
+  imports: [FormField, FormRoot, TranslocoPipe, TurnstileComponent],
   templateUrl: './report-issue-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
