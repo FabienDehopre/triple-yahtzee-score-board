@@ -1,37 +1,22 @@
 import type {
-  AfterViewInit,
-  ElementRef,
-  OnDestroy } from '@angular/core';
+  ElementRef
+} from '@angular/core';
 
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  inject,
   input,
   output,
   signal,
+  untracked,
   viewChild
 } from '@angular/core';
+import { TranslocoService } from '@jsverse/transloco';
 
-/**
- * Minimal ambient type for the Cloudflare Turnstile JS API.
- * The full script is loaded via <script> in index.html.
- */
-interface TurnstileAPI {
-  render: (
-    container: HTMLElement,
-    options: {
-      sitekey: string;
-      theme?: 'auto' | 'dark' | 'light';
-      callback?: (token: string) => void;
-      'error-callback'?: () => void;
-      'expired-callback'?: () => void;
-    }
-  ) => string;
-  reset: (widgetId: string) => void;
-  remove: (widgetId: string) => void;
-}
-// eslint-disable-next-line @typescript-eslint/naming-convention
-declare const turnstile: TurnstileAPI | undefined;
+import { TurnstileService } from './turnstile.service';
 
 /**
  * Wraps the Cloudflare Turnstile widget.
@@ -44,40 +29,78 @@ declare const turnstile: TurnstileAPI | undefined;
   template: '<div #container></div>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TurnstileComponent implements AfterViewInit, OnDestroy {
+export class TurnstileComponent {
   readonly #widgetId = signal<string | undefined>(undefined);
+  readonly #transloco = inject(TranslocoService);
+  readonly #turnstile = inject(TurnstileService);
 
   protected readonly container = viewChild.required<ElementRef<HTMLElement>>('container');
 
   readonly siteKey = input.required<string>();
   readonly tokenChange = output<string>();
 
-  ngAfterViewInit(): void {
-    if (turnstile === undefined) return;
-    const id = turnstile.render(this.container().nativeElement, {
-      sitekey: this.siteKey(),
-      theme: 'light',
-      callback: (token) => this.tokenChange.emit(token),
-      'expired-callback': () => this.tokenChange.emit(''),
-      'error-callback': () => this.tokenChange.emit(''),
+  constructor() {
+    afterNextRender(() => {
+      const container = this.container().nativeElement;
+      untracked(() => {
+        const id = this.#turnstile.render(container, {
+          sitekey: this.siteKey(),
+          theme: 'light',
+          language: this.#transloco.getActiveLang(),
+          callback: (token) => this.tokenChange.emit(token),
+          'expired-callback': () => this.reset(),
+          'error-callback': (errorCode: string): void => {
+            this.tokenChange.emit('');
+            console.error('Turnstile error:', errorCode);
+          },
+        });
+        this.#widgetId.set(id);
+      });
     });
-    this.#widgetId.set(id);
-  }
+    inject(DestroyRef).onDestroy(() => {
+      const id = this.#widgetId();
 
-  ngOnDestroy(): void {
-    const id = this.#widgetId();
-
-    if (id !== undefined && turnstile !== undefined) {
-      turnstile.remove(id);
-    }
+      if (id !== undefined) {
+        this.#turnstile.remove(id);
+      }
+    });
   }
 
   reset(): void {
     const id = this.#widgetId();
 
-    if (id !== undefined && turnstile !== undefined) {
-      turnstile.reset(id);
+    if (id !== undefined) {
+      this.#turnstile.reset(id);
+      this.tokenChange.emit('');
     }
-    this.tokenChange.emit('');
   }
+
+  // ngAfterViewInit(): void {
+  //   if (typeof turnstile === 'undefined') return;
+  //   const id = turnstile.render(this.container().nativeElement, {
+  //     sitekey: this.siteKey(),
+  //     theme: 'light',
+  //     callback: (token) => this.tokenChange.emit(token),
+  //     'expired-callback': () => this.tokenChange.emit(''),
+  //     'error-callback': () => this.tokenChange.emit(''),
+  //   });
+  //   this.#widgetId.set(id);
+  // }
+
+  // ngOnDestroy(): void {
+  //   const id = this.#widgetId();
+
+  //   if (id !== undefined && typeof turnstile !== 'undefined') {
+  //     turnstile.remove(id);
+  //   }
+  // }
+
+  // reset(): void {
+  //   const id = this.#widgetId();
+
+  //   if (id !== undefined && typeof turnstile !== 'undefined') {
+  //     turnstile.reset(id);
+  //   }
+  //   this.tokenChange.emit('');
+  // }
 }
