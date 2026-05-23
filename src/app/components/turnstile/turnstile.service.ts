@@ -10,6 +10,7 @@ interface TurnstileAPI {
     options: {
       sitekey: string;
       theme?: 'auto' | 'dark' | 'light';
+      size?: 'compact' | 'flexible' | 'normal';
       callback?: (token: string) => void;
       'error-callback'?: (errorCode: string) => void;
       'expired-callback'?: () => void;

@@ -47,6 +47,7 @@ export class TurnstileComponent implements FormValueControl<string> {
         const id = this.#turnstile.render(container, {
           sitekey: this.siteKey(),
           theme: 'light',
+          size: 'flexible',
           language: this.#transloco.getActiveLang(),
           callback: (token) => this.value.set(token),
           'expired-callback': () => this.reset(),
