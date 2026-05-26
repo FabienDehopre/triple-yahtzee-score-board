@@ -5,7 +5,8 @@ const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 export async function checkRateLimit(kv: KVNamespace, ip: string): Promise<boolean> {
   const key = `rl:${ip}`;
   const raw = await kv.get(key);
-  const count = raw === null ? 0 : Number.parseInt(raw, 10);
+  const parsed = raw === null ? 0 : Number.parseInt(raw, 10);
+  const count = Number.isFinite(parsed) ? parsed : 0;
 
   if (count >= RATE_LIMIT) return false;
 
