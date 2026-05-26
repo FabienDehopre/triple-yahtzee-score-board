@@ -49,6 +49,10 @@ test-results/
 
 *.tsbuildinfo
 
-.env
+.env*
+.dev.vars*
 
 docs/deepening-candidates.md
+
+**/wrangler.toml
+**/.wrangler/
