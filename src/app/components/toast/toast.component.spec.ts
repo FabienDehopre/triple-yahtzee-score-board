@@ -8,7 +8,7 @@ import { ToastComponent } from './toast.component';
 const TRANSLATIONS = {
   en: {
     reportIssue: {
-      successToast: 'Issue filed! <a href="{{ url }}">View #{{ number }}</a>',
+      successToast: 'Issue filed! <a href="{{ url }}">View #{{ issueNumber }}</a>',
       errorRateLimited: 'Too many reports. Please wait before trying again.',
       errorTurnstileFailed: 'Security check failed. Please try again.',
       errorNetwork: 'Something went wrong. Please try again later.',

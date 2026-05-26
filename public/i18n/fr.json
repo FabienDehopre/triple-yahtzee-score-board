@@ -147,7 +147,7 @@
     "descriptionMaxLength": "La description doit comporter au maximum {{ length }} caractères.",
     "contactMaxLength": "Le contact doit comporter au maximum {{ length }} caractères.",
     "turnstileHint": "Veuillez compléter la vérification de sécurité pour soumettre.",
-    "successToast": "Problème signalé ! <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\" class=\"underline font-semibold\">Voir #{{ number }}</a>",
+    "successToast": "Problème signalé ! <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\" class=\"underline font-semibold\">Voir #{{ issueNumber }}</a>",
     "errorRateLimited": "Trop de signalements. Veuillez patienter avant de réessayer.",
     "errorTurnstileFailed": "La vérification de sécurité a échoué. Veuillez réessayer.",
     "errorNetwork": "Une erreur s'est produite. Veuillez réessayer plus tard."
