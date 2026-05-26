@@ -109,10 +109,9 @@
       The data-testid attribute makes it discoverable in both unit tests and e2e.
     -->
     <input
-      class="sr-only"
+      aria-hidden="true"
       data-testid="turnstile-token-input"
-      tabindex="-1"
-      type="text"
+      type="hidden"
       [formField]="form.turnstileToken"
     />
 
