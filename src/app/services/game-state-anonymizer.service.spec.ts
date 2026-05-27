@@ -86,11 +86,6 @@ describe('gameStateAnonymizerService', () => {
   });
 
   describe('buildDiagnostics', () => {
-    test('includes app version string', () => {
-      const { diagnostics } = service.anonymize([makeGame('id1')]);
-      expect(diagnostics.appVersion).toMatch(/^\d+\.\d+\.\d+/);
-    });
-
     test('includes locale', () => {
       const { diagnostics } = service.anonymize([makeGame('id1')], 'fr');
       expect(diagnostics.locale).toBe('fr');

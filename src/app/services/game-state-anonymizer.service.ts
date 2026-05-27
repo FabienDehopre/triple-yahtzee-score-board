@@ -2,8 +2,6 @@ import type { Game } from '../models/game.model';
 
 import { Injectable } from '@angular/core';
 
-import { version } from '../../../package.json';
-
 export interface AnonymizedGameState {
   anonymizedGames: Game[];
   diagnostics: {
@@ -31,7 +29,7 @@ export class GameStateAnonymizerService {
     return {
       anonymizedGames,
       diagnostics: {
-        appVersion: version,
+        appVersion: import.meta.env.NG_APP_BUILD_ID ?? 'unknown',
         locale,
         userAgent: typeof navigator === 'undefined' ? 'unknown' : navigator.userAgent,
       },
