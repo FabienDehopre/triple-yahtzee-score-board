@@ -22,8 +22,8 @@ jobs:
           node-version: lts/*
           check-latest: true
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec eslint .
+      - run: pnpm install --frozen-lockfile --recursive
+      - run: pnpm run lint
 
   test:
     name: Test
@@ -40,8 +40,9 @@ jobs:
           node-version: lts/*
           check-latest: true
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm exec ng test --watch=false
+      - run: pnpm install --frozen-lockfile --recursive
+      - run: pnpm run test --watch=false
+      - run: pnpm --filter ./worker/ run test --watch=false
 
   build:
     name: Build
@@ -59,5 +60,5 @@ jobs:
           node-version: lts/*
           check-latest: true
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+      - run: pnpm install --frozen-lockfile --recursive
+      - run: pnpm run build
