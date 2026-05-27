@@ -1,0 +1,162 @@
+<div
+  aria-modal="true"
+  class="
+    relative mx-auto my-8 w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl
+    sm:p-8
+  "
+  role="dialog"
+  [attr.aria-label]="'reportIssue.dialogTitle' | transloco"
+>
+  <h2 class="mb-6 text-xl font-bold text-gray-900">
+    {{ 'reportIssue.dialogTitle' | transloco }}
+  </h2>
+
+  <form class="space-y-4" [formRoot]="form">
+    <!-- Type -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-type">
+        {{ 'reportIssue.typeLabel' | transloco }}
+      </label>
+      <select
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        id="issue-type"
+        [formField]="form.type"
+      >
+        <option value="bug">{{ 'reportIssue.typeBug' | transloco }}</option>
+        <option value="enhancement">{{ 'reportIssue.typeEnhancement' | transloco }}</option>
+      </select>
+    </div>
+
+    <!-- Title -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-title">
+        {{ 'reportIssue.titleLabel' | transloco }}
+      </label>
+      <input
+        autocomplete="off"
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        id="issue-title"
+        type="text"
+        [formField]="form.title"
+        [placeholder]="'reportIssue.titlePlaceholder' | transloco"
+      />
+      @if (form.title().touched() && form.title().invalid()) {
+        <p class="mt-1 text-xs text-red-600">{{ form.title().errors()[0].message }}</p>
+      }
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-description">
+        {{ 'reportIssue.descriptionLabel' | transloco }}
+      </label>
+      <textarea
+        class="
+          w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        id="issue-description"
+        rows="5"
+        [formField]="form.description"
+        [placeholder]="'reportIssue.descriptionPlaceholder' | transloco"
+      ></textarea>
+      @if (form.description().touched() && form.description().invalid()) {
+        <p class="mt-1 text-xs text-red-600">{{ form.description().errors()[0].message }}</p>
+      }
+    </div>
+
+    <!-- Contact -->
+    <div>
+      <label class="mb-1 block text-sm font-medium text-gray-700" for="issue-contact">
+        {{ 'reportIssue.contactLabel' | transloco }}
+      </label>
+      <input
+        autocomplete="off"
+        class="
+          w-full rounded-lg border border-gray-300 px-3 py-2 text-sm
+          focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500
+          focus:outline-none
+        "
+        id="issue-contact"
+        type="text"
+        [formField]="form.contact"
+        [placeholder]="'reportIssue.contactPlaceholder' | transloco"
+      />
+      @if (form.contact().touched() && form.contact().invalid()) {
+        <p class="mt-1 text-xs text-red-600">{{ form.contact().errors()[0].message }}</p>
+      }
+    </div>
+
+    @if (isTest) {
+      <!--
+        Hidden input that receives the Turnstile token in tests.
+        In production, the real TurnstileComponent emits via (tokenChange).
+        The data-testid attribute makes it discoverable in both unit tests and e2e.
+      -->
+      <input
+        aria-hidden="true"
+        class="sr-only"
+        data-testid="turnstile-token-input"
+        tabindex="-1"
+        type="text"
+        [formField]="form.turnstileToken"
+      />
+    } @else {
+      <!--
+        Cloudflare Turnstile widget — renders the challenge in production.
+        In tests the `turnstile` global is absent so the widget is a no-op;
+        use the hidden input below to inject a fake token instead.
+      -->
+      <app-turnstile [formField]="form.turnstileToken" [siteKey]="siteKey()" />
+    }
+
+    <!-- Buttons -->
+    <div class="flex justify-end gap-3 pt-2">
+      <button
+        class="
+          rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm
+          font-medium text-gray-700 transition-colors
+          hover:bg-gray-50
+          focus-visible:outline-2 focus-visible:outline-gray-400
+        "
+        type="button"
+        [disabled]="form().submitting()"
+        (click)="onCancel()"
+      >
+        {{ 'reportIssue.cancel' | transloco }}
+      </button>
+      <button
+        class="
+          rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white
+          transition-colors
+          hover:bg-indigo-500
+          focus-visible:outline-2 focus-visible:outline-indigo-400
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+        type="submit"
+        [disabled]="cannotSubmit()"
+      >
+        @if (form().submitting()) {
+          <span class="inline-flex items-center gap-2">
+            <svg aria-hidden="true" class="size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+              <path class="opacity-75" d="M4 12a8 8 0 018-8v8H4z" fill="currentColor" />
+            </svg>
+            {{ 'reportIssue.submit' | transloco }}
+          </span>
+        } @else {
+          {{ 'reportIssue.submit' | transloco }}
+        }
+      </button>
+    </div>
+  </form>
+</div>

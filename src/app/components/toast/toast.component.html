@@ -1,0 +1,16 @@
+@if (toast()) {
+<div
+  aria-live="polite"
+  class="
+    fixed bottom-6 left-1/2 z-50 max-w-sm -translate-x-1/2 rounded-xl px-5 py-3
+    text-white shadow-xl
+    sm:left-6 sm:translate-x-0
+  "
+  data-testid="toast"
+  role="status"
+  [class.bg-green-700]="isSuccess()"
+  [class.bg-red-700]="!isSuccess()"
+>
+  <span class="text-sm" [innerHTML]="message()"></span>
+</div>
+}

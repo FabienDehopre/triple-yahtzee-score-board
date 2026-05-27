@@ -4,8 +4,13 @@ allowBuilds:
   esbuild: false
   lmdb: false
   msgpackr-extract: false
+  sharp: false
   simple-git-hooks: false
   unrs-resolver: false
+  workerd: false
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days
+
+packages:
+  - worker

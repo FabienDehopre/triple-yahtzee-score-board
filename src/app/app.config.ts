@@ -1,7 +1,8 @@
 import type { ApplicationConfig } from '@angular/core';
 
+import { DialogModule } from '@angular/cdk/dialog';
 import { provideHttpClient } from '@angular/common/http';
-import { inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { importProvidersFrom, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideTransloco, TranslocoService } from '@jsverse/transloco';
 
 import { TranslocoHttpLoader } from './transloco-loader';
@@ -14,6 +15,7 @@ export const APP_CONFIG: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideHttpClient(),
+    importProvidersFrom(DialogModule),
     provideTransloco({
       config: {
         availableLangs: AVAILABLE_LANGS,

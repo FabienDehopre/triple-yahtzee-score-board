@@ -1,0 +1,20 @@
+{
+  "name": "triple-yahtzee-report-worker",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Cloudflare Worker that proxies issue reports to GitHub",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250407.0",
+    "vitest": "^3.2.0",
+    "wrangler": "^4.20.0"
+  }
+}

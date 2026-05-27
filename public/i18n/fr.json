@@ -125,5 +125,31 @@
   "footer": {
     "copyright": "© {{ year }} Fabien Dehopré",
     "githubLinkLabel": "Voir le code source sur GitHub"
+  },
+  "reportIssue": {
+    "fabAriaLabel": "Signaler un problème",
+    "dialogTitle": "Signaler un problème",
+    "typeLabel": "Type",
+    "typeBug": "Bug",
+    "typeEnhancement": "Amélioration",
+    "titleLabel": "Titre",
+    "titlePlaceholder": "Bref résumé du problème",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Veuillez décrire le problème en détail…",
+    "contactLabel": "Contact (optionnel)",
+    "contactPlaceholder": "Email ou pseudonyme pour vous recontacter",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "titleRequired": "Le titre est requis.",
+    "titleMaxLength": "Le titre doit comporter au maximum {{ length }} caractères.",
+    "descriptionRequired": "La description est requise.",
+    "descriptionMinLength": "La description doit comporter au moins {{ length }} caractères.",
+    "descriptionMaxLength": "La description doit comporter au maximum {{ length }} caractères.",
+    "contactMaxLength": "Le contact doit comporter au maximum {{ length }} caractères.",
+    "turnstileHint": "Veuillez compléter la vérification de sécurité pour soumettre.",
+    "successToast": "Problème signalé ! <a href=\"{{ url }}\" target=\"_blank\" rel=\"noopener\" class=\"underline font-semibold\">Voir #{{ issueNumber }}</a>",
+    "errorRateLimited": "Trop de signalements. Veuillez patienter avant de réessayer.",
+    "errorTurnstileFailed": "La vérification de sécurité a échoué. Veuillez réessayer.",
+    "errorNetwork": "Une erreur s'est produite. Veuillez réessayer plus tard."
   }
 }

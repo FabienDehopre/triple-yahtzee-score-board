@@ -10,7 +10,7 @@ export default defineConfig({
   workers: env['CI'] ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4200',
+    baseURL: 'http://127.0.0.1:4200',
     trace: 'on-first-retry',
   },
   projects: [
@@ -21,7 +21,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'pnpm start',
-    url: 'http://localhost:4200',
+    url: 'http://127.0.0.1:4200',
     reuseExistingServer: !env['CI'],
   },
 });
