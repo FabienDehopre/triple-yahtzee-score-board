@@ -11,6 +11,7 @@ allowBuilds:
 shellEmulator: true
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 43200 # 30 days
+includeWorkspaceRoot: true
 
 packages:
   - worker

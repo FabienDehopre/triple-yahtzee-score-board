@@ -61,7 +61,7 @@
     "vitest": "^4.1.5"
   },
   "simple-git-hooks": {
-    "pre-commit": "pnpm nano-staged"
+    "pre-commit": "pnpm -w nano-staged && pnpm -r typecheck && pnpm -r test"
   },
   "nano-staged": {
     "*": "eslint --fix --pass-on-no-patterns --no-error-on-unmatched-pattern"
