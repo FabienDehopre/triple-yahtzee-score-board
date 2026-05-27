@@ -1,6 +1,3 @@
-/* eslint-disable
-   @typescript-eslint/naming-convention
-*/
 /**
  * Minimal GitHub App JWT authentication for Cloudflare Workers.
  * Uses the Web Crypto API (no Node.js dependency).
@@ -60,8 +57,10 @@ async function getInstallationToken(
     `https://api.github.com/app/installations/${installationId}/access_tokens`,
     {
       headers: new Headers({
+        /* eslint-disable @typescript-eslint/naming-convention */
         Accept: 'application/vnd.github+json',
         Authorization: `Bearer ${jwt}`,
+        /* eslint-enable @typescript-eslint/naming-convention */
         'User-Agent': 'triple-yahtzee-report-worker',
         'X-GitHub-Api-Version': '2022-11-28',
       }),
@@ -98,8 +97,10 @@ export async function createGitHubIssue(
   const res = await fetch(`https://api.github.com/repos/${repo}/issues`, {
     body: JSON.stringify({ title, body, labels }),
     headers: new Headers({
+      /* eslint-disable @typescript-eslint/naming-convention */
       Accept: 'application/vnd.github+json',
       Authorization: `Bearer ${token}`,
+      /* eslint-enable @typescript-eslint/naming-convention */
       'Content-Type': 'application/json',
       'User-Agent': 'triple-yahtzee-report-worker',
       'X-GitHub-Api-Version': '2022-11-28',
