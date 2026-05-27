@@ -9,6 +9,7 @@ export default defineConfig({
     '.github/**',
     '.sandcastle/**',
     '.vscode/**',
+    'worker/.wrangler/**',
   ],
   angular: {
     banDeveloperPreviewApi: false,

@@ -1,0 +1,8 @@
+.agents/
+.angular/
+.claude/
+.codex/
+.github/
+.sandcastle/
+.vscode/
+worker/.wrangler/
