@@ -96,24 +96,27 @@
       }
     </div>
 
-    <!--
-      Cloudflare Turnstile widget — renders the challenge in production.
-      In tests the `turnstile` global is absent so the widget is a no-op;
-      use the hidden input below to inject a fake token instead.
-    -->
-    <app-turnstile [formField]="form.turnstileToken" [siteKey]="siteKey()" />
-
-    <!--
-      Hidden input that receives the Turnstile token in tests.
-      In production, the real TurnstileComponent emits via (tokenChange).
-      The data-testid attribute makes it discoverable in both unit tests and e2e.
-    -->
-    <input
-      aria-hidden="true"
-      data-testid="turnstile-token-input"
-      type="hidden"
-      [formField]="form.turnstileToken"
-    />
+    @if (isTest) {
+      <!--
+        Hidden input that receives the Turnstile token in tests.
+        In production, the real TurnstileComponent emits via (tokenChange).
+        The data-testid attribute makes it discoverable in both unit tests and e2e.
+      -->
+      <input
+        aria-hidden="true"
+        class="sr-only"
+        data-testid="turnstile-token-input"
+        type="text"
+        [formField]="form.turnstileToken"
+      />
+    } @else {
+      <!--
+        Cloudflare Turnstile widget — renders the challenge in production.
+        In tests the `turnstile` global is absent so the widget is a no-op;
+        use the hidden input below to inject a fake token instead.
+      -->
+      <app-turnstile [formField]="form.turnstileToken" [siteKey]="siteKey()" />
+    }
 
     <!-- Buttons -->
     <div class="flex justify-end gap-3 pt-2">

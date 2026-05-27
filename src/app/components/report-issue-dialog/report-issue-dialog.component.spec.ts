@@ -8,8 +8,6 @@ import userEvent from '@testing-library/user-event';
 
 import { ENVIRONMENT } from '../../../environments/environment';
 import { ToastComponent } from '../toast/toast.component';
-import { TurnstileComponent } from '../turnstile/turnstile.component';
-import { TurnstileService } from '../turnstile/turnstile.service';
 import { ReportIssueDialogComponent } from './report-issue-dialog.component';
 
 const EN = {
@@ -56,12 +54,6 @@ async function renderComponent() {
         translocoConfig: { availableLangs: ['en'], defaultLang: 'en' },
         preloadLangs: true,
       }),
-    ],
-    childComponentOverrides: [
-      {
-        component: TurnstileComponent,
-        providers: [{ provide: TurnstileService, useValue: { render: () => 'mock-widget-id', reset: () => {}, remove: () => {} } }],
-      },
     ],
     providers: [
       provideHttpClient(),
@@ -150,8 +142,7 @@ describe('reportIssueDialogComponent', () => {
     );
 
     // Simulate Turnstile token arriving
-    const tokenInput = screen.getByTestId('turnstile-token-input');
-    await events.type(tokenInput, 'mock-turnstile-token');
+    await events.type(screen.getByTestId('turnstile-token-input'), 'mock-turnstile-token');
 
     const submitBtn = screen.getByRole('button', { name: /submit/i });
     expect(submitBtn).toBeEnabled();
