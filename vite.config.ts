@@ -9,11 +9,12 @@ export default defineConfig(({ mode }) => ({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['src/test-setup.ts'],
+    setupFiles: ['dotenv/config', 'src/test-setup.ts'],
     include: ['src/**/*.spec.ts'],
     reporters: ['default'],
   },
   define: {
     'import.meta.vitest': mode !== 'production',
   },
+  envPrefix: 'NG_APP_',
 }));
