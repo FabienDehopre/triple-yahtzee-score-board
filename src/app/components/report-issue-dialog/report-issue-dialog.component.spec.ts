@@ -6,7 +6,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
-import { ENVIRONMENT } from '../../../environments/environment';
+import { REPORT_ISSUE_ENDPOINT } from '../../services/report-issue.service';
 import { ToastComponent } from '../toast/toast.component';
 import { ReportIssueDialogComponent } from './report-issue-dialog.component';
 
@@ -148,7 +148,7 @@ describe('reportIssueDialogComponent', () => {
     expect(submitBtn).toBeEnabled();
     await events.click(submitBtn);
 
-    http.expectOne(ENVIRONMENT.reportIssueEndpoint).flush({
+    http.expectOne(REPORT_ISSUE_ENDPOINT).flush({
       url: 'https://github.com/FabienDehopre/triple-yahtzee-score-board/issues/99',
       issueNumber: 99,
     });
@@ -172,10 +172,12 @@ describe('reportIssueDialogComponent', () => {
     await events.type(tokenInput, 'mock-token');
     await events.click(screen.getByRole('button', { name: /submit/i }));
 
-    http.expectOne(ENVIRONMENT.reportIssueEndpoint).flush(
-      { error: 'rate_limited', message: 'rate limited' },
-      { status: 429, statusText: 'Too Many Requests' }
-    );
+    http
+      .expectOne(REPORT_ISSUE_ENDPOINT)
+      .flush(
+        { error: 'rate_limited', message: 'rate limited' },
+        { status: 429, statusText: 'Too Many Requests' }
+      );
 
     expect(await screen.findByRole('status')).toHaveTextContent(/too many reports/i);
     expect(MOCK_DIALOG_REF.close).not.toHaveBeenCalled();

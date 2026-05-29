@@ -6,7 +6,6 @@ import { form, FormField, FormRoot, maxLength, minLength, required } from '@angu
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 
-import { ENVIRONMENT } from '../../../environments/environment';
 import { GameStateAnonymizerService } from '../../services/game-state-anonymizer.service';
 import { GameStateService } from '../../services/game-state.service';
 import { IS_TEST_ENV } from '../../services/injection-tokens';
@@ -20,6 +19,8 @@ const DESC_MAX = 2000;
 const CONTACT_MAX = 200;
 
 type ReportIssueFormModel = Required<Omit<ReportIssuePayload, 'gameState'>>;
+
+export const TURNSTILE_SITE_KEY = import.meta.env.NG_APP_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
 
 /**
  * Modal dialog that allows users to file a bug or enhancement report.
@@ -48,7 +49,7 @@ export class ReportIssueDialogComponent {
   });
 
   protected readonly isTest = inject(IS_TEST_ENV);
-  protected readonly siteKey = signal(ENVIRONMENT.turnstileSiteKey).asReadonly();
+  protected readonly siteKey = signal(TURNSTILE_SITE_KEY).asReadonly();
   protected readonly form = form(
     this.#reportIssueModel,
     (schemaPath) => {

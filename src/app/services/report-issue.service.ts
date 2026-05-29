@@ -6,8 +6,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
-import { ENVIRONMENT } from '../../environments/environment';
-
 export type IssueType = 'bug' | 'enhancement';
 
 export interface ReportIssuePayload {
@@ -34,6 +32,8 @@ const STATUS_TO_CODE: Partial<Record<number, ReportIssueError['code']>> = {
   400: 'validation',
   429: 'rate_limited',
 };
+export const REPORT_ISSUE_ENDPOINT =
+  import.meta.env.NG_APP_REPORT_ISSUE_ENDPOINT ?? 'http://localhost:8787/report';
 
 export function isReportIssueError(error: unknown): error is ReportIssueError {
   return (
@@ -56,13 +56,13 @@ export class ReportIssueService {
 
   submit(payload: ReportIssuePayload): Observable<ReportIssueResult> {
     return this.#http
-      .post<ReportIssueResult>(ENVIRONMENT.reportIssueEndpoint, payload, {
+      .post<ReportIssueResult>(REPORT_ISSUE_ENDPOINT, payload, {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       })
       .pipe(
         catchError((err: HttpErrorResponse) => {
           const code = STATUS_TO_CODE[err.status] ?? 'network_error';
-          return throwError(() => ({ code, message: err.message } satisfies ReportIssueError));
+          return throwError(() => ({ code, message: err.message }) satisfies ReportIssueError);
         })
       );
   }
