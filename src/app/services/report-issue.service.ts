@@ -32,8 +32,7 @@ const STATUS_TO_CODE: Partial<Record<number, ReportIssueError['code']>> = {
   400: 'validation',
   429: 'rate_limited',
 };
-export const REPORT_ISSUE_ENDPOINT =
-  import.meta.env.NG_APP_REPORT_ISSUE_ENDPOINT ?? 'http://localhost:8787/report';
+export const REPORT_ISSUE_ENDPOINT = import.meta.env.NG_APP_REPORT_ISSUE_ENDPOINT;
 
 export function isReportIssueError(error: unknown): error is ReportIssueError {
   return (

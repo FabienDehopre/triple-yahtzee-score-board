@@ -29,7 +29,7 @@ export class GameStateAnonymizerService {
     return {
       anonymizedGames,
       diagnostics: {
-        appVersion: import.meta.env.NG_APP_BUILD_ID ?? 'unknown',
+        appVersion: import.meta.env.NG_APP_BUILD_ID,
         locale,
         userAgent: typeof navigator === 'undefined' ? 'unknown' : navigator.userAgent,
       },

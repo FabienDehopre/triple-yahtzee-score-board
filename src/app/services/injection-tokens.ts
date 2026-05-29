@@ -5,7 +5,7 @@ export const IS_TEST_ENV = new InjectionToken<boolean>('IS_TEST_ENV', {
   factory: () => {
     // Vitest
     try {
-      if (import.meta.env.MODE === 'test' || import.meta.env['VITEST']) return true;
+      if (import.meta.env.MODE === 'test' || import.meta.env.VITEST) return true;
     } catch {
       /* not in a vitest context */
     }

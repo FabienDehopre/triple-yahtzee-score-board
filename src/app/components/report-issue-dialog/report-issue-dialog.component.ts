@@ -20,8 +20,6 @@ const CONTACT_MAX = 200;
 
 type ReportIssueFormModel = Required<Omit<ReportIssuePayload, 'gameState'>>;
 
-export const TURNSTILE_SITE_KEY = import.meta.env.NG_APP_TURNSTILE_SITE_KEY ?? '1x00000000000000000000AA';
-
 /**
  * Modal dialog that allows users to file a bug or enhancement report.
  * Integrates Cloudflare Turnstile for spam protection and attaches an
@@ -49,7 +47,10 @@ export class ReportIssueDialogComponent {
   });
 
   protected readonly isTest = inject(IS_TEST_ENV);
-  protected readonly siteKey = signal(TURNSTILE_SITE_KEY).asReadonly();
+  protected readonly siteKey = signal(
+    this.isTest ? '1x00000000000000000000AA' : import.meta.env.NG_APP_TURNSTILE_SITE_KEY
+  ).asReadonly();
+
   protected readonly form = form(
     this.#reportIssueModel,
     (schemaPath) => {
