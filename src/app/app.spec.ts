@@ -1,25 +1,88 @@
-import { TestBed } from '@angular/core/testing';
+import type { DiceSet } from './models/dice-set.model';
+
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
+import { By } from '@angular/platform-browser';
+import { TranslocoPipe } from '@jsverse/transloco';
+import { render, screen } from '@testing-library/angular';
 
 import { App } from './app';
+import { GameStateService } from './services/game-state.service';
+import { PersistenceManagerService } from './services/persistence-manager.service';
+import { PlacementService } from './services/placement.service';
 import { getTranslocoTestingModule } from './testing/transloco-testing';
 
+@Component({
+  selector: 'app-dice-input',
+  template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class StubDiceInputComponent {
+  readonly confirmed = output<DiceSet>();
+}
+
+function makeStub(selector: string): typeof StubDiceInputComponent {
+  @Component({ selector, template: '', changeDetection: ChangeDetectionStrategy.OnPush })
+  class StubComponent {}
+  return StubComponent as unknown as typeof StubDiceInputComponent;
+}
+
+const STUB_CHILDREN = [
+  StubDiceInputComponent,
+  makeStub('app-language-picker'),
+  makeStub('app-clear-session-button'),
+  makeStub('app-game-count-picker'),
+  makeStub('app-suggestion-bar'),
+  makeStub('app-score-sheet'),
+  makeStub('app-undo-banner'),
+  makeStub('app-footer'),
+  makeStub('app-report-issue-button'),
+  makeStub('app-toast'),
+  makeStub('app-game-over'),
+];
+
+const MOCK_PLACEMENT = { setCurrentDice: vi.fn() };
+const MOCK_IS_GAME_OVER = signal(false);
+
+async function renderApp() {
+  return render(App, {
+    componentImports: [TranslocoPipe, ...STUB_CHILDREN],
+    imports: [getTranslocoTestingModule()],
+    providers: [
+      { provide: PlacementService, useValue: MOCK_PLACEMENT },
+      { provide: GameStateService, useValue: { isGameOver: MOCK_IS_GAME_OVER } },
+      { provide: PersistenceManagerService, useValue: {} },
+    ],
+  });
+}
+
 describe('app', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App, getTranslocoTestingModule()],
-    }).compileComponents();
+  beforeEach(() => {
+    MOCK_PLACEMENT.setCurrentDice.mockReset();
+    MOCK_IS_GAME_OVER.set(false);
   });
 
-  test('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  test('delegates confirmed dice to PlacementService', async () => {
+    const { fixture } = await renderApp();
+    const dice: DiceSet = [2, 0, 1, 0, 2, 0];
+
+    fixture.debugElement
+      .query(By.directive(StubDiceInputComponent))
+      .componentInstance.confirmed.emit(dice);
+
+    expect(MOCK_PLACEMENT.setCurrentDice).toHaveBeenCalledExactlyOnceWith(dice);
   });
 
-  test('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Triple Yahtzee');
+  test('renders the game-over overlay when the game is over', async () => {
+    const { fixture } = await renderApp();
+    MOCK_IS_GAME_OVER.set(true);
+    fixture.detectChanges();
+
+    expect(screen.getByTestId('game-over-overlay')).toBeInTheDocument();
+  });
+
+  test('hides the game-over overlay while the game is ongoing', async () => {
+    await renderApp();
+
+    expect(screen.queryByTestId('game-over-overlay')).not.toBeInTheDocument();
   });
 });
