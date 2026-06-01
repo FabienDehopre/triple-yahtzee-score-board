@@ -6,10 +6,9 @@ import { form, FormField, FormRoot, maxLength, minLength, required } from '@angu
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 
-import { ENVIRONMENT } from '../../../environments/environment';
 import { GameStateAnonymizerService } from '../../services/game-state-anonymizer.service';
 import { GameStateService } from '../../services/game-state.service';
-import { IS_TEST_ENV } from '../../services/injection-tokens';
+import { injectIsTestEnv, injectTurnstileSiteKey } from '../../services/injection-tokens';
 import { isReportIssueError, ReportIssueService } from '../../services/report-issue.service';
 import { ToastService } from '../../services/toast.service';
 import { TurnstileComponent } from '../turnstile/turnstile.component';
@@ -47,8 +46,9 @@ export class ReportIssueDialogComponent {
     turnstileToken: '',
   });
 
-  protected readonly isTest = inject(IS_TEST_ENV);
-  protected readonly siteKey = signal(ENVIRONMENT.turnstileSiteKey).asReadonly();
+  protected readonly isTest = injectIsTestEnv();
+  protected readonly siteKey = injectTurnstileSiteKey();
+
   protected readonly form = form(
     this.#reportIssueModel,
     (schemaPath) => {

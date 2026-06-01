@@ -6,7 +6,11 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
-import { ENVIRONMENT } from '../../../environments/environment';
+import {
+  IS_TEST_ENV,
+  REPORT_ISSUE_ENDPOINT,
+  TURNSTILE_SITE_KEY
+} from '../../services/injection-tokens';
 import { ToastComponent } from '../toast/toast.component';
 import { ReportIssueDialogComponent } from './report-issue-dialog.component';
 
@@ -41,6 +45,7 @@ const EN = {
 const MOCK_DIALOG_REF = {
   close: vi.fn(),
 };
+const REPORT_ISSUE_ENDPOINT_URL = 'http://localhost:8787/report';
 
 async function renderComponent() {
   // Render the dialog alongside the toast so toast assertions work in isolation.
@@ -59,6 +64,9 @@ async function renderComponent() {
       provideHttpClient(),
       provideHttpClientTesting(),
       { provide: DialogRef, useValue: MOCK_DIALOG_REF },
+      { provide: IS_TEST_ENV, useValue: true },
+      { provide: TURNSTILE_SITE_KEY, useValue: '1x00000000000000000000AA' },
+      { provide: REPORT_ISSUE_ENDPOINT, useValue: REPORT_ISSUE_ENDPOINT_URL },
     ],
   });
 }
@@ -148,7 +156,7 @@ describe('reportIssueDialogComponent', () => {
     expect(submitBtn).toBeEnabled();
     await events.click(submitBtn);
 
-    http.expectOne(ENVIRONMENT.reportIssueEndpoint).flush({
+    http.expectOne(REPORT_ISSUE_ENDPOINT_URL).flush({
       url: 'https://github.com/FabienDehopre/triple-yahtzee-score-board/issues/99',
       issueNumber: 99,
     });
@@ -172,10 +180,12 @@ describe('reportIssueDialogComponent', () => {
     await events.type(tokenInput, 'mock-token');
     await events.click(screen.getByRole('button', { name: /submit/i }));
 
-    http.expectOne(ENVIRONMENT.reportIssueEndpoint).flush(
-      { error: 'rate_limited', message: 'rate limited' },
-      { status: 429, statusText: 'Too Many Requests' }
-    );
+    http
+      .expectOne(REPORT_ISSUE_ENDPOINT_URL)
+      .flush(
+        { error: 'rate_limited', message: 'rate limited' },
+        { status: 429, statusText: 'Too Many Requests' }
+      );
 
     expect(await screen.findByRole('status')).toHaveTextContent(/too many reports/i);
     expect(MOCK_DIALOG_REF.close).not.toHaveBeenCalled();

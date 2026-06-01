@@ -6,7 +6,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
-import { ENVIRONMENT } from '../../environments/environment';
+import { injectReportIssueEndpoint } from './injection-tokens';
 
 export type IssueType = 'bug' | 'enhancement';
 
@@ -53,16 +53,17 @@ export function isReportIssueError(error: unknown): error is ReportIssueError {
 @Injectable({ providedIn: 'root' })
 export class ReportIssueService {
   readonly #http = inject(HttpClient);
+  readonly #endpoint = injectReportIssueEndpoint();
 
   submit(payload: ReportIssuePayload): Observable<ReportIssueResult> {
     return this.#http
-      .post<ReportIssueResult>(ENVIRONMENT.reportIssueEndpoint, payload, {
+      .post<ReportIssueResult>(this.#endpoint, payload, {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       })
       .pipe(
         catchError((err: HttpErrorResponse) => {
           const code = STATUS_TO_CODE[err.status] ?? 'network_error';
-          return throwError(() => ({ code, message: err.message } satisfies ReportIssueError));
+          return throwError(() => ({ code, message: err.message }) satisfies ReportIssueError);
         })
       );
   }

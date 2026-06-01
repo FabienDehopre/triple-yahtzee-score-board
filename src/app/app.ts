@@ -35,7 +35,6 @@ import { PlacementService } from './services/placement.service';
     UndoBannerComponent,
   ],
   templateUrl: './app.html',
-  styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {

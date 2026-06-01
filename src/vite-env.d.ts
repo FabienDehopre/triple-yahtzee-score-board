@@ -8,10 +8,10 @@ interface ViteTypeOptions {
 
 interface ImportMetaEnv {
   /* eslint-disable @typescript-eslint/naming-convention */
-  readonly NG_APP_REPORT_ISSUE_ENDPOINT?: string;
-  readonly NG_APP_TURNSTILE_SITE_KEY?: string;
-  readonly NG_APP_BUILD_ID?: string;
-  readonly VITEST?: boolean;
+  readonly NG_APP_REPORT_ISSUE_ENDPOINT: string;
+  readonly NG_APP_TURNSTILE_SITE_KEY: string;
+  readonly NG_APP_BUILD_ID: string;
+  readonly VITEST: boolean;
   /* eslint-enable @typescript-eslint/naming-convention */
 }
 

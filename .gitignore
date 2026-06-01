@@ -49,9 +49,7 @@ test-results/
 
 *.tsbuildinfo
 
-.env*
-!.env.production
-.dev.vars*
+*.local
 
 docs/deepening-candidates.md
 
