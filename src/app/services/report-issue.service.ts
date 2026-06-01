@@ -6,6 +6,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 
+import { injectReportIssueEndpoint } from './injection-tokens';
+
 export type IssueType = 'bug' | 'enhancement';
 
 export interface ReportIssuePayload {
@@ -32,7 +34,6 @@ const STATUS_TO_CODE: Partial<Record<number, ReportIssueError['code']>> = {
   400: 'validation',
   429: 'rate_limited',
 };
-export const REPORT_ISSUE_ENDPOINT = import.meta.env.NG_APP_REPORT_ISSUE_ENDPOINT;
 
 export function isReportIssueError(error: unknown): error is ReportIssueError {
   return (
@@ -52,10 +53,11 @@ export function isReportIssueError(error: unknown): error is ReportIssueError {
 @Injectable({ providedIn: 'root' })
 export class ReportIssueService {
   readonly #http = inject(HttpClient);
+  readonly #endpoint = injectReportIssueEndpoint();
 
   submit(payload: ReportIssuePayload): Observable<ReportIssueResult> {
     return this.#http
-      .post<ReportIssueResult>(REPORT_ISSUE_ENDPOINT, payload, {
+      .post<ReportIssueResult>(this.#endpoint, payload, {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       })
       .pipe(

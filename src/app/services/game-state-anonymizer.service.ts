@@ -2,6 +2,8 @@ import type { Game } from '../models/game.model';
 
 import { Injectable } from '@angular/core';
 
+import { injectAppVersion } from './injection-tokens';
+
 export interface AnonymizedGameState {
   anonymizedGames: Game[];
   diagnostics: {
@@ -18,6 +20,7 @@ export interface AnonymizedGameState {
  */
 @Injectable({ providedIn: 'root' })
 export class GameStateAnonymizerService {
+  readonly #appVersion = injectAppVersion();
   anonymize(games: Game[], locale = 'en'): AnonymizedGameState {
     const anonymizedGames: Game[] = games.map((game, index) => ({
       ...game,
@@ -29,7 +32,7 @@ export class GameStateAnonymizerService {
     return {
       anonymizedGames,
       diagnostics: {
-        appVersion: import.meta.env.NG_APP_BUILD_ID,
+        appVersion: this.#appVersion,
         locale,
         userAgent: typeof navigator === 'undefined' ? 'unknown' : navigator.userAgent,
       },

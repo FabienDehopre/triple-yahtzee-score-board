@@ -3,7 +3,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom } from 'rxjs';
 
-import { REPORT_ISSUE_ENDPOINT, ReportIssueService } from './report-issue.service';
+import { REPORT_ISSUE_ENDPOINT } from './injection-tokens';
+import { ReportIssueService } from './report-issue.service';
+
+const REPORT_ISSUE_ENDPOINT_URL = 'http://localhost:8787/report';
 
 const MOCK_PAYLOAD = {
   type: 'bug' as const,
@@ -20,7 +23,11 @@ describe('reportIssueService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        { provide: REPORT_ISSUE_ENDPOINT, useValue: REPORT_ISSUE_ENDPOINT_URL },
+      ],
     });
     service = TestBed.inject(ReportIssueService);
     http = TestBed.inject(HttpTestingController);
@@ -32,14 +39,14 @@ describe('reportIssueService', () => {
 
   test('pOSTs to the configured report endpoint', () => {
     service.submit(MOCK_PAYLOAD).subscribe();
-    const req = http.expectOne(REPORT_ISSUE_ENDPOINT);
+    const req = http.expectOne(REPORT_ISSUE_ENDPOINT_URL);
     expect(req.request.method).toBe('POST');
     req.flush({ url: 'https://github.com/…/issues/1', issueNumber: 1 });
   });
 
   test('sends the payload as JSON with Content-Type header', () => {
     service.submit(MOCK_PAYLOAD).subscribe();
-    const req = http.expectOne(REPORT_ISSUE_ENDPOINT);
+    const req = http.expectOne(REPORT_ISSUE_ENDPOINT_URL);
     expect(req.request.headers.get('Content-Type')).toBe('application/json');
     expect(req.request.body).toMatchObject({ type: 'bug', title: 'Something broke' });
     req.flush({ url: 'https://github.com/…/issues/1', issueNumber: 1 });
@@ -47,7 +54,7 @@ describe('reportIssueService', () => {
 
   test('returns the issue url and number on success', async () => {
     const promise = firstValueFrom(service.submit(MOCK_PAYLOAD));
-    http.expectOne(REPORT_ISSUE_ENDPOINT).flush({
+    http.expectOne(REPORT_ISSUE_ENDPOINT_URL).flush({
       url: 'https://github.com/FabienDehopre/triple-yahtzee-score-board/issues/42',
       issueNumber: 42,
     });
@@ -58,7 +65,7 @@ describe('reportIssueService', () => {
 
   test('maps HTTP 429 to rate_limited error', async () => {
     const promise = firstValueFrom(service.submit(MOCK_PAYLOAD));
-    http.expectOne(REPORT_ISSUE_ENDPOINT).flush(
+    http.expectOne(REPORT_ISSUE_ENDPOINT_URL).flush(
       { error: 'rate_limited', message: 'Too many requests' },
       { status: 429, statusText: 'Too Many Requests' }
     );
@@ -67,7 +74,7 @@ describe('reportIssueService', () => {
 
   test('maps HTTP 401 to turnstile_failed error', async () => {
     const promise = firstValueFrom(service.submit(MOCK_PAYLOAD));
-    http.expectOne(REPORT_ISSUE_ENDPOINT).flush(
+    http.expectOne(REPORT_ISSUE_ENDPOINT_URL).flush(
       { error: 'turnstile_failed', message: 'Token invalid' },
       { status: 401, statusText: 'Unauthorized' }
     );
@@ -76,7 +83,7 @@ describe('reportIssueService', () => {
 
   test('maps unknown HTTP errors to network_error', async () => {
     const promise = firstValueFrom(service.submit(MOCK_PAYLOAD));
-    http.expectOne(REPORT_ISSUE_ENDPOINT).flush(
+    http.expectOne(REPORT_ISSUE_ENDPOINT_URL).flush(
       { error: 'github_error', message: 'Failed' },
       { status: 500, statusText: 'Internal Server Error' }
     );

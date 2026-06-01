@@ -5,6 +5,7 @@ import { TestBed } from '@angular/core/testing';
 import { GAME_COLUMN } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { GameStateAnonymizerService } from './game-state-anonymizer.service';
+import { APP_VERSION } from './injection-tokens';
 
 function makeGame(id: string, createdAt = '2025-01-01T00:00:00.000Z'): Game {
   return {
@@ -38,7 +39,9 @@ describe('gameStateAnonymizerService', () => {
   let service: GameStateAnonymizerService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers: [{ provide: APP_VERSION, useValue: 'test-version' }],
+    });
     service = TestBed.inject(GameStateAnonymizerService);
   });
 
@@ -94,6 +97,11 @@ describe('gameStateAnonymizerService', () => {
     test('defaults locale to "en" when not provided', () => {
       const { diagnostics } = service.anonymize([makeGame('id1')]);
       expect(diagnostics.locale).toBe('en');
+    });
+
+    test('includes application version', () => {
+      const { diagnostics } = service.anonymize([makeGame('id1')], 'fr');
+      expect(diagnostics.appVersion).toBe('test-version');
     });
   });
 });
