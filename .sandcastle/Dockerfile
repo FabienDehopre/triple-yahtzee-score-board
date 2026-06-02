@@ -1,7 +1,7 @@
 FROM node:24-bookworm
 ARG AGENT_UID=1000
 ARG AGENT_GID=1000
-ARG PNPM_VERSION=11.0.6
+ARG PNPM_VERSION=11.5.1
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
