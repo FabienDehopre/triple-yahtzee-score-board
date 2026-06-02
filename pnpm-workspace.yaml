@@ -8,10 +8,15 @@ allowBuilds:
   simple-git-hooks: false
   unrs-resolver: false
   workerd: false
+trustPolicyIgnoreAfter: 43200 # 30 days
+trustLockfile: true
+blockExoticSubdeps: true
+includeWorkspaceRoot: true
+minimumReleaseAge: 4320
+minimumReleaseAgeExclude:
+  - '@fabdeh/*'
+
 shellEmulator: true
 trustPolicy: no-downgrade
-trustPolicyIgnoreAfter: 43200 # 30 days
-includeWorkspaceRoot: true
-
 packages:
   - worker
