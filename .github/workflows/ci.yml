@@ -8,15 +8,12 @@ on:
 
 jobs:
   lint:
-    name: Lint
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-        with:
-          run_install: false
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: lts/*
@@ -26,15 +23,12 @@ jobs:
       - run: pnpm run lint
 
   test:
-    name: Test
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
-        with:
-          run_install: false
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
         with:
           node-version: lts/*
@@ -45,7 +39,6 @@ jobs:
       - run: pnpm --filter ./worker/ run test --watch=false
 
   build:
-    name: Build
     runs-on: ubuntu-latest
     needs: [lint, test]
     permissions:
