@@ -59,6 +59,36 @@ function isValidPersistedState(value: unknown): value is PersistedState {
   );
 }
 
+function hasAnyScore(games: Game[], fromIndex = 0): boolean {
+  for (let i = fromIndex; i < games.length; i++) {
+    const game = games[i];
+    for (const col of COLUMN_ORDER) {
+      for (const cat of UPPER_CATEGORIES) {
+        if (game.columns[col].upper[cat] !== undefined) return true;
+      }
+      for (const cat of LOWER_CATEGORIES) {
+        if (game.columns[col].lower[cat] !== undefined) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function allCellsFilled(games: Game[]): boolean {
+  if (games.length === 0) return false;
+  for (const game of games) {
+    for (const col of COLUMN_ORDER) {
+      for (const cat of UPPER_CATEGORIES) {
+        if (game.columns[col].upper[cat] === undefined) return false;
+      }
+      for (const cat of LOWER_CATEGORIES) {
+        if (game.columns[col].lower[cat] === undefined) return false;
+      }
+    }
+  }
+  return true;
+}
+
 export const SessionStore = signalStore(
   { providedIn: 'root' },
   withState<SessionState>({
@@ -107,35 +137,9 @@ export const SessionStore = signalStore(
       return total;
     });
 
-    const isAnyGameInProgress = computed(() => {
-      for (const game of store.games()) {
-        for (const col of COLUMN_ORDER) {
-          for (const cat of UPPER_CATEGORIES) {
-            if (game.columns[col].upper[cat] !== undefined) return true;
-          }
-          for (const cat of LOWER_CATEGORIES) {
-            if (game.columns[col].lower[cat] !== undefined) return true;
-          }
-        }
-      }
-      return false;
-    });
+    const isAnyGameInProgress = computed(() => hasAnyScore(store.games()));
 
-    const isGameOver = computed(() => {
-      const games = store.games();
-      if (games.length === 0) return false;
-      for (const game of games) {
-        for (const col of COLUMN_ORDER) {
-          for (const cat of UPPER_CATEGORIES) {
-            if (game.columns[col].upper[cat] === undefined) return false;
-          }
-          for (const cat of LOWER_CATEGORIES) {
-            if (game.columns[col].lower[cat] === undefined) return false;
-          }
-        }
-      }
-      return true;
-    });
+    const isGameOver = computed(() => allCellsFilled(store.games()));
 
     const suggestions = computed(() => {
       const dice = store.currentDice();
@@ -240,21 +244,7 @@ export const SessionStore = signalStore(
         patchState(store, { activeGameIndex: index });
       },
 
-      hasScoreInGamesFrom(startIndex: number): boolean {
-        const games = store.games();
-        for (let i = startIndex; i < games.length; i++) {
-          const game = games[i];
-          for (const col of COLUMN_ORDER) {
-            for (const cat of UPPER_CATEGORIES) {
-              if (game.columns[col].upper[cat] !== undefined) return true;
-            }
-            for (const cat of LOWER_CATEGORIES) {
-              if (game.columns[col].lower[cat] !== undefined) return true;
-            }
-          }
-        }
-        return false;
-      },
+      hasScoreInGamesFrom: (startIndex: number): boolean => hasAnyScore(store.games(), startIndex),
     };
   })
 );
