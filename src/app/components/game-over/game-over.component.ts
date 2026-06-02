@@ -5,7 +5,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 
 import { COLUMN_ORDER } from '../../models/game-column.model';
 import { GAME_OVER_COLUMN_KEYS } from '../../models/i18n-keys';
-import { GameStateService } from '../../services/game-state.service';
+import { SessionStore } from '../../services/session.store';
 
 @Component({
   selector: 'app-game-over',
@@ -14,16 +14,15 @@ import { GameStateService } from '../../services/game-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameOverComponent {
-  readonly #gameState = inject(GameStateService);
+  readonly #sessionStore = inject(SessionStore);
 
-  protected readonly grandTotal = this.#gameState.grandTotal;
-  protected readonly columnStats = this.#gameState.columnStats;
-  protected readonly games = this.#gameState.games;
+  protected readonly grandTotal = this.#sessionStore.grandTotal;
+  protected readonly columnStats = this.#sessionStore.columnStats;
+  protected readonly games = this.#sessionStore.games;
   protected readonly columnOrder = COLUMN_ORDER;
 
   protected readonly columnLabelKeys = GAME_OVER_COLUMN_KEYS;
 
-  /** Upper bonus totals (already multiplied) for each game/column. */
   protected readonly upperBonusDisplay = computed(() =>
     this.columnStats().map(
       (gameStats) =>
@@ -34,12 +33,11 @@ export class GameOverComponent {
     )
   );
 
-  /** True when any game/column has earned an upper bonus. */
   protected readonly hasAnyBonus = computed(() =>
     this.columnStats().some((gameStats) => COLUMN_ORDER.some((col) => gameStats[col].upperBonusRaw > 0))
   );
 
   protected onNewGame(): void {
-    this.#gameState.newGame();
+    this.#sessionStore.newGame();
   }
 }

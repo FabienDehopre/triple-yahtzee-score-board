@@ -7,9 +7,9 @@ import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom } from 'rxjs';
 
 import { GameStateAnonymizerService } from '../../services/game-state-anonymizer.service';
-import { GameStateService } from '../../services/game-state.service';
 import { injectIsTestEnv, injectTurnstileSiteKey } from '../../services/injection-tokens';
 import { isReportIssueError, ReportIssueService } from '../../services/report-issue.service';
+import { SessionStore } from '../../services/session.store';
 import { ToastService } from '../../services/toast.service';
 import { TurnstileComponent } from '../turnstile/turnstile.component';
 
@@ -35,7 +35,7 @@ export class ReportIssueDialogComponent {
   readonly #dialogRef = inject(DialogRef);
   readonly #reportService = inject(ReportIssueService);
   readonly #anonymizer = inject(GameStateAnonymizerService);
-  readonly #gameState = inject(GameStateService);
+  readonly #sessionStore = inject(SessionStore);
   readonly #toastService = inject(ToastService);
   readonly #transloco = inject(TranslocoService);
   readonly #reportIssueModel = signal<ReportIssueFormModel>({
@@ -116,7 +116,7 @@ export class ReportIssueDialogComponent {
   }
 
   async #submit(formValue: ReportIssueFormModel): Promise<ReportIssueResult> {
-    const games = this.#gameState.games();
+    const games = this.#sessionStore.games();
     const lang = this.#transloco.getActiveLang();
     const gameState = this.#anonymizer.anonymize(games, lang);
     return await firstValueFrom(

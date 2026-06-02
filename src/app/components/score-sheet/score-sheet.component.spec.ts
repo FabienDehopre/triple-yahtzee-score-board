@@ -5,14 +5,15 @@ import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
 import { SCORE_CATEGORY } from '../../models/score-category.model';
-import { GameStateService } from '../../services/game-state.service';
-import { PlacementService } from '../../services/placement.service';
+import { SessionStore } from '../../services/session.store';
 import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { ScoreSheetComponent } from './score-sheet.component';
 
 const T = { imports: [getTranslocoTestingModule()] };
 
 describe('scoreSheetComponent', () => {
+  beforeEach(() => localStorage.clear());
+
   // ─── Rendering ─────────────────────────────────────────────────────────────
 
   test('should render column headers for each game', async () => {
@@ -78,8 +79,8 @@ describe('scoreSheetComponent', () => {
 
   test('should show available-cell buttons for all categories in all games when dice are set', async () => {
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    const sessionStore = TestBed.inject(SessionStore);
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
 
     // Desktop: 13 categories × 2 games = 26 buttons (one per category per game)
     // Mobile: 13 categories × 1 active game (game 0 by default) = 13 buttons
@@ -89,30 +90,29 @@ describe('scoreSheetComponent', () => {
 
   test('should show the potential score for Aces in game 0 ONE column', async () => {
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
+    const sessionStore = TestBed.inject(SessionStore);
     // five 1s → aces = 5 (×1 = 5 in column ONE)
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
 
     expect(await screen.findByTestId('available-cell-0-Aces-ONE')).toHaveTextContent('5');
   });
 
   test('should show the potential score for Aces in game 1 ONE column', async () => {
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
+    const sessionStore = TestBed.inject(SessionStore);
     // five 1s → aces = 5 (×1 = 5 in column ONE)
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
 
     expect(await screen.findByTestId('available-cell-1-Aces-ONE')).toHaveTextContent('5');
   });
 
   test('should apply column multiplier to potential score in TWO column', async () => {
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
-    const placement = TestBed.inject(PlacementService);
+    const sessionStore = TestBed.inject(SessionStore);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → sixes = 30
-    placement.setCurrentDice(dice);
-    placement.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0, clears dice
-    gameState.setCurrentDice(dice); // re-set dice so TWO becomes visible
+    sessionStore.setCurrentDice(dice);
+    sessionStore.placeScore(SCORE_CATEGORY.sixes, 0); // fills ONE of game 0, clears dice
+    sessionStore.setCurrentDice(dice); // re-set dice so TWO becomes visible
     // TWO is the next available for Sixes in game 0; 30 × 2 = 60
     expect(await screen.findByTestId('available-cell-0-Sixes-TWO')).toHaveTextContent('60');
   });
@@ -122,8 +122,8 @@ describe('scoreSheetComponent', () => {
   test('should place score and display it when an available cell is clicked for game 0', async () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet); // five 1s → aces = 5
+    const sessionStore = TestBed.inject(SessionStore);
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet); // five 1s → aces = 5
 
     const btn = await screen.findByTestId('available-cell-0-Aces-ONE');
     await user.click(btn);
@@ -135,39 +135,39 @@ describe('scoreSheetComponent', () => {
   test('should place score in game 1 independently from game 0', async () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
+    const sessionStore = TestBed.inject(SessionStore);
     const dice: DiceSet = [5, 0, 0, 0, 0, 0];
-    gameState.setCurrentDice(dice);
+    sessionStore.setCurrentDice(dice);
 
     // Click the Aces available cell for game 1 (places score, clears dice)
     await user.click(await screen.findByTestId('available-cell-1-Aces-ONE'));
 
     expect(await screen.findByTestId('cell-1-Aces-ONE')).toHaveTextContent('5');
     // Re-set dice so game 0 cell becomes available again
-    gameState.setCurrentDice(dice);
+    sessionStore.setCurrentDice(dice);
     expect(await screen.findByTestId('available-cell-0-Aces-ONE')).toBeInTheDocument();
   });
 
   test('should advance to next column after placement in game 0', async () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
+    const sessionStore = TestBed.inject(SessionStore);
     const dice: DiceSet = [5, 0, 0, 0, 0, 0];
-    gameState.setCurrentDice(dice);
+    sessionStore.setCurrentDice(dice);
 
     // Click the Aces available cell (ONE) for game 0 (places score, clears dice)
     await user.click(await screen.findByTestId('available-cell-0-Aces-ONE'));
 
     // Re-set dice so TWO becomes the next available cell for Aces in game 0
-    gameState.setCurrentDice(dice);
+    sessionStore.setCurrentDice(dice);
     expect(await screen.findByTestId('available-cell-0-Aces-TWO')).toBeInTheDocument();
   });
 
   test('should show 0 for a scratch (potential score is 0)', async () => {
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
+    const sessionStore = TestBed.inject(SessionStore);
     // no 1s → aces = 0
-    gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
+    sessionStore.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
 
     expect(await screen.findByTestId('available-cell-0-Aces-ONE')).toHaveTextContent('0');
   });
@@ -175,8 +175,8 @@ describe('scoreSheetComponent', () => {
   test('should display filled cell with 0 after a scratch is placed', async () => {
     const user = userEvent.setup();
     await render(ScoreSheetComponent, T);
-    const gameState = TestBed.inject(GameStateService);
-    gameState.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet); // no aces
+    const sessionStore = TestBed.inject(SessionStore);
+    sessionStore.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet); // no aces
 
     await user.click(await screen.findByTestId('available-cell-0-Aces-ONE'));
 
@@ -213,26 +213,26 @@ describe('scoreSheetComponent', () => {
 
   test('should show upper section total after placing scores', async () => {
     await render(ScoreSheetComponent, T);
-    const placement = TestBed.inject(PlacementService);
+    const sessionStore = TestBed.inject(SessionStore);
     // five 1s → aces = 5
-    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.aces, 0);
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.aces, 0);
 
     expect(await screen.findByTestId('upper-total-0-ONE')).toHaveTextContent('5');
   });
 
   test('should show grand total updating after placements across multiple games', async () => {
     await render(ScoreSheetComponent, T);
-    const placement = TestBed.inject(PlacementService);
+    const sessionStore = TestBed.inject(SessionStore);
     const dice: DiceSet = [0, 0, 0, 0, 0, 5]; // five 6s → chance = 30
-    placement.setCurrentDice(dice);
-    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 ONE: 30×1 = 30
-    placement.setCurrentDice(dice);
-    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 TWO: 30×2 = 60
-    placement.setCurrentDice(dice);
-    placement.placeScore(SCORE_CATEGORY.chance, 0); // game 0 THREE: 30×3 = 90
-    placement.setCurrentDice(dice);
-    placement.placeScore(SCORE_CATEGORY.chance, 1); // game 1 ONE: 30×1 = 30
+    sessionStore.setCurrentDice(dice);
+    sessionStore.placeScore(SCORE_CATEGORY.chance, 0); // game 0 ONE: 30×1 = 30
+    sessionStore.setCurrentDice(dice);
+    sessionStore.placeScore(SCORE_CATEGORY.chance, 0); // game 0 TWO: 30×2 = 60
+    sessionStore.setCurrentDice(dice);
+    sessionStore.placeScore(SCORE_CATEGORY.chance, 0); // game 0 THREE: 30×3 = 90
+    sessionStore.setCurrentDice(dice);
+    sessionStore.placeScore(SCORE_CATEGORY.chance, 1); // game 1 ONE: 30×1 = 30
 
     // grand = 30 + 60 + 90 + 30 = 210
     expect(await screen.findByTestId('grand-total')).toHaveTextContent('210');
@@ -240,19 +240,19 @@ describe('scoreSheetComponent', () => {
 
   test('should show upper bonus when raw total reaches 63', async () => {
     await render(ScoreSheetComponent, T);
-    const placement = TestBed.inject(PlacementService);
+    const sessionStore = TestBed.inject(SessionStore);
 
     // Build up to 70 raw in ONE column of game 0
-    placement.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.aces, 0); // 5
-    placement.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.twos, 0); // 10
-    placement.setCurrentDice([0, 0, 5, 0, 0, 0] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.threes, 0); // 15
-    placement.setCurrentDice([0, 0, 0, 5, 0, 0] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.fours, 0); // 20
-    placement.setCurrentDice([0, 0, 0, 0, 4, 1] as DiceSet);
-    placement.placeScore(SCORE_CATEGORY.fives, 0); // 20 → total = 70 ≥ 63
+    sessionStore.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.aces, 0); // 5
+    sessionStore.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.twos, 0); // 10
+    sessionStore.setCurrentDice([0, 0, 5, 0, 0, 0] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.threes, 0); // 15
+    sessionStore.setCurrentDice([0, 0, 0, 5, 0, 0] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.fours, 0); // 20
+    sessionStore.setCurrentDice([0, 0, 0, 0, 4, 1] as DiceSet);
+    sessionStore.placeScore(SCORE_CATEGORY.fives, 0); // 20 → total = 70 ≥ 63
 
     // Bonus = 35 × 1 = 35 for ONE column of game 0
     expect(await screen.findByTestId('upper-bonus-0-ONE')).toHaveTextContent('35');

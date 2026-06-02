@@ -6,9 +6,7 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { render, screen } from '@testing-library/angular';
 
 import { App } from './app';
-import { GameStateService } from './services/game-state.service';
-import { PersistenceManagerService } from './services/persistence-manager.service';
-import { PlacementService } from './services/placement.service';
+import { SessionStore } from './services/session.store';
 import { getTranslocoTestingModule } from './testing/transloco-testing';
 
 @Component({
@@ -40,7 +38,7 @@ const STUB_CHILDREN = [
   makeStub('app-game-over'),
 ];
 
-const MOCK_PLACEMENT = { setCurrentDice: vi.fn() };
+const MOCK_SET_CURRENT_DICE = vi.fn();
 const MOCK_IS_GAME_OVER = signal(false);
 
 async function renderApp() {
@@ -48,20 +46,18 @@ async function renderApp() {
     componentImports: [TranslocoPipe, ...STUB_CHILDREN],
     imports: [getTranslocoTestingModule()],
     providers: [
-      { provide: PlacementService, useValue: MOCK_PLACEMENT },
-      { provide: GameStateService, useValue: { isGameOver: MOCK_IS_GAME_OVER } },
-      { provide: PersistenceManagerService, useValue: {} },
+      { provide: SessionStore, useValue: { setCurrentDice: MOCK_SET_CURRENT_DICE, isGameOver: MOCK_IS_GAME_OVER } },
     ],
   });
 }
 
 describe('app', () => {
   beforeEach(() => {
-    MOCK_PLACEMENT.setCurrentDice.mockReset();
+    MOCK_SET_CURRENT_DICE.mockReset();
     MOCK_IS_GAME_OVER.set(false);
   });
 
-  test('delegates confirmed dice to PlacementService', async () => {
+  test('delegates confirmed dice to SessionStore', async () => {
     const { fixture } = await renderApp();
     const dice: DiceSet = [2, 0, 1, 0, 2, 0];
 
@@ -69,7 +65,7 @@ describe('app', () => {
       .query(By.directive(StubDiceInputComponent))
       .componentInstance.confirmed.emit(dice);
 
-    expect(MOCK_PLACEMENT.setCurrentDice).toHaveBeenCalledExactlyOnceWith(dice);
+    expect(MOCK_SET_CURRENT_DICE).toHaveBeenCalledExactlyOnceWith(dice);
   });
 
   test('renders the game-over overlay when the game is over', async () => {

@@ -3,7 +3,7 @@ import type { DiceSet } from '../../models/dice-set.model';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
-import { GameStateService } from '../../services/game-state.service';
+import { SessionStore } from '../../services/session.store';
 
 interface DotPosition {
   cx: number;
@@ -18,7 +18,7 @@ interface DotPosition {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiceInputComponent {
-  readonly #gameState = inject(GameStateService);
+  readonly #sessionStore = inject(SessionStore);
 
   protected readonly counts = signal([0, 0, 0, 0, 0, 0] as DiceSet);
   protected readonly total = computed(() => this.counts().reduce((s, c) => s + c, 0));
@@ -64,7 +64,7 @@ export class DiceInputComponent {
 
   constructor() {
     effect(() => {
-      if (this.#gameState.currentDice() === undefined) {
+      if (this.#sessionStore.currentDice() === undefined) {
         this.counts.set([0, 0, 0, 0, 0, 0] as DiceSet);
       }
     });

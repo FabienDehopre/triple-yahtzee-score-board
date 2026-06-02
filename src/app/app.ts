@@ -14,9 +14,7 @@ import { ScoreSheetComponent } from './components/score-sheet/score-sheet.compon
 import { SuggestionBarComponent } from './components/suggestion-bar/suggestion-bar.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { UndoBannerComponent } from './components/undo-banner/undo-banner.component';
-import { GameStateService } from './services/game-state.service';
-import { PersistenceManagerService } from './services/persistence-manager.service';
-import { PlacementService } from './services/placement.service';
+import { SessionStore } from './services/session.store';
 
 @Component({
   selector: 'app-root',
@@ -38,15 +36,11 @@ import { PlacementService } from './services/placement.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class App {
-  readonly #placement = inject(PlacementService);
+  readonly #sessionStore = inject(SessionStore);
 
-  protected readonly isGameOver = inject(GameStateService).isGameOver;
-
-  constructor() {
-    inject(PersistenceManagerService);
-  }
+  protected readonly isGameOver = this.#sessionStore.isGameOver;
 
   protected onDiceConfirmed(roll: DiceSet): void {
-    this.#placement.setCurrentDice(roll);
+    this.#sessionStore.setCurrentDice(roll);
   }
 }

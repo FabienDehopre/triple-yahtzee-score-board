@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
-import { GameStateService } from '../../services/game-state.service';
+import { SessionStore } from '../../services/session.store';
 
 @Component({
   selector: 'app-clear-session-button',
@@ -10,20 +10,20 @@ import { GameStateService } from '../../services/game-state.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClearSessionButtonComponent {
-  readonly #gameState = inject(GameStateService);
+  readonly #sessionStore = inject(SessionStore);
 
   protected readonly isPending = signal(false);
 
   protected onClearClick(): void {
-    if (!this.#gameState.isAnyGameInProgress()) {
-      this.#gameState.newGame();
+    if (!this.#sessionStore.isAnyGameInProgress()) {
+      this.#sessionStore.newGame();
       return;
     }
     this.isPending.set(true);
   }
 
   protected onConfirm(): void {
-    this.#gameState.newGame();
+    this.#sessionStore.newGame();
     this.isPending.set(false);
   }
 

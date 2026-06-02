@@ -1,33 +1,30 @@
+import type { DiceSet } from '../models/dice-set.model';
 import type { GameColumn } from '../models/game-column.model';
+import type { Game } from '../models/game.model';
 import type { ScoreCategory } from '../models/score-category.model';
 import type { SuggestionResult } from '../models/suggestion-result.model';
 
-import { computed, inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import { LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
 import { nextUnfilledColumn } from '../models/game.model';
-import { GameStateService } from './game-state.service';
 import { ScoringEngineService } from './scoring-engine.service';
 
-interface AvailableCell { category: ScoreCategory; column: GameColumn }
+interface AvailableCell {
+  category: ScoreCategory;
+  column: GameColumn;
+}
 
 /**
- * Computes ranked suggestions for the current dice and game state.
+ * Computes ranked suggestions for a given dice roll and game state.
  * Greedy strategy: score desc, then category asc, then column asc.
  */
 @Injectable({ providedIn: 'root' })
 export class SuggestionEngineService {
-  readonly #gameState = inject(GameStateService);
   readonly #scoringEngine = inject(ScoringEngineService);
 
-  /**
-   * Ranked suggestions for the current dice roll.
-   * Empty when no dice are set or no cells are available.
-   */
-  readonly suggestions = computed((): SuggestionResult[] => {
-    const dice = this.#gameState.currentDice();
-    if (!dice) return [];
-    const game = this.#gameState.games()[this.#gameState.activeGameIndex()];
+  /** Pure method: computes ranked suggestions without injected state. */
+  computeSuggestions(dice: DiceSet, game: Game): SuggestionResult[] {
     const availableCells = this.#computeAvailableCells(game);
     if (availableCells.length === 0) return [];
 
@@ -48,10 +45,9 @@ export class SuggestionEngineService {
     });
 
     return results;
-  });
+  }
 
-  /** Builds the list of currently fillable cells for the active game. */
-  #computeAvailableCells(game: Parameters<typeof nextUnfilledColumn>[0]): AvailableCell[] {
+  #computeAvailableCells(game: Game): AvailableCell[] {
     const cells: AvailableCell[] = [];
     for (const category of [...UPPER_CATEGORIES, ...LOWER_CATEGORIES]) {
       const column = nextUnfilledColumn(game, category);

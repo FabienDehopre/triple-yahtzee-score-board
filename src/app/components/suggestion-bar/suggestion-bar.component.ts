@@ -2,16 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { TranslocoPipe } from '@jsverse/transloco';
 
 import { CATEGORY_LABEL_KEYS } from '../../models/i18n-keys';
-import { GameStateService } from '../../services/game-state.service';
-import { PlacementService } from '../../services/placement.service';
-import { SuggestionEngineService } from '../../services/suggestion-engine.service';
+import { SessionStore } from '../../services/session.store';
 
-/**
- * Displays the top suggestion from the SuggestionEngine after dice entry.
- * The bar can be accepted (places the score) or dismissed (lets the player
- * choose manually from the score sheet).
- * Resets to visible state whenever a new dice roll is confirmed.
- */
 @Component({
   selector: 'app-suggestion-bar',
   imports: [TranslocoPipe],
@@ -20,14 +12,12 @@ import { SuggestionEngineService } from '../../services/suggestion-engine.servic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SuggestionBarComponent {
-  readonly #gameState = inject(GameStateService);
-  readonly #placement = inject(PlacementService);
-  readonly #suggestionEngine = inject(SuggestionEngineService);
+  readonly #sessionStore = inject(SessionStore);
 
   readonly #dismissed = signal(false);
 
   protected readonly topSuggestion = computed(() => {
-    const suggestions = this.#suggestionEngine.suggestions();
+    const suggestions = this.#sessionStore.suggestions();
     return suggestions.length > 0 ? suggestions[0] : undefined;
   });
 
@@ -37,7 +27,7 @@ export class SuggestionBarComponent {
 
   constructor() {
     effect(() => {
-      this.#gameState.currentDice();
+      this.#sessionStore.currentDice();
       this.#dismissed.set(false);
     });
   }
@@ -45,7 +35,7 @@ export class SuggestionBarComponent {
   protected onAccept(): void {
     const suggestion = this.topSuggestion();
     if (!suggestion) return;
-    this.#placement.placeScore(suggestion.category, this.#gameState.activeGameIndex());
+    this.#sessionStore.placeScore(suggestion.category, this.#sessionStore.activeGameIndex());
     this.#dismissed.set(true);
   }
 
