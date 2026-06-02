@@ -66,8 +66,12 @@ _Avoid_: Number of games, game number
 
 ### Suggestions
 
+**Potential Score**:
+The column-multiplied points the current **DiceSet** would earn in a given available **ScoreCell** if placed there. Defined for every available **ScoreCell** across **all** **Games** (not just the active one). Carries no ranking — it is the raw per-cell fact that the score sheet shows in empty available cells and that a **Suggestion** ranks over.
+_Avoid_: Preview score, projected score, suggestion
+
 **Suggestion**:
-A recommended (ScoreCategory, GameColumn) placement for the current **DiceSet**, ranked by expected score impact.
+The ranked view over the active **Game**'s **Potential Scores** — a recommended (ScoreCategory, GameColumn) placement for the current **DiceSet**, ordered by expected score impact (see **Greedy Strategy**, **Suggestion Scope**).
 _Avoid_: Hint, tip, recommendation
 
 **Greedy Strategy**:
