@@ -67,7 +67,7 @@ _Avoid_: Number of games, game number
 ### Suggestions
 
 **Potential Score**:
-The column-multiplied points the current **DiceSet** would earn in a given available **ScoreCell** if placed there. Defined for every available **ScoreCell** across **all** **Games** (not just the active one). Carries no ranking — it is the raw per-cell fact that the score sheet shows in empty available cells and that a **Suggestion** ranks over.
+The column-multiplied points the current **DiceSet** would earn in a given available **ScoreCell** if placed there. Defined for every available **ScoreCell** across all **Games** in the current **Session** (not just the active one). Carries no ranking — it is the raw per-cell fact that the score sheet shows in empty available cells and that a **Suggestion** ranks over.
 _Avoid_: Preview score, projected score, suggestion
 
 **Suggestion**:
