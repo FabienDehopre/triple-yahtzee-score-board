@@ -20,3 +20,8 @@ shellEmulator: true
 trustPolicy: no-downgrade
 packages:
   - worker
+
+overrides:
+  '@angular/build': $@angular/build # remove once @ngrx/* and @angular-architects/ngrx-toolkit are updated to support Angular 22
+  '@angular/common': $@angular/common # remove once @ngrx/* and @angular-architects/ngrx-toolkit are updated to support Angular 22
+  '@angular/core': $@angular/core # remove once @ngrx/* and @angular-architects/ngrx-toolkit are updated to support Angular 22
