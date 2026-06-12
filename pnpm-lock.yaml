@@ -4,6 +4,141 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@ai-hero/sandcastle':
+      specifier: ^0.7.0
+      version: 0.7.0
+    '@analogjs/vite-plugin-angular':
+      specifier: ^2.6.0
+      version: 2.6.0
+    '@analogjs/vitest-angular':
+      specifier: ^2.6.0
+      version: 2.6.0
+    '@angular-architects/ngrx-toolkit':
+      specifier: 21.0.1
+      version: 21.0.1
+    '@angular/cdk':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/cli':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/compiler':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/compiler-cli':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/forms':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/platform-browser':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@angular/router':
+      specifier: ^22.0.0
+      version: 22.0.0
+    '@cloudflare/workers-types':
+      specifier: ^4.20260609.1
+      version: 4.20260609.1
+    '@fabdeh/eslint-config':
+      specifier: ^0.12.0
+      version: 0.12.0
+    '@jsverse/transloco':
+      specifier: ^8.3.0
+      version: 8.3.0
+    '@ngrx/operators':
+      specifier: ^21.1.1
+      version: 21.1.1
+    '@ngrx/signals':
+      specifier: ^21.1.1
+      version: 21.1.1
+    '@ngx-env/builder':
+      specifier: ^21.0.1
+      version: 21.0.1
+    '@playwright/test':
+      specifier: ^1.60.0
+      version: 1.60.0
+    '@tailwindcss/postcss':
+      specifier: ^4.3.0
+      version: 4.3.0
+    '@testing-library/angular':
+      specifier: ^19.4.1
+      version: 19.4.1
+    '@testing-library/jest-dom':
+      specifier: ^6.9.1
+      version: 6.9.1
+    '@testing-library/user-event':
+      specifier: ^14.6.1
+      version: 14.6.1
+    '@types/node':
+      specifier: ^25.9.2
+      version: 25.9.2
+    dotenv:
+      specifier: ^17.4.2
+      version: 17.4.2
+    eslint:
+      specifier: ^10.4.1
+      version: 10.4.1
+    eslint-plugin-better-tailwindcss:
+      specifier: ^4.5.0
+      version: 4.5.0
+    eslint-plugin-erasable-syntax-only:
+      specifier: ^0.4.1
+      version: 0.4.1
+    eslint-plugin-format:
+      specifier: ^2.0.1
+      version: 2.0.1
+    is-ci:
+      specifier: ^4.1.0
+      version: 4.1.0
+    jsdom:
+      specifier: ^29.1.1
+      version: 29.1.1
+    nano-staged:
+      specifier: ^1.0.2
+      version: 1.0.2
+    ngxtension:
+      specifier: ^7.2.0
+      version: 7.2.0
+    postcss:
+      specifier: ^8.5.15
+      version: 8.5.15
+    prettier:
+      specifier: ^3.8.4
+      version: 3.8.4
+    rxjs:
+      specifier: ~7.8.2
+      version: 7.8.2
+    simple-git-hooks:
+      specifier: ^2.13.1
+      version: 2.13.1
+    tailwindcss:
+      specifier: ^4.3.0
+      version: 4.3.0
+    tslib:
+      specifier: ^2.8.1
+      version: 2.8.1
+    tsx:
+      specifier: ^4.22.4
+      version: 4.22.4
+    typescript:
+      specifier: ~6.0.3
+      version: 6.0.3
+    vite:
+      specifier: ^8.0.16
+      version: 8.0.16
+    vitest:
+      specifier: ^4.1.8
+      version: 4.1.8
+    wrangler:
+      specifier: ^4.99.0
+      version: 4.99.0
+    zod:
+      specifier: ^3.24.3
+      version: 3.25.76
+
 overrides:
   '@angular/core': ^22.0.0
   '@angular/common': ^22.0.0
@@ -14,153 +149,153 @@ importers:
   .:
     dependencies:
       '@angular-architects/ngrx-toolkit':
-        specifier: 21.0.1
+        specifier: 'catalog:'
         version: 21.0.1(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@ngrx/signals@21.1.1(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/cdk':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/common':
         specifier: ^22.0.0
         version: 22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/compiler':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0
       '@angular/core':
         specifier: ^22.0.0
         version: 22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)
       '@angular/forms':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@angular/platform-browser':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))
       '@angular/router':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(rxjs@7.8.2)
       '@jsverse/transloco':
-        specifier: ^8.3.0
+        specifier: 'catalog:'
         version: 8.3.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@6.0.3)
       '@ngrx/operators':
-        specifier: ^21.1.1
+        specifier: 'catalog:'
         version: 21.1.1(rxjs@7.8.2)
       '@ngrx/signals':
-        specifier: ^21.1.1
+        specifier: 'catalog:'
         version: 21.1.1(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2)
       ngxtension:
-        specifier: ^7.2.0
+        specifier: 'catalog:'
         version: 7.2.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs:
-        specifier: ~7.8.2
+        specifier: 'catalog:'
         version: 7.8.2
       tslib:
-        specifier: ^2.8.1
+        specifier: 'catalog:'
         version: 2.8.1
     devDependencies:
       '@ai-hero/sandcastle':
-        specifier: ^0.7.0
+        specifier: 'catalog:'
         version: 0.7.0
       '@analogjs/vite-plugin-angular':
-        specifier: ^2.6.0
+        specifier: 'catalog:'
         version: 2.6.0(@angular/build@22.0.0(@angular/compiler-cli@22.0.0(@angular/compiler@22.0.0)(typescript@6.0.3))(@angular/compiler@22.0.0)(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(@types/node@25.9.2)(chokidar@5.0.0)(istanbul-lib-instrument@6.0.3)(jiti@2.7.0)(lightningcss@1.32.0)(postcss@8.5.15)(tailwindcss@4.3.0)(terser@5.48.0)(tslib@2.8.1)(tsx@4.22.4)(typescript@6.0.3)(vitest@4.1.8)(yaml@2.9.0))(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.0)(vite@8.0.16(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
       '@analogjs/vitest-angular':
-        specifier: ^2.6.0
+        specifier: 'catalog:'
         version: 2.6.0(@analogjs/vite-plugin-angular@2.6.0(@angular/build@22.0.0(@angular/compiler-cli@22.0.0(@angular/compiler@22.0.0)(typescript@6.0.3))(@angular/compiler@22.0.0)(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(@types/node@25.9.2)(chokidar@5.0.0)(istanbul-lib-instrument@6.0.3)(jiti@2.7.0)(lightningcss@1.32.0)(postcss@8.5.15)(tailwindcss@4.3.0)(terser@5.48.0)(tslib@2.8.1)(tsx@4.22.4)(typescript@6.0.3)(vitest@4.1.8)(yaml@2.9.0))(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.0)(vite@8.0.16(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)))(@angular-devkit/architect@0.2200.0(chokidar@5.0.0))(@angular-devkit/schematics@22.0.0(chokidar@5.0.0))(vitest@4.1.8)
       '@angular/build':
         specifier: ^22.0.0
         version: 22.0.0(@angular/compiler-cli@22.0.0(@angular/compiler@22.0.0)(typescript@6.0.3))(@angular/compiler@22.0.0)(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(@types/node@25.9.2)(chokidar@5.0.0)(istanbul-lib-instrument@6.0.3)(jiti@2.7.0)(lightningcss@1.32.0)(postcss@8.5.15)(tailwindcss@4.3.0)(terser@5.48.0)(tslib@2.8.1)(tsx@4.22.4)(typescript@6.0.3)(vitest@4.1.8)(yaml@2.9.0)
       '@angular/cli':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@types/node@25.9.2)(chokidar@5.0.0)
       '@angular/compiler-cli':
-        specifier: ^22.0.0
+        specifier: 'catalog:'
         version: 22.0.0(@angular/compiler@22.0.0)(typescript@6.0.3)
       '@fabdeh/eslint-config':
-        specifier: ^0.12.0
+        specifier: 'catalog:'
         version: 0.12.0(@angular/cli@22.0.0(@types/node@25.9.2)(chokidar@5.0.0))(@testing-library/dom@10.4.1)(chokidar@5.0.0)(eslint-plugin-better-tailwindcss@4.5.0(eslint@10.4.1(jiti@2.7.0))(tailwindcss@4.3.0)(typescript@6.0.3))(eslint-plugin-erasable-syntax-only@0.4.1(@typescript-eslint/parser@8.61.0(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(ts-declaration-location@1.0.7(typescript@6.0.3))(typescript@6.0.3)(vitest@4.1.8)
       '@ngx-env/builder':
-        specifier: ^21.0.1
+        specifier: 'catalog:'
         version: 21.0.1(@angular/build@22.0.0(@angular/compiler-cli@22.0.0(@angular/compiler@22.0.0)(typescript@6.0.3))(@angular/compiler@22.0.0)(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(@types/node@25.9.2)(chokidar@5.0.0)(istanbul-lib-instrument@6.0.3)(jiti@2.7.0)(lightningcss@1.32.0)(postcss@8.5.15)(tailwindcss@4.3.0)(terser@5.48.0)(tslib@2.8.1)(tsx@4.22.4)(typescript@6.0.3)(vitest@4.1.8)(yaml@2.9.0))(webpack@5.107.2(esbuild@0.28.0)(lightningcss@1.32.0)(postcss@8.5.15))
       '@playwright/test':
-        specifier: ^1.60.0
+        specifier: 'catalog:'
         version: 1.60.0
       '@tailwindcss/postcss':
-        specifier: ^4.3.0
+        specifier: 'catalog:'
         version: 4.3.0
       '@testing-library/angular':
-        specifier: ^19.4.1
+        specifier: 'catalog:'
         version: 19.4.1(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(@angular/router@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(@angular/platform-browser@22.0.0(@angular/common@22.0.0(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.0.0(@angular/compiler@22.0.0)(rxjs@7.8.2)))(rxjs@7.8.2))(@testing-library/dom@10.4.1)
       '@testing-library/jest-dom':
-        specifier: ^6.9.1
+        specifier: 'catalog:'
         version: 6.9.1
       '@testing-library/user-event':
-        specifier: ^14.6.1
+        specifier: 'catalog:'
         version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/node':
-        specifier: ^25.9.2
+        specifier: 'catalog:'
         version: 25.9.2
       dotenv:
-        specifier: ^17.4.2
+        specifier: 'catalog:'
         version: 17.4.2
       eslint:
-        specifier: ^10.4.1
+        specifier: 'catalog:'
         version: 10.4.1(jiti@2.7.0)
       eslint-plugin-better-tailwindcss:
-        specifier: ^4.5.0
+        specifier: 'catalog:'
         version: 4.5.0(eslint@10.4.1(jiti@2.7.0))(tailwindcss@4.3.0)(typescript@6.0.3)
       eslint-plugin-erasable-syntax-only:
-        specifier: ^0.4.1
+        specifier: 'catalog:'
         version: 0.4.1(@typescript-eslint/parser@8.61.0(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3))(eslint@10.4.1(jiti@2.7.0))(typescript@6.0.3)
       eslint-plugin-format:
-        specifier: ^2.0.1
+        specifier: 'catalog:'
         version: 2.0.1(eslint@10.4.1(jiti@2.7.0))
       is-ci:
-        specifier: ^4.1.0
+        specifier: 'catalog:'
         version: 4.1.0
       jsdom:
-        specifier: ^29.1.1
+        specifier: 'catalog:'
         version: 29.1.1
       nano-staged:
-        specifier: ^1.0.2
+        specifier: 'catalog:'
         version: 1.0.2
       postcss:
-        specifier: ^8.5.15
+        specifier: 'catalog:'
         version: 8.5.15
       prettier:
-        specifier: ^3.8.4
+        specifier: 'catalog:'
         version: 3.8.4
       simple-git-hooks:
-        specifier: ^2.13.1
+        specifier: 'catalog:'
         version: 2.13.1
       tailwindcss:
-        specifier: ^4.3.0
+        specifier: 'catalog:'
         version: 4.3.0
       tsx:
-        specifier: ^4.22.4
+        specifier: 'catalog:'
         version: 4.22.4
       typescript:
-        specifier: ~6.0.3
+        specifier: 'catalog:'
         version: 6.0.3
       vite:
-        specifier: ^8.0.16
+        specifier: 'catalog:'
         version: 8.0.16(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.2)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   worker:
     dependencies:
       zod:
-        specifier: ^3.24.3
+        specifier: 'catalog:'
         version: 3.25.76
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: ^4.20260609.1
+        specifier: 'catalog:'
         version: 4.20260609.1
       vitest:
-        specifier: ^4.1.8
+        specifier: 'catalog:'
         version: 4.1.8(@types/node@25.9.2)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@25.9.2)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.99.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
       wrangler:
-        specifier: ^4.99.0
+        specifier: 'catalog:'
         version: 4.99.0(@cloudflare/workers-types@4.20260609.1)
 
 packages:
@@ -7355,7 +7490,7 @@ snapshots:
 
   '@npmcli/fs@5.0.0':
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   '@npmcli/git@7.0.2':
     dependencies:
@@ -7365,7 +7500,7 @@ snapshots:
       lru-cache: 11.5.1
       npm-pick-manifest: 11.0.3
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.3
       which: 6.0.1
 
   '@npmcli/installed-package-contents@4.0.0':
@@ -7382,7 +7517,7 @@ snapshots:
       hosted-git-info: 9.0.3
       json-parse-even-better-errors: 5.0.0
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.3
       spdx-expression-parse: 4.0.0
 
   '@npmcli/promise-spawn@9.0.1':
@@ -10279,7 +10414,7 @@ snapshots:
       graceful-fs: 4.2.11
       nopt: 9.0.0
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.3
       tar: 7.5.16
       tinyglobby: 0.2.17
       undici: 6.26.0
@@ -10297,7 +10432,7 @@ snapshots:
 
   npm-install-checks@8.0.0:
     dependencies:
-      semver: 7.7.4
+      semver: 7.8.3
 
   npm-normalize-package-bin@5.0.0: {}
 
@@ -10305,7 +10440,7 @@ snapshots:
     dependencies:
       hosted-git-info: 9.0.3
       proc-log: 6.1.0
-      semver: 7.7.4
+      semver: 7.8.3
       validate-npm-package-name: 7.0.2
 
   npm-packlist@10.0.4:
@@ -10318,7 +10453,7 @@ snapshots:
       npm-install-checks: 8.0.0
       npm-normalize-package-bin: 5.0.0
       npm-package-arg: 13.0.2
-      semver: 7.7.4
+      semver: 7.8.3
 
   npm-registry-fetch@19.1.1:
     dependencies:
@@ -11247,7 +11382,7 @@ snapshots:
       picomatch: 4.0.4
       postcss: 8.5.15
       rollup: 4.60.2
-      tinyglobby: 0.2.16
+      tinyglobby: 0.2.17
     optionalDependencies:
       '@types/node': 25.9.2
       fsevents: 2.3.3

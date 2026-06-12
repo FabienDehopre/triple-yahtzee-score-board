@@ -11,11 +11,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "zod": "^3.24.3"
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260609.1",
-    "vitest": "^4.1.8",
-    "wrangler": "^4.99.0"
+    "@cloudflare/workers-types": "catalog:",
+    "vitest": "catalog:",
+    "wrangler": "catalog:"
   }
 }
