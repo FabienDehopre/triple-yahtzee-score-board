@@ -12,6 +12,7 @@ trustPolicyIgnoreAfter: 43200
 trustLockfile: true
 blockExoticSubdeps: true
 includeWorkspaceRoot: true
+catalogMode: strict
 minimumReleaseAge: 4320
 minimumReleaseAgeExclude:
   - '@fabdeh/*'
@@ -20,9 +21,10 @@ trustPolicy: no-downgrade
 packages:
   - worker
 overrides:
-  '@angular/build': $@angular/build
-  '@angular/common': $@angular/common
-  '@angular/core': $@angular/core
+  '@angular/build': 'catalog:'
+  '@angular/common': 'catalog:'
+  '@angular/core': 'catalog:'
+
 catalog:
   '@ai-hero/sandcastle': ^0.7.0
   '@analogjs/vite-plugin-angular': ^2.6.0
