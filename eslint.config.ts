@@ -3,13 +3,11 @@ import { defineConfig } from '@fabdeh/eslint-config';
 export default defineConfig({
   ignores: [
     '.agents/**',
-    '.angular/**',
     '.claude/**',
     '.codex/**',
     '.github/**',
     '.sandcastle/**',
     '.vscode/**',
-    'worker/.wrangler/**',
   ],
   angular: {
     banDeveloperPreviewApi: false,
