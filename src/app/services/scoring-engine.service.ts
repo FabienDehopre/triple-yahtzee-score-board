@@ -6,7 +6,8 @@ import type { ScoreCategory } from '../models/score-category.model';
 
 import { Injectable } from '@angular/core';
 
-import { COLUMN_MULTIPLIER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../models/game-column.model';
+import { columnCells } from '../models/game-cells';
+import { COLUMN_MULTIPLIER } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 
 /** Points awarded for reaching the upper-section bonus threshold. */
@@ -118,23 +119,19 @@ export class ScoringEngineService {
    */
   computeColumnStats(game: Game, column: GameColumn): ColumnStats {
     const multiplier = COLUMN_MULTIPLIER[column];
-    const colScores = game.columns[column];
 
     let upperRaw = 0;
-    for (const cat of UPPER_CATEGORIES) {
-      upperRaw += colScores.upper[cat]?.value ?? 0;
+    let lowerRaw = 0;
+    for (const { section, cell } of columnCells(game, column)) {
+      if (section === 'upper') upperRaw += cell?.value ?? 0;
+      else lowerRaw += cell?.value ?? 0;
     }
 
     const upperBonusRaw = this.computeUpperBonus(upperRaw);
     const upperBonusTotal = upperBonusRaw * multiplier;
     const upperTotal = (upperRaw + upperBonusRaw) * multiplier;
 
-    let lowerRaw = 0;
-    for (const cat of LOWER_CATEGORIES) {
-      lowerRaw += colScores.lower[cat]?.value ?? 0;
-    }
-
-    const yahtzeeBonusRaw = colScores.yahtzeeBonus ?? 0;
+    const yahtzeeBonusRaw = game.columns[column].yahtzeeBonus ?? 0;
     const yahtzeeBonusTotal = yahtzeeBonusRaw * multiplier;
     const lowerTotal = (lowerRaw + yahtzeeBonusRaw) * multiplier;
     const combinedTotal = upperTotal + lowerTotal;

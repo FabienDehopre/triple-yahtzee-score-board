@@ -4,13 +4,12 @@ import type { ScoreCategory } from '../../models/score-category.model';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
 
+import { readCell } from '../../models/game-cells';
 import { COLUMN_ORDER, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
 import { nextUnfilledColumn } from '../../models/game.model';
 import { CATEGORY_HINT_KEYS, CATEGORY_LABEL_KEYS, SCORE_SHEET_COLUMN_KEYS } from '../../models/i18n-keys';
 import { ScoringEngineService } from '../../services/scoring-engine.service';
 import { SessionStore } from '../../services/session.store';
-
-const UPPER_SET = new Set<ScoreCategory>(UPPER_CATEGORIES);
 
 @Component({
   selector: 'app-score-sheet',
@@ -40,10 +39,7 @@ export class ScoreSheetComponent {
   protected readonly categoryHintKeys = CATEGORY_HINT_KEYS;
 
   protected getCellDisplayValue(gameIndex: number, column: GameColumn, category: ScoreCategory): number | undefined {
-    const game = this.games()[gameIndex];
-    const isUpper = UPPER_SET.has(category);
-    const section = isUpper ? game.columns[column].upper : game.columns[column].lower;
-    const cell = section[category];
+    const cell = readCell(this.games()[gameIndex], column, category);
     if (cell === undefined) return undefined;
     return this.#scoringEngine.applyMultiplier(cell.value, column);
   }
