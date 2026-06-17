@@ -4,6 +4,8 @@ import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
+import { columnCells, readCell } from '../../models/game-cells';
+import { GAME_COLUMN } from '../../models/game-column.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { SessionStore } from '../../services/session.store';
 import { getTranslocoTestingModule } from '../../testing/transloco-testing';
@@ -97,7 +99,7 @@ describe('suggestionBarComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Accept suggestion' }));
 
     const game = sessionStore.games()[0];
-    expect(game.columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toEqual({
+    expect(readCell(game, GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toEqual({
       value: 50,
       isScratched: false,
     });
@@ -116,11 +118,11 @@ describe('suggestionBarComponent', () => {
 
     await user.click(screen.getByRole('button', { name: 'Accept suggestion' }));
 
-    expect(sessionStore.games()[1].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toEqual({
+    expect(readCell(sessionStore.games()[1], GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toEqual({
       value: 50,
       isScratched: false,
     });
-    expect(sessionStore.games()[0].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toBeUndefined();
+    expect(readCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toBeUndefined();
   });
 
   // ─── Dismiss button ───────────────────────────────────────────────────────
@@ -152,8 +154,8 @@ describe('suggestionBarComponent', () => {
 
     const game = sessionStore.games()[0];
     // No score should have been placed in any category
-    const allFilled = [...Object.values(game.columns.ONE.upper), ...Object.values(game.columns.ONE.lower)];
-    expect(allFilled).toHaveLength(0);
+    const filled = [...columnCells(game, GAME_COLUMN.one)].filter((entry) => entry.cell !== undefined);
+    expect(filled).toHaveLength(0);
   });
 
   // ─── Re-appear on new dice roll ───────────────────────────────────────────

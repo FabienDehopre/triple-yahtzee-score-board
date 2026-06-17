@@ -2,6 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
+import { readCell } from '../../models/game-cells';
+import { GAME_COLUMN } from '../../models/game-column.model';
+import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { SessionStore } from '../../services/session.store';
 import { getTranslocoTestingModule } from '../../testing/transloco-testing';
 import { GameCountPickerComponent } from './game-count-picker.component';
@@ -89,7 +92,7 @@ describe('gameCountPickerComponent', () => {
     await user.selectOptions(screen.getByTestId('game-count-select'), '3');
 
     expect(sessionStore.games()).toHaveLength(3);
-    expect(sessionStore.games()[0].columns.ONE.upper.Aces?.value).toBe(3);
+    expect(readCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)?.value).toBe(3);
   });
 
   // ─── Decreasing game count with empty trailing games ───────────────────────
@@ -119,7 +122,7 @@ describe('gameCountPickerComponent', () => {
 
     await user.selectOptions(screen.getByTestId('game-count-select'), '1');
 
-    expect(sessionStore.games()[0].columns.ONE.upper.Aces?.value).toBe(3);
+    expect(readCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)?.value).toBe(3);
   });
 
   // ─── Decreasing game count with scored trailing games ──────────────────────
