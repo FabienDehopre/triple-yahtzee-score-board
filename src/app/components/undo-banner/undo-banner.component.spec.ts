@@ -4,6 +4,8 @@ import { TestBed } from '@angular/core/testing';
 import { render, screen, waitFor } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
+import { GAME_COLUMN } from '../../models/game-column.model';
+import { readScoreCell } from '../../models/game.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { SessionStore } from '../../services/session.store';
 import { UndoStore } from '../../services/undo.store';
@@ -75,7 +77,7 @@ describe('undoBannerComponent', () => {
 
     await user.click(await screen.findByRole('button', { name: /undo/i }));
 
-    expect(sessionStore.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    expect(readScoreCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeUndefined();
   });
 
   // ─── Auto-hide on new dice ─────────────────────────────────────────────────

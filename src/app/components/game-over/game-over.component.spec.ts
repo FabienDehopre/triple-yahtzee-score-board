@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
 import { GAME_COLUMN, LOWER_CATEGORIES, UPPER_CATEGORIES } from '../../models/game-column.model';
+import { readScoreCell } from '../../models/game.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { SessionStore } from '../../services/session.store';
 import { getTranslocoTestingModule } from '../../testing/transloco-testing';
@@ -137,7 +138,7 @@ describe('gameOverComponent', () => {
     await user.click(screen.getByTestId('new-game-button'));
 
     // Game state should be reset
-    expect(sessionStore.games()[0].columns[GAME_COLUMN.one].upper[SCORE_CATEGORY.aces]).toBeUndefined();
+    expect(readScoreCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeUndefined();
     expect(sessionStore.currentDice()).toBeUndefined();
     expect(sessionStore.grandTotal()).toBe(0);
   });

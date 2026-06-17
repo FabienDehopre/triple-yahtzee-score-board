@@ -4,6 +4,8 @@ import { TestBed } from '@angular/core/testing';
 import { render, screen } from '@testing-library/angular';
 import userEvent from '@testing-library/user-event';
 
+import { GAME_COLUMN } from '../../models/game-column.model';
+import { gameCellEntries, readScoreCell } from '../../models/game.model';
 import { SCORE_CATEGORY } from '../../models/score-category.model';
 import { SessionStore } from '../../services/session.store';
 import { getTranslocoTestingModule } from '../../testing/transloco-testing';
@@ -97,7 +99,7 @@ describe('suggestionBarComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Accept suggestion' }));
 
     const game = sessionStore.games()[0];
-    expect(game.columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toEqual({
+    expect(readScoreCell(game, GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toEqual({
       value: 50,
       isScratched: false,
     });
@@ -116,11 +118,11 @@ describe('suggestionBarComponent', () => {
 
     await user.click(screen.getByRole('button', { name: 'Accept suggestion' }));
 
-    expect(sessionStore.games()[1].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toEqual({
+    expect(readScoreCell(sessionStore.games()[1], GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toEqual({
       value: 50,
       isScratched: false,
     });
-    expect(sessionStore.games()[0].columns.ONE.lower[SCORE_CATEGORY.yahtzee]).toBeUndefined();
+    expect(readScoreCell(sessionStore.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toBeUndefined();
   });
 
   // ─── Dismiss button ───────────────────────────────────────────────────────
@@ -151,8 +153,7 @@ describe('suggestionBarComponent', () => {
     await user.click(screen.getByRole('button', { name: 'Dismiss suggestion' }));
 
     const game = sessionStore.games()[0];
-    // No score should have been placed in any category
-    const allFilled = [...Object.values(game.columns.ONE.upper), ...Object.values(game.columns.ONE.lower)];
+    const allFilled = [...gameCellEntries(game)].filter(({ cell }) => cell !== undefined);
     expect(allFilled).toHaveLength(0);
   });
 

@@ -10,11 +10,15 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 
 import {
   COLUMN_ORDER,
-  GAME_COLUMN,
-  LOWER_CATEGORIES,
-  UPPER_CATEGORIES
+  GAME_COLUMN
 } from '../models/game-column.model';
-import { nextUnfilledColumn } from '../models/game.model';
+import {
+  gameCellEntries,
+  nextUnfilledColumn,
+  readScoreCell,
+  writeColumnYahtzeeBonus,
+  writeScoreCell
+} from '../models/game.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { ScoringEngineService } from './scoring-engine.service';
 import { SuggestionEngineService } from './suggestion-engine.service';
@@ -22,8 +26,6 @@ import { UndoStore } from './undo.store';
 
 const PERSISTENCE_KEY = 'triple-yahtzee-state';
 const DEFAULT_GAME_COUNT = 2;
-
-const UPPER_SET = new Set(UPPER_CATEGORIES);
 
 function createEmptyGame(): Game {
   return {
@@ -61,14 +63,8 @@ function isValidPersistedState(value: unknown): value is PersistedState {
 
 function hasAnyScore(games: Game[], fromIndex = 0): boolean {
   for (let i = fromIndex; i < games.length; i++) {
-    const game = games[i];
-    for (const col of COLUMN_ORDER) {
-      for (const cat of UPPER_CATEGORIES) {
-        if (game.columns[col].upper[cat] !== undefined) return true;
-      }
-      for (const cat of LOWER_CATEGORIES) {
-        if (game.columns[col].lower[cat] !== undefined) return true;
-      }
+    for (const { cell } of gameCellEntries(games[i])) {
+      if (cell !== undefined) return true;
     }
   }
   return false;
@@ -77,13 +73,8 @@ function hasAnyScore(games: Game[], fromIndex = 0): boolean {
 function allCellsFilled(games: Game[]): boolean {
   if (games.length === 0) return false;
   for (const game of games) {
-    for (const col of COLUMN_ORDER) {
-      for (const cat of UPPER_CATEGORIES) {
-        if (game.columns[col].upper[cat] === undefined) return false;
-      }
-      for (const cat of LOWER_CATEGORIES) {
-        if (game.columns[col].lower[cat] === undefined) return false;
-      }
+    for (const { cell } of gameCellEntries(game)) {
+      if (cell === undefined) return false;
     }
   }
   return true;
@@ -174,9 +165,8 @@ export const SessionStore = signalStore(
         undoStore.saveSnapshot(games, category);
 
         const rawScore = scoringEngine.computeScore(dice, category);
-        const sectionKey = UPPER_SET.has(category) ? 'upper' : 'lower';
 
-        const yahtzeeCell = game.columns[column].lower[SCORE_CATEGORY.yahtzee];
+        const yahtzeeCell = readScoreCell(game, column, SCORE_CATEGORY.yahtzee);
         const bonusEarned =
           yahtzeeCell === undefined
             ? 0
@@ -185,20 +175,11 @@ export const SessionStore = signalStore(
         patchState(store, {
           games: games.map((g, i) =>
             i === gameIndex
-              ? {
-                  ...g,
-                  columns: {
-                    ...g.columns,
-                    [column]: {
-                      ...g.columns[column],
-                      yahtzeeBonus: (g.columns[column].yahtzeeBonus ?? 0) + bonusEarned,
-                      [sectionKey]: {
-                        ...g.columns[column][sectionKey],
-                        [category]: { value: rawScore, isScratched: rawScore === 0 },
-                      },
-                    },
-                  },
-                }
+              ? writeColumnYahtzeeBonus(
+                  writeScoreCell(g, column, category, { value: rawScore, isScratched: rawScore === 0 }),
+                  column,
+                  (g.columns[column].yahtzeeBonus ?? 0) + bonusEarned
+                )
               : g
           ),
           currentDice: undefined,
