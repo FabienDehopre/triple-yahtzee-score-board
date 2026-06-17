@@ -50,7 +50,7 @@ test.describe('report Issue FAB', () => {
     await page.getByRole('button', { name: /submit/i }).click();
 
     // Dialog should close and toast should be visible
-    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(page.getByRole('dialog', { name: /report/i })).toBeHidden();
     await expect(page.getByTestId('toast')).toBeVisible({ timeout: 5000 });
     await expect(page.getByTestId('toast')).toHaveClass(/bg-green/);
   });

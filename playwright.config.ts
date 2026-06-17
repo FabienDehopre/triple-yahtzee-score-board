@@ -2,6 +2,9 @@ import { env } from 'node:process';
 
 import { defineConfig, devices } from '@playwright/test';
 
+const E2E_PORT = env['E2E_PORT'] ?? '4200';
+const BASE_URL = `http://127.0.0.1:${E2E_PORT}`;
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -10,7 +13,7 @@ export default defineConfig({
   workers: env['CI'] ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4200',
+    baseURL: BASE_URL,
     trace: 'on-first-retry',
   },
   projects: [
@@ -20,8 +23,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm start',
-    url: 'http://127.0.0.1:4200',
+    command: `NG_APP_IS_TEST_ENV=true NG_APP_REPORT_ISSUE_ENDPOINT=http://localhost:8787/report pnpm ng serve --host 127.0.0.1 --port ${E2E_PORT}`,
+    url: BASE_URL,
     reuseExistingServer: !env['CI'],
   },
 });

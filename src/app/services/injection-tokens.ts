@@ -4,7 +4,7 @@ export const [
   // eslint-disable-next-line @typescript-eslint/naming-convention -- injection function
   injectIsTestEnv,,
   IS_TEST_ENV,
-] = createInjectionToken(() => false);
+] = createInjectionToken(() => import.meta.env.NG_APP_IS_TEST_ENV === 'true');
 export const [
   // eslint-disable-next-line @typescript-eslint/naming-convention -- injection function
   injectTurnstileSiteKey,,
