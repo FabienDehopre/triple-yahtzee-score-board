@@ -1,7 +1,8 @@
 import type { ColumnScores, GameColumn } from './game-column.model';
 import type { ScoreCategory } from './score-category.model';
 
-import { COLUMN_ORDER, UPPER_CATEGORIES } from './game-column.model';
+import { readCell } from './game-cells';
+import { COLUMN_ORDER } from './game-column.model';
 
 /**
  * Represents a complete Triple Yahtzee game session.
@@ -16,19 +17,14 @@ export interface Game {
   createdAt: string;
 }
 
-/** Lookup set for upper-section categories, used by nextUnfilledColumn. */
-const UPPER_SET = new Set(UPPER_CATEGORIES);
-
 /**
  * Returns the leftmost unfilled column for the given category in the given game.
  * Columns are checked in left-to-right order: ONE → TWO → THREE.
  * Returns undefined when all three columns are already filled.
  */
 export function nextUnfilledColumn(game: Game, category: ScoreCategory): GameColumn | undefined {
-  const isUpper = UPPER_SET.has(category);
   for (const col of COLUMN_ORDER) {
-    const section = isUpper ? game.columns[col].upper : game.columns[col].lower;
-    if (!section[category]) return col;
+    if (!readCell(game, col, category)) return col;
   }
   return undefined;
 }

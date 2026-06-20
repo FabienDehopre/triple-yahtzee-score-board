@@ -2,6 +2,7 @@ import type { Game } from '../models/game.model';
 
 import { TestBed } from '@angular/core/testing';
 
+import { readCell } from '../models/game-cells';
 import { GAME_COLUMN } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { GameStateAnonymizerService } from './game-state-anonymizer.service';
@@ -70,10 +71,10 @@ describe('gameStateAnonymizerService', () => {
     test('preserves all scores, yahtzeeBonus, and isScratched flags', () => {
       const games = [makeGameWithScores('real-uuid')];
       const { anonymizedGames } = service.anonymize(games);
-      const col = anonymizedGames[0].columns[GAME_COLUMN.one];
-      expect(col.upper[SCORE_CATEGORY.aces]).toEqual({ value: 3, isScratched: false });
-      expect(col.lower[SCORE_CATEGORY.yahtzee]).toEqual({ value: 50, isScratched: false });
-      expect(col.yahtzeeBonus).toBe(100);
+      const game = anonymizedGames[0];
+      expect(readCell(game, GAME_COLUMN.one, SCORE_CATEGORY.aces)).toEqual({ value: 3, isScratched: false });
+      expect(readCell(game, GAME_COLUMN.one, SCORE_CATEGORY.yahtzee)).toEqual({ value: 50, isScratched: false });
+      expect(game.columns[GAME_COLUMN.one].yahtzeeBonus).toBe(100);
     });
 
     test('does not mutate the original games array', () => {

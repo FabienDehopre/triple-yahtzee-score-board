@@ -2,6 +2,7 @@ import type { DiceSet } from '../models/dice-set.model';
 
 import { TestBed } from '@angular/core/testing';
 
+import { readCell } from '../models/game-cells';
 import { GAME_COLUMN } from '../models/game-column.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { SessionStore } from './session.store';
@@ -75,7 +76,7 @@ describe('sessionStore', () => {
       store.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
       store.placeScore(SCORE_CATEGORY.aces, 0);
 
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toEqual({
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toEqual({
         value: 5,
         isScratched: false,
       });
@@ -88,7 +89,7 @@ describe('sessionStore', () => {
       store.setCurrentDice(dice);
       store.placeScore(SCORE_CATEGORY.aces, 0);
 
-      expect(store.games()[0].columns.TWO.upper[SCORE_CATEGORY.aces]).toBeDefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.two, SCORE_CATEGORY.aces)).toBeDefined();
     });
 
     test('should clear currentDice after placement', () => {
@@ -101,7 +102,7 @@ describe('sessionStore', () => {
       store.setCurrentDice([0, 5, 0, 0, 0, 0] as DiceSet); // no aces
       store.placeScore(SCORE_CATEGORY.aces, 0);
 
-      const cell = store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces];
+      const cell = readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces);
       expect(cell?.value).toBe(0);
       expect(cell?.isScratched).toBeTruthy();
     });
@@ -119,8 +120,8 @@ describe('sessionStore', () => {
       store.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
       store.placeScore(SCORE_CATEGORY.aces, 1);
 
-      expect(store.games()[1].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeDefined();
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeUndefined();
+      expect(readCell(store.games()[1], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeDefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeUndefined();
     });
 
     test('should accumulate Yahtzee Bonus on second yahtzee', () => {
@@ -141,10 +142,10 @@ describe('sessionStore', () => {
     test('should restore previous game state', () => {
       store.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
       store.placeScore(SCORE_CATEGORY.aces, 0);
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeDefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeDefined();
 
       store.undo();
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeUndefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeUndefined();
     });
 
     test('should clear undo snapshot after undo', () => {
@@ -171,7 +172,7 @@ describe('sessionStore', () => {
       store.placeScore(SCORE_CATEGORY.aces, 0);
       store.newGame();
 
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeUndefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeUndefined();
     });
 
     test('should clear currentDice', () => {
@@ -213,7 +214,7 @@ describe('sessionStore', () => {
       store.setCurrentDice([5, 0, 0, 0, 0, 0] as DiceSet);
       store.placeScore(SCORE_CATEGORY.aces, 0);
       store.setGameCount(3);
-      expect(store.games()[0].columns.ONE.upper[SCORE_CATEGORY.aces]).toBeDefined();
+      expect(readCell(store.games()[0], GAME_COLUMN.one, SCORE_CATEGORY.aces)).toBeDefined();
     });
   });
 

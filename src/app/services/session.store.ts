@@ -8,12 +8,8 @@ import { withStorageSync } from '@angular-architects/ngrx-toolkit';
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
-import {
-  COLUMN_ORDER,
-  GAME_COLUMN,
-  LOWER_CATEGORIES,
-  UPPER_CATEGORIES
-} from '../models/game-column.model';
+import { addYahtzeeBonus, eachCell, readCell, writeCell } from '../models/game-cells';
+import { COLUMN_ORDER, GAME_COLUMN } from '../models/game-column.model';
 import { nextUnfilledColumn } from '../models/game.model';
 import { SCORE_CATEGORY } from '../models/score-category.model';
 import { ScoringEngineService } from './scoring-engine.service';
@@ -22,8 +18,6 @@ import { UndoStore } from './undo.store';
 
 const PERSISTENCE_KEY = 'triple-yahtzee-state';
 const DEFAULT_GAME_COUNT = 2;
-
-const UPPER_SET = new Set(UPPER_CATEGORIES);
 
 function createEmptyGame(): Game {
   return {
@@ -61,14 +55,8 @@ function isValidPersistedState(value: unknown): value is PersistedState {
 
 function hasAnyScore(games: Game[], fromIndex = 0): boolean {
   for (let i = fromIndex; i < games.length; i++) {
-    const game = games[i];
-    for (const col of COLUMN_ORDER) {
-      for (const cat of UPPER_CATEGORIES) {
-        if (game.columns[col].upper[cat] !== undefined) return true;
-      }
-      for (const cat of LOWER_CATEGORIES) {
-        if (game.columns[col].lower[cat] !== undefined) return true;
-      }
+    for (const { cell } of eachCell(games[i])) {
+      if (cell !== undefined) return true;
     }
   }
   return false;
@@ -77,13 +65,8 @@ function hasAnyScore(games: Game[], fromIndex = 0): boolean {
 function allCellsFilled(games: Game[]): boolean {
   if (games.length === 0) return false;
   for (const game of games) {
-    for (const col of COLUMN_ORDER) {
-      for (const cat of UPPER_CATEGORIES) {
-        if (game.columns[col].upper[cat] === undefined) return false;
-      }
-      for (const cat of LOWER_CATEGORIES) {
-        if (game.columns[col].lower[cat] === undefined) return false;
-      }
+    for (const { cell } of eachCell(game)) {
+      if (cell === undefined) return false;
     }
   }
   return true;
@@ -174,33 +157,20 @@ export const SessionStore = signalStore(
         undoStore.saveSnapshot(games, category);
 
         const rawScore = scoringEngine.computeScore(dice, category);
-        const sectionKey = UPPER_SET.has(category) ? 'upper' : 'lower';
 
-        const yahtzeeCell = game.columns[column].lower[SCORE_CATEGORY.yahtzee];
+        const yahtzeeCell = readCell(game, column, SCORE_CATEGORY.yahtzee);
         const bonusEarned =
           yahtzeeCell === undefined
             ? 0
             : scoringEngine.computeYahtzeeBonus(dice, yahtzeeCell.value);
 
+        let updated = writeCell(game, column, category, { value: rawScore, isScratched: rawScore === 0 });
+        if (bonusEarned !== 0) {
+          updated = addYahtzeeBonus(updated, column, bonusEarned);
+        }
+
         patchState(store, {
-          games: games.map((g, i) =>
-            i === gameIndex
-              ? {
-                  ...g,
-                  columns: {
-                    ...g.columns,
-                    [column]: {
-                      ...g.columns[column],
-                      yahtzeeBonus: (g.columns[column].yahtzeeBonus ?? 0) + bonusEarned,
-                      [sectionKey]: {
-                        ...g.columns[column][sectionKey],
-                        [category]: { value: rawScore, isScratched: rawScore === 0 },
-                      },
-                    },
-                  },
-                }
-              : g
-          ),
+          games: games.map((g, i) => (i === gameIndex ? updated : g)),
           currentDice: undefined,
         });
       },
