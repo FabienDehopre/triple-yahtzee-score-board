@@ -1,0 +1,31 @@
+name: Renovate Config Validation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/renovate.json
+      - .github/workflows/renovate-config-validation.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/renovate.json
+      - .github/workflows/renovate-config-validation.yml
+
+permissions:
+  contents: read
+
+jobs:
+  validate-renovate-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: lts/*
+          check-latest: true
+          cache: pnpm
+      - run: pnpx --package renovate@latest -- renovate-config-validator --no-global renovate.json
