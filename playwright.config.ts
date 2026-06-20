@@ -2,8 +2,9 @@ import { env } from 'node:process';
 
 import { defineConfig, devices } from '@playwright/test';
 
-const E2E_PORT = env['E2E_PORT'] ?? '4200';
-const BASE_URL = `http://127.0.0.1:${E2E_PORT}`;
+const HOST = '127.0.0.1';
+const PORT = 4200;
+const BASE_URL = `http://${HOST}:${PORT}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -23,8 +24,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `NG_APP_IS_TEST_ENV=true NG_APP_REPORT_ISSUE_ENDPOINT=http://localhost:8787/report pnpm ng serve --host 127.0.0.1 --port ${E2E_PORT}`,
+    command: `pnpm start --host ${HOST} --port ${PORT}`,
     url: BASE_URL,
-    reuseExistingServer: !env['CI'],
+    env: {
+      /* eslint-disable @typescript-eslint/naming-convention -- environment variable names */
+      NG_APP_IS_TEST_ENV: 'true',
+      NG_APP_REPORT_ISSUE_ENDPOINT: 'http://localhost:8787/report',
+      NG_APP_BUILD_ID: 'e2e-tests',
+      /* eslint-enable @typescript-eslint/naming-convention */
+    },
+    reuseExistingServer: false,
   },
 });
