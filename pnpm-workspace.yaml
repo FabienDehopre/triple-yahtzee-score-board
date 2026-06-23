@@ -26,7 +26,7 @@ overrides:
   '@angular/core': 'catalog:'
 
 catalog:
-  '@ai-hero/sandcastle': ^0.8.0
+  '@ai-hero/sandcastle': ^0.10.0
   '@analogjs/vite-plugin-angular': ^2.6.1
   '@analogjs/vitest-angular': ^2.6.1
   '@angular-architects/ngrx-toolkit': 21.0.1
