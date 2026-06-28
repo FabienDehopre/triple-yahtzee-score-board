@@ -20,42 +20,37 @@ shellEmulator: true
 trustPolicy: no-downgrade
 packages:
   - worker
-overrides:
-  '@angular/build': 'catalog:'
-  '@angular/common': 'catalog:'
-  '@angular/core': 'catalog:'
-
 catalog:
-  '@ai-hero/sandcastle': ^0.8.0
+  '@ai-hero/sandcastle': ^0.10.0
   '@analogjs/vite-plugin-angular': ^2.6.1
   '@analogjs/vitest-angular': ^2.6.1
   '@angular-architects/ngrx-toolkit': 21.0.1
-  '@angular/build': ^22.0.1
-  '@angular/cdk': ^22.0.1
-  '@angular/cli': ^22.0.1
-  '@angular/common': ^22.0.1
-  '@angular/compiler': ^22.0.1
-  '@angular/compiler-cli': ^22.0.1
-  '@angular/core': ^22.0.1
-  '@angular/forms': ^22.0.1
-  '@angular/platform-browser': ^22.0.1
-  '@angular/router': ^22.0.1
+  '@angular/build': ^22.0.4
+  '@angular/cdk': ^22.0.2
+  '@angular/cli': ^22.0.4
+  '@angular/common': ^22.0.3
+  '@angular/compiler': ^22.0.3
+  '@angular/compiler-cli': ^22.0.3
+  '@angular/core': ^22.0.3
+  '@angular/forms': ^22.0.3
+  '@angular/platform-browser': ^22.0.3
+  '@angular/router': ^22.0.3
   '@cloudflare/workers-types': ^4.20260609.1
   '@fabdeh/eslint-config': ^0.12.1
   '@jsverse/transloco': ^8.4.0
   '@ngrx/operators': ^21.1.1
   '@ngrx/signals': ^21.1.1
   '@ngx-env/builder': ^21.0.1
-  '@playwright/test': ^1.60.0
+  '@playwright/test': ^1.61.1
   '@tailwindcss/postcss': ^4.3.1
   '@testing-library/angular': ^19.4.1
   '@testing-library/jest-dom': ^6.9.1
   '@testing-library/user-event': ^14.6.1
-  '@types/node': ^25.9.3
+  '@types/node': ^25.9.4
   dotenv: ^17.4.2
   eslint: ^10.5.0
   eslint-plugin-better-tailwindcss: ^4.6.0
-  eslint-plugin-erasable-syntax-only: ^0.4.1
+  eslint-plugin-erasable-syntax-only: ^0.4.2
   eslint-plugin-format: ^2.0.1
   is-ci: ^4.1.0
   jsdom: ^29.1.1
@@ -69,7 +64,7 @@ catalog:
   tslib: ^2.8.1
   tsx: ^4.22.4
   typescript: ~6.0.3
-  vite: ^8.0.16
-  vitest: ^4.1.8
+  vite: ^8.1.0
+  vitest: ^4.1.9
   wrangler: ^4.99.0
   zod: ^3.24.3
