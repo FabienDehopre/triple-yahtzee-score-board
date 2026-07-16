@@ -19,7 +19,7 @@ jobs:
       - name: Get pnpm store path
         id: pnpm-store
         run: echo "store-path=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
@@ -42,7 +42,7 @@ jobs:
       - name: Get pnpm store path
         id: pnpm-store
         run: echo "store-path=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
@@ -65,7 +65,7 @@ jobs:
       - name: Get pnpm store path
         id: pnpm-store
         run: echo "store-path=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
@@ -89,13 +89,13 @@ jobs:
       - name: Get pnpm store path
         id: pnpm-store
         run: echo "store-path=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
       - name: Cache Playwright browsers
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ hashFiles('pnpm-lock.yaml') }}
@@ -127,7 +127,7 @@ jobs:
       - name: Get pnpm store path
         id: pnpm-store
         run: echo "store-path=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+      - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
