@@ -21,7 +21,7 @@ trustPolicy: no-downgrade
 packages:
   - worker
 catalog:
-  '@ai-hero/sandcastle': ^0.10.0
+  '@ai-hero/sandcastle': ^0.12.0
   '@analogjs/vite-plugin-angular': ^2.6.1
   '@analogjs/vitest-angular': ^2.6.1
   '@angular-architects/ngrx-toolkit': 21.0.1
@@ -36,7 +36,7 @@ catalog:
   '@angular/platform-browser': ^22.0.3
   '@angular/router': ^22.0.3
   '@cloudflare/workers-types': ^4.20260609.1
-  '@fabdeh/eslint-config': ^0.12.1
+  '@fabdeh/eslint-config': ^0.13.0
   '@jsverse/transloco': ^8.4.0
   '@ngrx/operators': ^21.1.1
   '@ngrx/signals': ^21.1.1
@@ -50,7 +50,7 @@ catalog:
   dotenv: ^17.4.2
   eslint: ^10.5.0
   eslint-plugin-better-tailwindcss: ^4.6.0
-  eslint-plugin-erasable-syntax-only: ^0.4.2
+  eslint-plugin-erasable-syntax-only: ^0.7.0
   eslint-plugin-format: ^2.0.1
   is-ci: ^4.1.0
   jsdom: ^29.1.1
