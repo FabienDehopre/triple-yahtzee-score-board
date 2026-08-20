@@ -11,6 +11,7 @@
     ":dependencyDashboard"
   ],
   "timezone": "Europe/Brussels",
+  "minimumReleaseAge": "3 days",
   "prConcurrentLimit": 1,
   "automergeType": "pr",
   "automergeStrategy": "squash",
