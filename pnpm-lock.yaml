@@ -79,8 +79,8 @@ catalogs:
       specifier: 6.10.0
       version: 6.10.0
     '@testing-library/user-event':
-      specifier: 14.6.4
-      version: 14.6.4
+      specifier: 14.6.5
+      version: 14.6.5
     '@types/node':
       specifier: 25.9.5
       version: 25.9.5
@@ -233,7 +233,7 @@ importers:
         version: 6.10.0(@testing-library/dom@10.4.1)
       '@testing-library/user-event':
         specifier: 'catalog:'
-        version: 14.6.4(@testing-library/dom@10.4.1)
+        version: 14.6.5(@testing-library/dom@10.4.1)
       '@types/node':
         specifier: 'catalog:'
         version: 25.9.5
@@ -2710,8 +2710,8 @@ packages:
     peerDependencies:
       '@testing-library/dom': '>=10 <11'
 
-  '@testing-library/user-event@14.6.4':
-    resolution: {integrity: sha512-QCGwP6QrjypBLwyj5cuyfVamkaIEy/XGY+1VDehbtbQqOggYmTFpFOdWR5mPz14vX8vXLMVjDHlRNBcClyO9ew==}
+  '@testing-library/user-event@14.6.5':
+    resolution: {integrity: sha512-FhqjldLTpteueBaKflhNFlMT3+PM0O5fiBUivht6b9CZ1eesJyy7+g3Jr7XwJzt/Hip3ZG5hWwK1MX1FuDiE4w==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
@@ -7528,7 +7528,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/user-event@14.6.4(@testing-library/dom@10.4.1)':
+  '@testing-library/user-event@14.6.5(@testing-library/dom@10.4.1)':
     dependencies:
       '@testing-library/dom': 10.4.1
 
