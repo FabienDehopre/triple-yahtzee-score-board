@@ -73,7 +73,7 @@ jobs:
       - run: pnpm install --offline --frozen-lockfile --recursive
       - run: pnpm run test --watch=false --coverage
       - run: pnpm --filter ./worker/ run test --watch=false
-      - uses: FabienDehopre/crap-gate/frontend@v1
+      - uses: FabienDehopre/crap-gate/frontend@b31ed69e6265b49261af63392f5e17a1d6d6a35b # v1.0.0
         with:
           exclude: |
             worker/**
