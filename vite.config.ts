@@ -11,6 +11,11 @@ export default defineConfig(({ mode }) => ({
     setupFiles: ['dotenv/config', 'src/test-setup.ts'],
     include: ['src/**/*.spec.ts'],
     reporters: ['default'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['json', 'text-summary'],
+      include: ['src/**/*.ts'],
+    },
   },
   define: {
     'import.meta.vitest': mode !== 'production',

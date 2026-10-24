@@ -54,6 +54,7 @@ jobs:
     needs: fetch
     permissions:
       contents: read
+      pull-requests: write # crap-gate PR comment
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
@@ -70,8 +71,12 @@ jobs:
           path: ${{ steps.pnpm-store.outputs.store-path }}
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
-      - run: pnpm run test --watch=false
+      - run: pnpm run test --watch=false --coverage
       - run: pnpm --filter ./worker/ run test --watch=false
+      - uses: FabienDehopre/crap-gate/frontend@b31ed69e6265b49261af63392f5e17a1d6d6a35b # v1.0.0
+        with:
+          exclude: |
+            worker/**
 
   e2e:
     runs-on: ubuntu-latest
