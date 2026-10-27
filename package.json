@@ -19,7 +19,6 @@
     "build-image": ".sandcastle/build.sh"
   },
   "dependencies": {
-    "@angular-architects/ngrx-toolkit": "catalog:",
     "@angular/cdk": "catalog:",
     "@angular/common": "catalog:",
     "@angular/compiler": "catalog:",
@@ -28,6 +27,7 @@
     "@angular/platform-browser": "catalog:",
     "@angular/router": "catalog:",
     "@jsverse/transloco": "catalog:",
+    "@ngrx-toolkit/core": "catalog:",
     "@ngrx/operators": "catalog:",
     "@ngrx/signals": "catalog:",
     "ngxtension": "catalog:",
