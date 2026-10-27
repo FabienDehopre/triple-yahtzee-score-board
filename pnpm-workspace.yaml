@@ -20,6 +20,10 @@ shellEmulator: true
 trustPolicy: no-downgrade
 packages:
   - worker
+overrides:
+  # @angular/compiler-cli 22.2.x imports encodeRangeMappings (added in 1.6.0) but declares ^1.4.14
+  # Remove once the fix for angular/angular#71452 (PR angular/angular#71453) ships in an Angular release
+  '@angular/compiler-cli>@jridgewell/sourcemap-codec': ^1.6.0
 catalog:
   '@ai-hero/sandcastle': 0.12.0
   '@analogjs/vite-plugin-angular': 2.9.2
