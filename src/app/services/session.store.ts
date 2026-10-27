@@ -4,8 +4,8 @@ import type { GameColumn } from '../models/game-column.model';
 import type { Game } from '../models/game.model';
 import type { ScoreCategory } from '../models/score-category.model';
 
-import { withStorageSync } from '@angular-architects/ngrx-toolkit';
 import { computed, inject } from '@angular/core';
+import { withStorageSync } from '@ngrx-toolkit/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 
 import { addYahtzeeBonus, eachCell, readCell, writeCell } from '../models/game-cells';
