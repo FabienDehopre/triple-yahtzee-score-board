@@ -1,4 +1,5 @@
 import type { DiceSet } from '../models/dice-set.model';
+import type { ScoreCategory } from '../models/score-category.model';
 
 import { TestBed } from '@angular/core/testing';
 
@@ -300,6 +301,30 @@ describe('scoringEngineService', () => {
     test('should return 30 for five 6s', () => {
       const dice: DiceSet = [0, 0, 0, 0, 0, 5];
       expect(service.computeScore(dice, SCORE_CATEGORY.chance)).toBe(30);
+    });
+  });
+
+  describe('every category', () => {
+    // 1-2-3-4-5
+    const dice: DiceSet = [1, 1, 1, 1, 1, 0];
+    const expected: Record<ScoreCategory, number> = {
+      [SCORE_CATEGORY.aces]: 1,
+      [SCORE_CATEGORY.twos]: 2,
+      [SCORE_CATEGORY.threes]: 3,
+      [SCORE_CATEGORY.fours]: 4,
+      [SCORE_CATEGORY.fives]: 5,
+      [SCORE_CATEGORY.sixes]: 0,
+      [SCORE_CATEGORY.threeOfAKind]: 0,
+      [SCORE_CATEGORY.fourOfAKind]: 0,
+      [SCORE_CATEGORY.fullHouse]: 0,
+      [SCORE_CATEGORY.smallStraight]: 30,
+      [SCORE_CATEGORY.largeStraight]: 40,
+      [SCORE_CATEGORY.yahtzee]: 0,
+      [SCORE_CATEGORY.chance]: 15,
+    };
+
+    test.each(Object.entries(expected))('should score %s as %i for 1-2-3-4-5', (category, score) => {
+      expect(service.computeScore(dice, category as ScoreCategory)).toBe(score);
     });
   });
 

@@ -28,6 +28,57 @@ function sumDice(dice: DiceSet): number {
   return dice.reduce((sum, count, index) => sum + count * (index + 1), 0);
 }
 
+/** Fixed score for a full house (three of one face and two of another). */
+const FULL_HOUSE_VALUE = 25;
+
+/** Fixed score for a small straight (four consecutive faces). */
+const SMALL_STRAIGHT_VALUE = 30;
+
+/** Fixed score for a large straight (five consecutive faces). */
+const LARGE_STRAIGHT_VALUE = 40;
+
+/** Fixed score for a Yahtzee (five dice showing the same face). */
+const YAHTZEE_VALUE = 50;
+
+/** Returns true when the dice contain a run of `length` consecutive faces. */
+function hasStraight(dice: DiceSet, length: number): boolean {
+  let run = 0;
+  for (const count of dice) {
+    run = count > 0 ? run + 1 : 0;
+    if (run >= length) return true;
+  }
+  return false;
+}
+
+/** Builds a scorer that sums the dice showing the given face. */
+function faceScorer(face: number): (dice: DiceSet) => number {
+  return (dice) => dice[face - 1] * face;
+}
+
+/** Builds a scorer that sums all dice when at least `count` share a face. */
+function ofAKindScorer(count: number): (dice: DiceSet) => number {
+  return (dice) => (dice.some((faceCount) => faceCount >= count) ? sumDice(dice) : 0);
+}
+
+/** Raw (un-multiplied) scorer for each category. */
+const SCORERS: Record<ScoreCategory, (dice: DiceSet) => number> = {
+  // ── Upper section: sum of matching face values ─────────────────────────
+  [SCORE_CATEGORY.aces]: faceScorer(1),
+  [SCORE_CATEGORY.twos]: faceScorer(2),
+  [SCORE_CATEGORY.threes]: faceScorer(3),
+  [SCORE_CATEGORY.fours]: faceScorer(4),
+  [SCORE_CATEGORY.fives]: faceScorer(5),
+  [SCORE_CATEGORY.sixes]: faceScorer(6),
+  // ── Lower section: combination-based ──────────────────────────────────
+  [SCORE_CATEGORY.threeOfAKind]: ofAKindScorer(3),
+  [SCORE_CATEGORY.fourOfAKind]: ofAKindScorer(4),
+  [SCORE_CATEGORY.fullHouse]: (dice) => (dice.includes(3) && dice.includes(2) ? FULL_HOUSE_VALUE : 0),
+  [SCORE_CATEGORY.smallStraight]: (dice) => (hasStraight(dice, 4) ? SMALL_STRAIGHT_VALUE : 0),
+  [SCORE_CATEGORY.largeStraight]: (dice) => (hasStraight(dice, 5) ? LARGE_STRAIGHT_VALUE : 0),
+  [SCORE_CATEGORY.yahtzee]: (dice) => (dice.includes(5) ? YAHTZEE_VALUE : 0),
+  [SCORE_CATEGORY.chance]: sumDice,
+};
+
 /**
  * Pure-function service that computes Yahtzee scores.
  * Has no side effects and no dependencies on other services.
@@ -39,57 +90,7 @@ export class ScoringEngineService {
    * Does NOT apply column multipliers.
    */
   computeScore(dice: DiceSet, category: ScoreCategory): number {
-    switch (category) {
-      // ── Upper section: sum of matching face values ─────────────────────────
-      case SCORE_CATEGORY.aces:
-        return dice[0] * 1;
-      case SCORE_CATEGORY.chance:
-        return sumDice(dice);
-      case SCORE_CATEGORY.fives:
-        return dice[4] * 5;
-      case SCORE_CATEGORY.fourOfAKind:
-        return dice.some((count) => count >= 4) ? sumDice(dice) : 0;
-      case SCORE_CATEGORY.fours:
-        return dice[3] * 4;
-      case SCORE_CATEGORY.fullHouse: {
-        const hasThree = dice.includes(3);
-        const hasTwo = dice.includes(2);
-        return hasThree && hasTwo ? 25 : 0;
-      }
-
-      case SCORE_CATEGORY.largeStraight: {
-        const hasFace = (face: number) => dice[face - 1] > 0;
-        const isLarge =
-          (hasFace(1) && hasFace(2) && hasFace(3) && hasFace(4) && hasFace(5)) ||
-          (hasFace(2) && hasFace(3) && hasFace(4) && hasFace(5) && hasFace(6));
-        return isLarge ? 40 : 0;
-      }
-
-      case SCORE_CATEGORY.sixes:
-        return dice[5] * 6;
-
-      case SCORE_CATEGORY.smallStraight: {
-        const hasFace = (face: number) => dice[face - 1] > 0;
-        const isSmall =
-          (hasFace(1) && hasFace(2) && hasFace(3) && hasFace(4)) ||
-          (hasFace(2) && hasFace(3) && hasFace(4) && hasFace(5)) ||
-          (hasFace(3) && hasFace(4) && hasFace(5) && hasFace(6));
-        return isSmall ? 30 : 0;
-      }
-
-      // ── Lower section: combination-based ──────────────────────────────────
-      case SCORE_CATEGORY.threeOfAKind:
-        return dice.some((count) => count >= 3) ? sumDice(dice) : 0;
-
-      case SCORE_CATEGORY.threes:
-        return dice[2] * 3;
-
-      case SCORE_CATEGORY.twos:
-        return dice[1] * 2;
-
-      case SCORE_CATEGORY.yahtzee:
-        return dice.includes(5) ? 50 : 0;
-    }
+    return SCORERS[category](dice);
   }
 
   /**
