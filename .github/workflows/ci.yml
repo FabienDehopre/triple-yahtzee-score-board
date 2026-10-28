@@ -7,8 +7,9 @@ on:
     branches: [main]
 
 env:
-  # A fixed store path keeps the cache version identical on the host and in the e2e container.
-  pnpm_config_store_dir: ~/.pnpm-store
+  # actions/cache archives paths relative to the workspace, which is /home/runner/work/<repo>/<repo> on the host
+  # and /__w/<repo>/<repo> in the e2e container. A sibling of the workspace restores to a writable spot in both.
+  pnpm_config_store_dir: ../.pnpm-store
 
 jobs:
   fetch:
@@ -22,7 +23,7 @@ jobs:
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
       - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.pnpm-store
+          path: ../.pnpm-store
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm fetch
       - run: du -sh "$(pnpm store path)"
@@ -42,7 +43,7 @@ jobs:
           cache: pnpm
       - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.pnpm-store
+          path: ../.pnpm-store
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
       - run: pnpm run lint
@@ -63,7 +64,7 @@ jobs:
           cache: pnpm
       - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.pnpm-store
+          path: ../.pnpm-store
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
       - run: pnpm run test --watch=false --coverage
@@ -86,7 +87,7 @@ jobs:
       - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
       - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.pnpm-store
+          path: ../.pnpm-store
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
       - run: pnpm run e2e
@@ -114,7 +115,7 @@ jobs:
           cache: pnpm
       - uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
         with:
-          path: ~/.pnpm-store
+          path: ../.pnpm-store
           key: pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm install --offline --frozen-lockfile --recursive
       - run: pnpm run build
