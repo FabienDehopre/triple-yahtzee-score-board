@@ -58,11 +58,11 @@ catalogs:
       specifier: 22.0.1
       version: 22.0.1
     '@ngrx/operators':
-      specifier: 21.1.1
-      version: 21.1.1
+      specifier: 22.0.1
+      version: 22.0.1
     '@ngrx/signals':
-      specifier: 21.1.1
-      version: 21.1.1
+      specifier: 22.0.1
+      version: 22.0.1
     '@ngx-env/builder':
       specifier: 21.0.1
       version: 21.0.1
@@ -184,13 +184,13 @@ importers:
         version: 8.4.0(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)(typescript@6.0.3)
       '@ngrx-toolkit/core':
         specifier: 'catalog:'
-        version: 22.0.1(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@ngrx/signals@21.1.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)
+        version: 22.0.1(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@ngrx/signals@22.0.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)
       '@ngrx/operators':
         specifier: 'catalog:'
-        version: 21.1.1(rxjs@7.8.2)
+        version: 22.0.1(rxjs@7.8.2)
       '@ngrx/signals':
         specifier: 'catalog:'
-        version: 21.1.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
+        version: 22.0.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
       ngxtension:
         specifier: 'catalog:'
         version: 7.3.1(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
@@ -1730,15 +1730,15 @@ packages:
       typescript: '*'
       typescript-eslint: ^8.0.0
 
-  '@ngrx/operators@21.1.1':
-    resolution: {integrity: sha512-2ChT1rVi6w8xHrmIAqRFuvY7YLAJiH7idfmbimjOYHzJ7pgaz0+4WVqyCp9pv2UiDEXuvpUOvs3afgS5m1LDNQ==}
+  '@ngrx/operators@22.0.1':
+    resolution: {integrity: sha512-UyF1ESIKX8sClhXCz4/B+YhC4Baa4sZ4O0neHzMwdqFxvXg4P19AT6+RQ5lNCuwmYt/aH1dZuHr+EBaQSRFNyQ==}
     peerDependencies:
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@ngrx/signals@21.1.1':
-    resolution: {integrity: sha512-AXxsvO39cJ4gu2GMvLyUHwx+3qHi35Bn7OUqyIfJW0fffi/Af7ML6h0MPMWDHVROo55FBgxzJrYRswwzdew9VA==}
+  '@ngrx/signals@22.0.1':
+    resolution: {integrity: sha512-R62VsPrnH54LgA3LAqw+GWA9FHii526CH1aqah8aiK1RZocp+3N9rS3g5wrrXU655eVH65jhN4k/k+EFyxO/RA==}
     peerDependencies:
-      '@angular/core': ^21.0.0
+      '@angular/core': ^22.0.0
       rxjs: ^6.5.3 || ^7.4.0
     peerDependenciesMeta:
       rxjs:
@@ -6739,11 +6739,11 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@ngrx-toolkit/core@22.0.1(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@ngrx/signals@21.1.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngrx-toolkit/core@22.0.1(@angular/common@22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(@ngrx/signals@22.0.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 22.2.3(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
       '@angular/core': 22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2)
-      '@ngrx/signals': 21.1.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
+      '@ngrx/signals': 22.0.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)
       rxjs: 7.8.2
       tslib: 2.8.1
 
@@ -6755,12 +6755,12 @@ snapshots:
       typescript: 6.0.3
       typescript-eslint: 8.67.0(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@6.0.3)
 
-  '@ngrx/operators@21.1.1(rxjs@7.8.2)':
+  '@ngrx/operators@22.0.1(rxjs@7.8.2)':
     dependencies:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@ngrx/signals@21.1.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@ngrx/signals@22.0.1(@angular/core@22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 22.2.3(@angular/compiler@22.2.3)(rxjs@7.8.2)
       tslib: 2.8.1
