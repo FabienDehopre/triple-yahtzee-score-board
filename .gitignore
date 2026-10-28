@@ -54,3 +54,6 @@ test-results/
 docs/deepening-candidates.md
 
 **/.wrangler/
+
+# pnpm store used by CI
+/.pnpm-store
